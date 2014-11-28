@@ -15,4 +15,5 @@ https://github.com/celiofonseca/JVM
 
 Outros: 
 
-Configurar Eclipse CDT Windows: https://www.youtube.com/watch?v=Z6x2kh1voR8
+Configurar Eclipse CDT Windows: https://www.youtube.com/watch?v=Z6x2kh1voR8  
+Tutorial EGIT Eclipse: http://www.vogella.com/tutorials/EclipseGit/article.html  
