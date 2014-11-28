@@ -12,3 +12,7 @@ Links: Para outras JVMs
 https://github.com/bernardo-macedo/JVM  
 https://github.com/mateusbraga/JVM-1.2  
 https://github.com/celiofonseca/JVM  
+
+Outros: 
+
+Configurar Eclipse CDT Windows: https://www.youtube.com/watch?v=Z6x2kh1voR8
