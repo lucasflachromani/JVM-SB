@@ -203,64 +203,60 @@ void populate_opcode_info() {
 	
 	
 
-	op_informacao[0x19].operandos_count = 1;
-	op_informacao[0xbd].operandos_count = 2;
-	op_informacao[0x3a].operandos_count = 1;
 	op_informacao[0x10].operandos_count = 1;
-	op_informacao[0x18].operandos_count = 1;
-	op_informacao[0x39].operandos_count = 1;
+	op_informacao[0x11].operandos_count = 2;
+	op_informacao[0x12].operandos_count = 1;
+	op_informacao[0x13].operandos_count = 2;
+	op_informacao[0x14].operandos_count = 2;
+	op_informacao[0x15].operandos_count = 1;
+	op_informacao[0x16].operandos_count = 1;
 	op_informacao[0x17].operandos_count = 1;
+	op_informacao[0x18].operandos_count = 1;
+	op_informacao[0x19].operandos_count = 1;
+	op_informacao[0x36].operandos_count = 1;
+	op_informacao[0x37].operandos_count = 1;
 	op_informacao[0x38].operandos_count = 1;
-	op_informacao[0xb4].operandos_count = 2;
-	op_informacao[0xb2].operandos_count = 2;
-	op_informacao[0xa7].operandos_count = 2;
-	op_informacao[0xc8].operandos_count = 4;
-	op_informacao[0xa5].operandos_count = 2;
-	op_informacao[0xa6].operandos_count = 2;
-	op_informacao[0x9f].operandos_count = 2;
-	op_informacao[0xa0].operandos_count = 2;
-	op_informacao[0xa1].operandos_count = 2;
-	op_informacao[0xa2].operandos_count = 2;
-	op_informacao[0xa3].operandos_count = 2;
-	op_informacao[0xa4].operandos_count = 2;
+	op_informacao[0x39].operandos_count = 1;
+	op_informacao[0x3a].operandos_count = 1;
+	op_informacao[0x84].operandos_count = 2;
 	op_informacao[0x99].operandos_count = 2;
 	op_informacao[0x9a].operandos_count = 2;
 	op_informacao[0x9b].operandos_count = 2;
 	op_informacao[0x9c].operandos_count = 2;
 	op_informacao[0x9d].operandos_count = 2;
 	op_informacao[0x9e].operandos_count = 2;
-	op_informacao[0xc7].operandos_count = 2;
-	op_informacao[0xc6].operandos_count = 2;
-	op_informacao[0x84].operandos_count = 2;
-	op_informacao[0x15].operandos_count = 1;
+	op_informacao[0x9f].operandos_count = 2;
+	op_informacao[0xa7].operandos_count = 2;
+	op_informacao[0xa0].operandos_count = 2;
+	op_informacao[0xa1].operandos_count = 2;
+	op_informacao[0xa2].operandos_count = 2;
+	op_informacao[0xa3].operandos_count = 2;
+	op_informacao[0xa4].operandos_count = 2;
+	op_informacao[0xa5].operandos_count = 2;	
+	op_informacao[0xa6].operandos_count = 2;
+	op_informacao[0xa8].operandos_count = 2;
+	op_informacao[0xa9].operandos_count = 1;
+	op_informacao[0xaa].operandos_count = 14; 
+	op_informacao[0xab].operandos_count = 10; 
+	op_informacao[0xb2].operandos_count = 2;
+	op_informacao[0xb4].operandos_count = 2;
+	op_informacao[0xbd].operandos_count = 2;
 	op_informacao[0xb9].operandos_count = 4;
 	op_informacao[0xb7].operandos_count = 2;
 	op_informacao[0xb8].operandos_count = 2;
 	op_informacao[0xb6].operandos_count = 2;
-	op_informacao[0x36].operandos_count = 1;
-	op_informacao[0xa8].operandos_count = 2;
-	op_informacao[0xc9].operandos_count = 4;
-	op_informacao[0x12].operandos_count = 1;
-	op_informacao[0x13].operandos_count = 2;
-	op_informacao[0x14].operandos_count = 2;
-	op_informacao[0x16].operandos_count = 1;
-	op_informacao[0xab].operandos_count = 10; /*TODO Ver se realmente sÃ£o 10 operandos */
-	op_informacao[0x37].operandos_count = 1;
-	op_informacao[0xc5].operandos_count = 3;
-	op_informacao[0xbb].operandos_count = 2;
 	op_informacao[0xbc].operandos_count = 1;
 	op_informacao[0xb5].operandos_count = 2;
 	op_informacao[0xb3].operandos_count = 2;
-	op_informacao[0xa9].operandos_count = 1;
-	op_informacao[0x11].operandos_count = 2;
-	op_informacao[0xaa].operandos_count = 14; /*TODO Ver se realmente sÃ£o 14 operandos */
-	op_informacao[0xc4].operandos_count = 7;  /*TODO Ver se realmente sÃ£o 7 operandos */
+	op_informacao[0xbb].operandos_count = 2;
+	op_informacao[0xc8].operandos_count = 4;
+	op_informacao[0xc7].operandos_count = 2;
+	op_informacao[0xc6].operandos_count = 2;
+	op_informacao[0xc9].operandos_count = 4;
+	op_informacao[0xc5].operandos_count = 3;
+	op_informacao[0xc4].operandos_count = 7;  
 	
-	//TODO: Colocar as outras instruções desse for, pra n ter for
-	for (i = 0xcb; i < 0xfe; i++) {
-	  op_informacao[i].operandos_count = 0;
-	}
-
+	
 }
 
 
