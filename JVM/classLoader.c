@@ -1,6 +1,6 @@
 //
 //  classLoader.c
-//  
+//
 //
 //  Created by Paula Vasconcelos Gueiros on 11/25/14.
 //
@@ -30,7 +30,7 @@
  */
 int main (int argc, char * argv[]) {
     FILE * file, * fileTrgt;
-    char fileSrc[30], accessType[30];
+    char fileSrc[50], accessType[70];
     classStructure cs;
     
     strcpy (fileSrc, argv[1]);
@@ -49,8 +49,8 @@ int main (int argc, char * argv[]) {
         printf("\nERRO: O arquivo não e do tipo .class");
     }
     
-    if (strcmp (argv[2], "")) {
-        fileTrgt = fopen (argv[2], "w");        //armazena todos os dados em arquivo texto
+    fileTrgt = fopen (argv[2], "w");
+    if (strcmp (argv[2], "")) {                 //armazena todos os dados em arquivo texto
         fprintf(fileTrgt, "Nome do arquivo: %s\n\n", fileSrc);
         saveGeneral(fileTrgt, &cs, accessType);
         saveConstantPool(fileTrgt, &cs);
@@ -58,14 +58,13 @@ int main (int argc, char * argv[]) {
         saveFields(fileTrgt, &cs);
         saveMethods(fileTrgt, &cs);
         saveAttributes(fileTrgt, &cs);
-        fclose (fileTrgt);
         printf("Arquivo texto gerado.\n");
     }
     
+    fclose (fileTrgt);
     fclose (file);
     
     printf("Programa Finalizado.\n");
-    getchar();
     return 0;
 }
 
@@ -439,8 +438,8 @@ void saveGeneral (FILE * fileTrgt, classStructure * cs, char * accessType) {
     fprintf(fileTrgt, "Constant Pool Count: %8d\n", cs->constantPoolCount);
     getAccessPerm(cs->accessFlags, accessType);
     fprintf(fileTrgt, "Access Flags:            0x%x [%s]\n", cs->accessFlags, accessType);
-    fprintf(fileTrgt, "This Class:         cpInfo #%d <%s>\n", cs->thisClass, cs->constantPool[cs->constantPool[cs->thisClass - 1].type.Class.nameIndex - 1].type.Utf8.bytes);
-    fprintf(fileTrgt, "Super Class:        cpInfo #%d <%s>\n", cs->superClass, cs->constantPool[cs->constantPool[cs->superClass - 1].type.Class.nameIndex - 1].type.Utf8.bytes);
+    fprintf(fileTrgt, "This Class:        cpInfo #%d: <%s>\n", cs->thisClass, cs->constantPool[cs->constantPool[cs->thisClass - 1].type.Class.nameIndex - 1].type.Utf8.bytes);
+    fprintf(fileTrgt, "Super Class:       cpInfo #%d: <%s>\n", cs->superClass, cs->constantPool[cs->constantPool[cs->superClass - 1].type.Class.nameIndex - 1].type.Utf8.bytes);
     fprintf(fileTrgt, "Interface Count: %12d\n", cs->interfaceCount);
     fprintf(fileTrgt, "Field Count: %16d\n", cs->fieldCount);
     fprintf(fileTrgt, "Method Count: %15d\n", cs->methodCount);
@@ -453,38 +452,21 @@ void saveGeneral (FILE * fileTrgt, classStructure * cs, char * accessType) {
  * ao tipo de permissao identificada por accessFlags
  */
 void getAccessPerm (int intValue, char * target) {
-    switch (intValue) {                             // valor inteiro de accessFlags
-        case 1:
-            strcpy (target, "Public");
-            break;
-        case 2:
-            strcpy (target, "Private");
-            break;
-        case 4:
-            strcpy (target, "Protected");
-            break;
-        case 8:
-            strcpy (target, "Static");
-            break;
-        case 9:
-            strcpy (target, "Public Static");
-            break;
-        case 16:
-            strcpy (target, "Final");
-            break;
-        case 33:
-            strcpy (target, "Synchronized Public");
-            break;
-        case 256:
-            strcpy (target, "Interface");
-            break;
-        case 512:
-            strcpy (target, "Abstract");
-            break;
-        default:
-            strcpy (target, "");
-            break;
-    }
+    
+    strcpy (target, "");
+    
+    if isBitActivated(intValue, 1) strcat (target, "public ");
+    else if isBitActivated(intValue, 2) strcat (target, "private ");
+    else if isBitActivated(intValue, 3) strcat (target, "protected ");
+    
+    if isBitActivated(intValue, 4) strcat (target, "static ");
+    if isBitActivated(intValue, 5) strcat (target, "final ");
+    if isBitActivated(intValue, 6) strcat (target, "synchronized ");
+    if isBitActivated(intValue, 7) strcat (target, "volatile ");
+    if isBitActivated(intValue, 8) strcat (target, "transient ");
+    if isBitActivated(intValue, 9) strcat (target, "native ");
+    if isBitActivated(intValue, 10) strcat (target, "interface ");
+    if isBitActivated(intValue, 11) strcat (target, "abstract ");
 }
 
 /* @ brief Funcao que salva em arquivo os valores da pool de constantes
@@ -493,8 +475,7 @@ void getAccessPerm (int intValue, char * target) {
  */
 void saveConstantPool (FILE * fileTrgt, classStructure * cs) {
     int a;
-    long whole;
-    double dWhole;
+    long long whole;
     
     fprintf(fileTrgt, "------------------------------------------------------\n\n");
     fprintf(fileTrgt, "Constant Pool:\n\n");
@@ -529,7 +510,7 @@ void saveConstantPool (FILE * fileTrgt, classStructure * cs) {
                         u.f);
                 break;
             case CLong:
-                whole = (long)cs->constantPool[a].type.Long.highBytes << 32;
+                whole = (long long)cs->constantPool[a].type.Long.highBytes << 32;
                 whole = whole | cs->constantPool[a].type.Long.lowBytes;
                 fprintf(fileTrgt, "Type: Long\n"
                                   "High Bytes: 0x%x\n"
@@ -540,7 +521,7 @@ void saveConstantPool (FILE * fileTrgt, classStructure * cs) {
                         whole);
                 break;
             case CDouble:
-                whole = (long)cs->constantPool[a].type.Double.highBytes << 32;
+                whole = (long long)cs->constantPool[a].type.Double.highBytes << 32;
                 du.l = whole | cs->constantPool[a].type.Double.lowBytes;
                 fprintf(fileTrgt, "Type: Double\n"
                                   "High Bytes: 0x%x\n"
@@ -619,7 +600,10 @@ void saveInterfaces (FILE * fileTrgt, classStructure * cs) {
     fprintf(fileTrgt, "Interfaces: %d\n\n", cs->interfaceCount);
     
     for (a = 0; a < cs->interfaceCount; a++) {
-        fprintf(fileTrgt, "Interface %d) %d\n", a + 1, cs->interfaces[a]);
+        fprintf(fileTrgt, "Interface %d) cpInfo #%d: <%s>\n\n",
+                a + 1,
+                cs->interfaces[a],
+                cs->constantPool[cs->constantPool[cs->interfaces[a] - 1].type.Class.nameIndex - 1].type.Utf8.bytes);
     }
 }
 
@@ -629,7 +613,7 @@ void saveInterfaces (FILE * fileTrgt, classStructure * cs) {
  */
 void saveFields (FILE * fileTrgt, classStructure * cs) {
     int a, b;
-    char accessType[30];
+    char accessType[70];
     
     fprintf(fileTrgt, "------------------------------------------------------\n\n");
     fprintf(fileTrgt, "Fields: %d\n\n", cs->fieldCount);
@@ -660,7 +644,7 @@ void saveFields (FILE * fileTrgt, classStructure * cs) {
  */
 void saveMethods (FILE * fileTrgt, classStructure * cs) {
     int a, b;
-    char accessType[30];
+    char accessType[70];
     
     fprintf(fileTrgt, "------------------------------------------------------\n\n");
     fprintf(fileTrgt, "Methods: %d\n\n", cs->methodCount);
@@ -709,9 +693,8 @@ void saveAttributes (FILE * fileTrgt, classStructure * cs) {
  */
 void saveSingleAttribute (FILE * fileTrgt, classStructure * cs, attributeInfo * att, int a) {
     int b;
-    char attType[20] = "", accessType[30];
-    long whole;
-    double dWhole;
+    char attType[30] = "", accessType[70];
+    long long whole;
     
     fprintf(fileTrgt, "Attribute %d)\n", a);
     strcpy (attType, (char *) cs->constantPool[att->attributeNameIndex - 1].type.Utf8.bytes);
@@ -734,12 +717,12 @@ void saveSingleAttribute (FILE * fileTrgt, classStructure * cs, attributeInfo * 
                 fprintf(fileTrgt, ": <%f>\n", u.f);
                 break;
             case CLong:
-                whole = (long)cs->constantPool[att->type.ConstantValue.constantValueIndex - 1].type.Long.highBytes << 32;
+                whole = (long long)cs->constantPool[att->type.ConstantValue.constantValueIndex - 1].type.Long.highBytes << 32;
                 whole = whole | cs->constantPool[att->type.ConstantValue.constantValueIndex - 1].type.Long.lowBytes;
                 fprintf(fileTrgt, ": <%lu>\n", whole);
                 break;
             case CDouble:
-                whole = (long)cs->constantPool[att->type.ConstantValue.constantValueIndex - 1].type.Double.highBytes << 32;
+                whole = (long long)cs->constantPool[att->type.ConstantValue.constantValueIndex - 1].type.Double.highBytes << 32;
                 du.l = whole | cs->constantPool[att->type.ConstantValue.constantValueIndex - 1].type.Double.lowBytes;
                 fprintf(fileTrgt, ": <%f>\n", du.d);
                 break;
@@ -781,7 +764,7 @@ void saveSingleAttribute (FILE * fileTrgt, classStructure * cs, attributeInfo * 
         for (b = 0; b < att->type.Exceptions.numberOfExceptions; b++) {
             fprintf(fileTrgt, "Exception %d)\n"
                               "Class: cpInfo #%d\n"
-                              "Class Name: cpInfo #%d <%s>\n\n",
+                              "Class Name: cpInfo #%d: <%s>\n\n",
                     b + 1,
                     att->type.Exceptions.exceptionIndexTable[b],
                     cs->constantPool[att->type.Exceptions.exceptionIndexTable[b] - 1].type.Class.nameIndex,
@@ -791,16 +774,19 @@ void saveSingleAttribute (FILE * fileTrgt, classStructure * cs, attributeInfo * 
     else if (strcmp (attType, "InnerClasses") == 0) {
         fprintf(fileTrgt, "[Specific Info]\n");
         fprintf(fileTrgt, "Number of Classes: %d\n\n", att->type.InnerClasses.numberOfClasses);
+        
         for (b = 0; b < att->type.InnerClasses.numberOfClasses; b++) {
             getAccessPerm (att->type.InnerClasses.classes[b].innerClassAccessFlags, accessType);
             fprintf(fileTrgt, "Inner Class %d)\n"
-                              "Inner Class: cpInfo #%d\n"
-                              "Outer Class: cpInfo #%d\n"
-                              "Inner Name: cpInfo #%d <%s>\n"
+                              "Inner Class: cpInfo #%d: <%s>\n"
+                              "Outer Class: cpInfo #%d: <%s>\n"
+                              "Inner Name: cpInfo #%d: <%s>\n"
                               "Inner Class Access Flags: 0x%x [%s]\n",
                     b + 1,
                     att->type.InnerClasses.classes[b].innerClassInfoIndex,
+                    cs->constantPool[cs->constantPool[att->type.InnerClasses.classes[b].innerClassInfoIndex - 1].type.Class.nameIndex - 1].type.Utf8.bytes,
                     att->type.InnerClasses.classes[b].outerClassInfoIndex,
+                    cs->constantPool[cs->constantPool[att->type.InnerClasses.classes[b].outerClassInfoIndex - 1].type.Class.nameIndex - 1].type.Utf8.bytes,
                     att->type.InnerClasses.classes[b].innerNameIndex,
                     cs->constantPool[att->type.InnerClasses.classes[b].innerNameIndex - 1].type.Utf8.bytes,
                     att->type.InnerClasses.classes[b].innerClassAccessFlags,

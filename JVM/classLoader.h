@@ -1,6 +1,6 @@
 //
 //  classLoader.h
-//  
+//
 //
 //  Created by Paula Vasconcelos Gueiros on 11/25/14.
 //
@@ -28,6 +28,8 @@
 #define CMethodRef          10
 #define CInterfaceMethodRef 11
 #define CNameType           12
+
+#define isBitActivated(variable, index) ((variable) & (1<<(index - 1)))
 
 typedef uint8_t u1;
 typedef uint16_t u2;
