@@ -162,6 +162,12 @@ typedef struct {
     attributeInfo * attributes /*[attributeCount]*/;
 } classStructure;
 
+typedef struct opcode_info {
+	char descricao[50];
+	unsigned short operandos_count;
+	unsigned int *operandos_index;
+} opcode_informacao;
+
 u1 u1Read (FILE * file);
 u2 u2Read (FILE * file);
 u4 u4Read (FILE * file);
@@ -189,6 +195,9 @@ void saveFields (FILE * fileTrgt, classStructure * cs);
 void saveMethods (FILE * fileTrgt, classStructure * cs);
 void saveAttributes (FILE * fileTrgt, classStructure * cs);
 void saveSingleAttribute (FILE * fileTrgt, classStructure * cs, attributeInfo * att, int a);
+void carregar_opcode_informacao();
+void imprimir_mnemonics(u1 *bytecode, u2 size, FILE *file);
+opcode_informacao *op_info;
 
 #endif
 

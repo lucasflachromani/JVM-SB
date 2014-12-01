@@ -1,7 +1,7 @@
 
 #include "imprimir.h"
 
-void populate_opcode_info() {
+/*void populate_opcode_info() {
 	int i;
 
 	op_informacao = malloc(sizeof(op_informacao)*256);
@@ -200,9 +200,6 @@ void populate_opcode_info() {
 
 	}
 	
-	
-	
-
 	op_informacao[0x10].operandos_count = 1;
 	op_informacao[0x11].operandos_count = 2;
 	op_informacao[0x12].operandos_count = 1;
@@ -254,10 +251,9 @@ void populate_opcode_info() {
 	op_informacao[0xc6].operandos_count = 2;
 	op_informacao[0xc9].operandos_count = 4;
 	op_informacao[0xc5].operandos_count = 3;
-	op_informacao[0xc4].operandos_count = 7;  
+	op_informacao[0xc4].operandos_count = 7;
 	
-	
-}
+}*/
 
 
 
