@@ -1,9 +1,3 @@
-/*
- * carregador.c
- *
- *  Created on: 21/01/2011
- *      Author: lucas
- */
 
 #include <string.h>
 #include <stdio.h>

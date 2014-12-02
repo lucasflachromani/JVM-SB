@@ -1,9 +1,3 @@
-/*
- * methods.c
- *
- *  Created on: 23/01/2011
- *      Author: lucas
- */
 
 #include <stdio.h>
 

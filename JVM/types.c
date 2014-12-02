@@ -1,9 +1,3 @@
-/*
- * types.c
- *
- *  Created on: 24/01/2011
- *      Author: celio
- */
 
 #include "types.h"
 

@@ -1,9 +1,3 @@
-/*
- * types.h
- *
- *  Created on: 24/01/2011
- *      Author: celio
- */
 
 #ifndef TYPES_H_
 #define TYPES_H_

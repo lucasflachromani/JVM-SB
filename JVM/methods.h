@@ -1,9 +1,3 @@
-/*
- * methods.h
- *
- *  Created on: 23/01/2011
- *      Author: lucas
- */
 
 #ifndef METHODS_H_
 #define METHODS_H_

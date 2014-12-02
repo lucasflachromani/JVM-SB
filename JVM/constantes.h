@@ -1,9 +1,3 @@
-/*
- * constants.h
- *
- *  Created on: 24/01/2011
- *      Author: celio
- */
 
 #ifndef CONSTANTES_H_
 #define CONSTANTES_H_

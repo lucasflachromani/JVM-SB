@@ -1,9 +1,3 @@
-/*
- * main.c
- *
- *  Created on: 23/01/2011
- *      Author: lucas
- */
 
 #include <stdio.h>
 #include <string.h>
@@ -23,7 +17,7 @@ static const char* ARQUIVO_SAIDA = "saida.txt";
 // vetor com o tamanho dos arrays
 struct array *arrayLength;
 
-// número de arrays alocados
+// nï¿½mero de arrays alocados
 u4 numArrays;
 
 // flags

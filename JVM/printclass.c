@@ -1,6 +1,5 @@
 /*!
  \file classloader.c
- \author Celio, Daniel, Lucas, Yuri
  \brief Class Loader da JVM. Carrega os objetos do arquivo .class em memoria.
  Os campos sao mostrados em tela. O nome do arquivo pode ser passado por parametro
  da segiunte forma:
