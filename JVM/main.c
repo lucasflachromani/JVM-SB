@@ -66,16 +66,6 @@ int main(int argc, char **argv) {
 			getchar();
 		}
 
-		if(imprimirArquivo) {
-			arquivo = fopen(ARQUIVO_SAIDA, "w");
-			imprimirClassloader(classeMain, arquivo);
-			fclose(arquivo);
-		}
-
-		if(imprimirTela) {
-			imprimirClassloader(classeMain, stdout);
-		}
-
 		carregarClass(classeMain);
 
 		if((metodoMain = getMainMethod()) == NULL) {
