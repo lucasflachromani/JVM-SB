@@ -8,8 +8,6 @@
 #include "mnemonics.h"
 #include "instructions.h"
 
-#define WHERE "Loader"
-
 char *caminho = ".\\";
 
 struct ClassFile **classArray = NULL;

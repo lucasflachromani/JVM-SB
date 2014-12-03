@@ -13,8 +13,6 @@
 #include "methods.h"
 #include "heap.h"
 
-#define WHERE "INTRUCTIONS"
-
 extern struct frame *current_frame;
 extern struct array *arrayLength;
 extern u4 numArrays;

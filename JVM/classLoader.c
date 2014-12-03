@@ -18,8 +18,6 @@
 #include "classloader.h"
 #include "mnemonics.h"
 
-#define WHERE "Classloader"
-
 extern int errno;
 
 FILE* classfile;

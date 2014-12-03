@@ -8,11 +8,7 @@
 #include "instructions.h"
 #include "frame.h"
 
-#define WHERE "Methods"
-
-
 extern struct frame *current_frame;
-
 
 method_info * getMainMethod(){
 
