@@ -1,15 +1,10 @@
 #include "frame.h"
 #include <stdlib.h>
-/**
-	Frame atual e' o topo da pilha
- */
+
+//	Frame atual e' o topo da pilha
 static struct frame_stack *stack = NULL;
 
-
-
-
-void newFrame(struct ClassFile *class, void **constant_pool, Code_attribute *code_attribute)
-{
+void newFrame(struct ClassFile *class, void **constant_pool, Code_attribute *code_attribute) {
 	struct frame_stack *new;
 	new = calloc(sizeof(struct frame_stack), 1);
 	new->value = calloc(sizeof(struct frame), 1);
@@ -24,26 +19,23 @@ void newFrame(struct ClassFile *class, void **constant_pool, Code_attribute *cod
 	stack->value->code = code_attribute->code;
 	stack->value->fields = calloc(sizeof(u4), stack->value->max_locals);
 	stack->value->pc = 0;
-
-
 	current_frame = stack->value;
 	newStackFrame();
 }
 
-void freeFrame()
-{
+void freeFrame() {
 	struct frame_stack *next;
 
-	if (stack->next != NULL)
+	if (stack->next != NULL) {
 		current_frame = stack->next->value;
-	else
+	} else {
 		current_frame = NULL;
+	}
 
 	next = stack->next;
 	free(stack->value->fields);
 	free(stack->value);
 	free(stack);
 	stack = next;
-
 	freeStackFrame();
 }

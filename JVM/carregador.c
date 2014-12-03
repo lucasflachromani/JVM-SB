@@ -22,7 +22,6 @@ void replace(char * o_string, char * s_string, char * r_string);
  * \return Class Index
  */
 int32_t carregarClass(char *class_name) {
-
 	int32_t i, classIndex;
 	char *path;
 	method_info *staticMethod;
@@ -46,14 +45,11 @@ int32_t carregarClass(char *class_name) {
 	/* cria o path completo para o arquivo da classe base_path + class_name + .class */
 	path = malloc(strlen(caminho) + strlen(class_name) + 7);
 
-	if (strstr(class_name,".class") != NULL)
+	if (strstr(class_name,".class") != NULL) {
 		sprintf(path, "%s%s", caminho, class_name);
-	else
+	} else {
 		sprintf(path, "%s%s.class", caminho, class_name);
-
-	printf("\nPATH = %s\n", path);//REMOVER
-	//getchar();
-	//getchar();
+	}
 
 	/* lê a nova classe */
 	if ((classArray[classIndex-1] = read_class_file(path)) == NULL) {
@@ -80,8 +76,6 @@ int32_t carregarClass(char *class_name) {
 	if(parent != NULL) {
 		replace(parent, "/", "\\");
 	}
-	//DEBUG
-	//printf("\nParent = %s\n", parent);
 
 	/* carrega a superclasse da classe carregada */
 	carregarClass(parent);
@@ -112,7 +106,9 @@ char *getParentName(struct ClassFile *class) {
 
 	super_class = class->super_class;
 
-	if (super_class == 0) return NULL;
+	if (super_class == 0) {
+		return NULL;
+	}
 
 	name_index = ((struct CONSTANT_Class_info*)(class->constant_pool[super_class-1]))->name_index;
 
@@ -133,8 +129,9 @@ char *getParentName(struct ClassFile *class) {
  */
 struct ClassFile * getClassByName(char *class_name) {
 	int i;
-	if (!class_name)
+	if (!class_name) {
 		return NULL;
+	}
 
 	for (i = 0; i < numClasses; i++) {
 		if (strcmp(class_name, getClassName(classArray[i])) == 0)
@@ -160,7 +157,6 @@ int getNumClasses() {
 }
 
 int32_t getFieldIndexByNameAndDesc(char *class_name, char *name, u2 name_len, char *desc, u2 desc_len) {
-
 	int32_t i;
 	struct ClassFile *main_class;
 	u1 *m_name, *m_desc;
@@ -174,7 +170,6 @@ int32_t getFieldIndexByNameAndDesc(char *class_name, char *name, u2 name_len, ch
 
 	/* Procura pelo Field de acordo com o nome e o desc */
 	for (i = 0; main_class && i < main_class->fields_count; i++) {
-
 		m_name = ((struct CONSTANT_Utf8_info *)(main_class->constant_pool[(main_class->fields[i].name_index-1)]))->bytes;
 		m_name_len = ((struct CONSTANT_Utf8_info *)(main_class->constant_pool[(main_class->fields[i].name_index-1)]))->length;
 
@@ -187,8 +182,9 @@ int32_t getFieldIndexByNameAndDesc(char *class_name, char *name, u2 name_len, ch
 			continue;
 
 		if ((strncmp((char *)name, (char *)m_name , m_name_len) == 0)
-				&& (strncmp((char *)desc, (char *)m_desc , m_desc_len) == 0))
+				&& (strncmp((char *)desc, (char *)m_desc , m_desc_len) == 0)) {
 			return i;
+		}
 	}
 
 	return -1;

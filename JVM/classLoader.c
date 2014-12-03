@@ -22,18 +22,17 @@ extern int errno;
 
 FILE* classfile;
 
-struct ClassFile *read_class_file(char *nome_arq)
-{
-	if (open_file(nome_arq) < 0)
+struct ClassFile *read_class_file(char *nome_arq) {
+	if (open_file(nome_arq) < 0) {
 		return NULL;
+	}
 
 	/*!
 	 * Inicio da leitura
 	 */
 	class = calloc(sizeof(struct ClassFile), 1);
 
-	if (class == NULL)
-	{
+	if (class == NULL) {
 		perror("Allocate class");
 		return NULL;
 	}
@@ -62,8 +61,9 @@ struct ClassFile *read_class_file(char *nome_arq)
 
 	close_file();
 
-	if (errno != 0)
+	if (errno != 0) {
 		return NULL;
+	}
 
 	return class;
 }
@@ -74,20 +74,16 @@ struct ClassFile *read_class_file(char *nome_arq)
  \return 0 Nao houve erro na funcao
  \return -1 Ocorreu erro
  */
-int open_file(char *file_name)
-{
+int open_file(char *file_name) {
 	classfile = fopen(file_name, "rb");
-
-	if ((classfile) == NULL)
-	{
+	if ((classfile) == NULL) {
 		perror("openfile");
 		return -1;
 	}
 	return 0;
 }
 
-void close_file()
-{
+void close_file() {
 	fclose(classfile);
 }
 
@@ -95,11 +91,9 @@ void close_file()
  \brief Le 1 byte do arquivo
  \return Byte lido
  */
-u1 read_u1()
-{
+u1 read_u1() {
 	u1 buffer;
-	if (fread(&buffer, sizeof (u1), 1, classfile) < 0)
-	{
+	if (fread(&buffer, sizeof (u1), 1, classfile) < 0) {
 		perror("readU1");
 		return -1;
 	}
@@ -110,12 +104,10 @@ u1 read_u1()
  \brief Le 2 bytes do arquivo trocando ordem dos bytes
  \return Bytes lidos
  */
-u2 read_u2()
-{
+u2 read_u2() {
 	u2 buffer;
 	u2 aux;
-	if (fread(&buffer, sizeof (u1), 2, classfile) < (size_t)0)
-	{
+	if (fread(&buffer, sizeof (u1), 2, classfile) < (size_t)0) {
 		perror("readU2");
 		return -1;
 	}
@@ -129,13 +121,11 @@ u2 read_u2()
  \brief Le 4 bytes do arquivo trocando ordem dos bytes
  \return Bytes lidos
  */
-u4 read_u4()
-{
+u4 read_u4() {
 	u4 buffer;
 	u4 aux = 0;
 
-	if (fread(&buffer, sizeof (u4), 1, classfile) < 0)
-	{
+	if (fread(&buffer, sizeof (u4), 1, classfile) < 0) {
 		perror("readU4");
 		return -1;
 	}
@@ -151,16 +141,13 @@ u4 read_u4()
 /*
  \brief Le a constant pool
  */
-void read_constant_pool()
-{
+void read_constant_pool() {
 	int i, j;
 	u1 cp_tag;
 
-	for (i = 0; i < class->constant_pool_count - 1; i++)
-	{
+	for (i = 0; i < class->constant_pool_count - 1; i++) {
 		cp_tag = read_u1();
-		switch(cp_tag)
-		{
+		switch(cp_tag) {
 		case CONSTANT_Class:
 			class->constant_pool[i] = (struct CONSTANT_Class_info*) calloc(sizeof (struct CONSTANT_Class_info), 1);
 			((struct CONSTANT_Class_info*) class->constant_pool[i])->tag = cp_tag;
@@ -238,18 +225,15 @@ void read_constant_pool()
  \return 0 Nao houve erro na funcao
  \return -1 Ocorreu erro
  */
-int read_interfaces()
-{
+int read_interfaces() {
 	int i;
 
-	if ((class->interfaces = (u2*)calloc(sizeof (u2), class->interfaces_count)) == NULL)
-	{
+	if ((class->interfaces = (u2*)calloc(sizeof (u2), class->interfaces_count)) == NULL) {
 		perror("Interface");
 		return -1;
 	}
 
-	for (i = 0; i < class->interfaces_count; i++)
-	{
+	for (i = 0; i < class->interfaces_count; i++) {
 		class->interfaces[i] = read_u2();
 	}
 	return 0;
@@ -261,25 +245,21 @@ int read_interfaces()
  \return 0 Nao houve erro na funcao
  \return -1 Ocorreu erro
  */
-int read_fields()
-{
+int read_fields() {
 	int i, j;
 
-	if ((class->fields = calloc(sizeof (field_info), class->fields_count)) == NULL)
-	{
+	if ((class->fields = calloc(sizeof (field_info), class->fields_count)) == NULL) {
 		perror("Fields");
 		return -1;
 	}
 
-	for (i = 0; i < class->fields_count; i++)
-	{
+	for (i = 0; i < class->fields_count; i++) {
 		class->fields[i].access_flags = read_u2();
 		class->fields[i].name_index = read_u2();
 		class->fields[i].descriptor_index = read_u2();
 		class->fields[i].attributes_count = read_u2();
 
-		if ((class->fields[i].attributes = calloc(sizeof (void *), class->fields[i].attributes_count)) == NULL)
-		{
+		if ((class->fields[i].attributes = calloc(sizeof (void *), class->fields[i].attributes_count)) == NULL) {
 			perror("Attributes");
 			return -1;
 		}
@@ -316,8 +296,7 @@ char * getName(struct ClassFile *class_file, u2 name_index) {
  \brief Le um atribute_info e retorna o ponteiro para tal
  \return Ponteiro para um atributo
  */
-void * read_attribute_info()
-{
+void * read_attribute_info() {
 	int i;
 	char *nome;
 
@@ -472,27 +451,23 @@ int read_methods() {
 
 	int i, j;
 
-	if ((class->methods = (method_info*) calloc(sizeof (method_info), class->methods_count)) == NULL)
-	{
+	if ((class->methods = (method_info*) calloc(sizeof (method_info), class->methods_count)) == NULL) {
 		perror("Methods");
 		return -1;
 	}
 
-	for (i = 0; i < class->methods_count; i++)
-	{
+	for (i = 0; i < class->methods_count; i++) {
 		class->methods[i].access_flags = read_u2();
 		class->methods[i].name_index = read_u2();
 		class->methods[i].descriptor_index = read_u2();
 		class->methods[i].attributes_count = read_u2();
 
-		if ((class->methods[i].attributes = calloc(sizeof (void *), class->methods[i].attributes_count)) == NULL)
-		{
+		if ((class->methods[i].attributes = calloc(sizeof (void *), class->methods[i].attributes_count)) == NULL) {
 			perror("Methods");
 			return -1;
 		}
 
-		for (j = 0; j < class->methods[i].attributes_count; j++)
-		{
+		for (j = 0; j < class->methods[i].attributes_count; j++) {
 			class->methods[i].attributes[j] = read_attribute_info();
 		}
 	}
@@ -506,17 +481,15 @@ int read_methods() {
  \return -1 Ocorreu erro
  */
 
-int read_attributes()
-{
+int read_attributes() {
 	int i;
 
-	if ((class->attributes = calloc(sizeof (void *), class->attributes_count)) == NULL)
-	{
+	if ((class->attributes = calloc(sizeof (void *), class->attributes_count)) == NULL) {
 		perror("Attributes");
 		return -1;
 	}
 
-	for (i = 0; i < class->attributes_count; i++){
+	for (i = 0; i < class->attributes_count; i++) {
 		class->attributes[i] = read_attribute_info();
 	}
 
