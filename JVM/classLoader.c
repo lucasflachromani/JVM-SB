@@ -17,7 +17,6 @@
 #include "carregador.h"
 #include "classloader.h"
 #include "mnemonics.h"
-#include "jvmerr.h"
 
 #define WHERE "Classloader"
 
@@ -460,7 +459,7 @@ void * read_attribute_info()
   }
 
   else {
-	  errorMsg(WHERE, "Attributo nao reconhecido.");
+	  printf(" Erro: Attributo nao reconhecido.");
   }
 
   return attribute;

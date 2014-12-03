@@ -12,8 +12,6 @@
 #include "types.h"
 #include "methods.h"
 #include "heap.h"
-#include "jvmerr.h"
-
 
 #define WHERE "INTRUCTIONS"
 
@@ -388,7 +386,7 @@ void funct_dconst_0()
 		x <<= 32;
 		x |= y;
 		memcpy(&d, &x, 2*sizeof(u4));
-	*/
+	 */
 }
 
 void funct_dconst_1()
@@ -445,16 +443,16 @@ void funct_ldc()
 
 	switch(tag)
 	{
-		case (CONSTANT_Integer):
-			push ( ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->bytes);
-			break;
-		case (CONSTANT_Float):
-			push ( ((struct CONSTANT_Float_info *) current_frame->constant_pool[indice-1])->bytes);
-			break;
-		case (CONSTANT_String):
-			string_index = ((struct CONSTANT_String_info *) current_frame->constant_pool[indice-1])->string_index;
-			push ( (u4)getName(current_frame->class, string_index) );
-			break;
+	case (CONSTANT_Integer):
+					push ( ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->bytes);
+	break;
+	case (CONSTANT_Float):
+					push ( ((struct CONSTANT_Float_info *) current_frame->constant_pool[indice-1])->bytes);
+	break;
+	case (CONSTANT_String):
+					string_index = ((struct CONSTANT_String_info *) current_frame->constant_pool[indice-1])->string_index;
+	push ( (u4)getName(current_frame->class, string_index) );
+	break;
 	}
 
 	current_frame->pc++;
@@ -479,16 +477,16 @@ void funct_ldc_w()
 
 	switch(tag)
 	{
-		case (CONSTANT_Integer):
-			push ( ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->bytes);
-			break;
-		case (CONSTANT_Float):
-			push ( ((struct CONSTANT_Float_info *) current_frame->constant_pool[indice-1])->bytes);
-			break;
-		case (CONSTANT_String):
-			string_index = ((struct CONSTANT_String_info *) current_frame->constant_pool[indice-1])->string_index;
-			push ( (u4)getName(current_frame->class, string_index) );
-			break;
+	case (CONSTANT_Integer):
+					push ( ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->bytes);
+	break;
+	case (CONSTANT_Float):
+					push ( ((struct CONSTANT_Float_info *) current_frame->constant_pool[indice-1])->bytes);
+	break;
+	case (CONSTANT_String):
+					string_index = ((struct CONSTANT_String_info *) current_frame->constant_pool[indice-1])->string_index;
+	push ( (u4)getName(current_frame->class, string_index) );
+	break;
 	}
 
 	current_frame->pc++;
@@ -512,14 +510,14 @@ void funct_ldc2_w()
 
 	switch(tag)
 	{
-		case (CONSTANT_Long):
-			push ( ((struct CONSTANT_Long_info *) current_frame->constant_pool[indice-1])->high_bytes);
-			push ( ((struct CONSTANT_Long_info *) current_frame->constant_pool[indice-1])->low_bytes);
-			break;
-		case (CONSTANT_Double):
-			push ( ((struct CONSTANT_Double_info *) current_frame->constant_pool[indice-1])->high_bytes);
-			push ( ((struct CONSTANT_Double_info *) current_frame->constant_pool[indice-1])->low_bytes);
-			break;
+	case (CONSTANT_Long):
+					push ( ((struct CONSTANT_Long_info *) current_frame->constant_pool[indice-1])->high_bytes);
+	push ( ((struct CONSTANT_Long_info *) current_frame->constant_pool[indice-1])->low_bytes);
+	break;
+	case (CONSTANT_Double):
+					push ( ((struct CONSTANT_Double_info *) current_frame->constant_pool[indice-1])->high_bytes);
+	push ( ((struct CONSTANT_Double_info *) current_frame->constant_pool[indice-1])->low_bytes);
+	break;
 	}
 
 	current_frame->pc++;
@@ -2298,9 +2296,9 @@ void funct_i2f()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("i2f converteu para %f\n", f);
-	#endif
+#ifdef DEBUG
+	printf("i2f converteu para %f\n", f);
+#endif
 }
 
 void funct_i2d()
@@ -2319,9 +2317,9 @@ void funct_i2d()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("i2d converteu para %f\n", d);
-	#endif
+#ifdef DEBUG
+	printf("i2d converteu para %f\n", d);
+#endif
 }
 
 void funct_l2i()
@@ -2335,9 +2333,9 @@ void funct_l2i()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("l2i econverteu para %d\n", low);
-	#endif
+#ifdef DEBUG
+	printf("l2i econverteu para %d\n", low);
+#endif
 }
 
 void funct_l2f()
@@ -2357,9 +2355,9 @@ void funct_l2f()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("l2f converteu para %f\n", f);
-	#endif
+#ifdef DEBUG
+	printf("l2f converteu para %f\n", f);
+#endif
 }
 
 void funct_l2d()
@@ -2383,9 +2381,9 @@ void funct_l2d()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("l2d converteu para %f\n", d);
-	#endif
+#ifdef DEBUG
+	printf("l2d converteu para %f\n", d);
+#endif
 }
 
 void funct_f2i()
@@ -2401,9 +2399,9 @@ void funct_f2i()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("f2i converteu para %d\n", aux);
-	#endif
+#ifdef DEBUG
+	printf("f2i converteu para %d\n", aux);
+#endif
 }
 
 void funct_f2l()
@@ -2420,9 +2418,9 @@ void funct_f2l()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("f2l converteu para %ld\n", aux_8);
-	#endif
+#ifdef DEBUG
+	printf("f2l converteu para %ld\n", aux_8);
+#endif
 }
 
 void funct_f2d()
@@ -2441,9 +2439,9 @@ void funct_f2d()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("f2d converteu para %f\n", d);
-	#endif
+#ifdef DEBUG
+	printf("f2d converteu para %f\n", d);
+#endif
 }
 
 void funct_d2i()
@@ -2463,9 +2461,9 @@ void funct_d2i()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("d2i converteu para %d\n", resp);
-	#endif
+#ifdef DEBUG
+	printf("d2i converteu para %d\n", resp);
+#endif
 }
 
 void funct_d2l()
@@ -2484,9 +2482,9 @@ void funct_d2l()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("d2l converteu para %ld\n", aux);
-	#endif
+#ifdef DEBUG
+	printf("d2l converteu para %ld\n", aux);
+#endif
 }
 
 void funct_d2f()
@@ -2508,9 +2506,9 @@ void funct_d2f()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("d2f converteu para %f\n", f);
-	#endif
+#ifdef DEBUG
+	printf("d2f converteu para %f\n", f);
+#endif
 }
 
 void funct_i2b()
@@ -2525,9 +2523,9 @@ void funct_i2b()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("i2b converteu para %c\n", aux);
-	#endif
+#ifdef DEBUG
+	printf("i2b converteu para %c\n", aux);
+#endif
 }
 
 void funct_i2c()
@@ -2542,9 +2540,9 @@ void funct_i2c()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("i2c converteu para %hu\n", aux);
-	#endif
+#ifdef DEBUG
+	printf("i2c converteu para %hu\n", aux);
+#endif
 }
 
 void funct_i2s()
@@ -2559,9 +2557,9 @@ void funct_i2s()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("i2c converteu para %hu\n", aux);
-	#endif
+#ifdef DEBUG
+	printf("i2c converteu para %hu\n", aux);
+#endif
 }
 
 void funct_lcmp()
@@ -2589,9 +2587,9 @@ void funct_lcmp()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("lcmp empilhou %d\n", resp);
-	#endif
+#ifdef DEBUG
+	printf("lcmp empilhou %d\n", resp);
+#endif
 }
 
 void funct_fcmpl()
@@ -2617,9 +2615,9 @@ void funct_fcmpl()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("fcmpl empilhou %d\n", resp);
-	#endif
+#ifdef DEBUG
+	printf("fcmpl empilhou %d\n", resp);
+#endif
 }
 
 void funct_fcmpg()
@@ -2645,9 +2643,9 @@ void funct_fcmpg()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("fcmpg empilhou %d\n", resp);
-	#endif
+#ifdef DEBUG
+	printf("fcmpg empilhou %d\n", resp);
+#endif
 }
 
 void funct_dcmpl()
@@ -2678,9 +2676,9 @@ void funct_dcmpl()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("dcmpl empilhou %d\n", resp);
-	#endif
+#ifdef DEBUG
+	printf("dcmpl empilhou %d\n", resp);
+#endif
 }
 
 void funct_dcmpg()
@@ -2711,9 +2709,9 @@ void funct_dcmpg()
 
 	current_frame->pc++;
 
-	#ifdef DEBUG
-		printf("dcmpg empilhou %d\n", resp);
-	#endif
+#ifdef DEBUG
+	printf("dcmpg empilhou %d\n", resp);
+#endif
 }
 
 void funct_ifeq()
@@ -2732,17 +2730,17 @@ void funct_ifeq()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("ifeq fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifeq fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("ifeq NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifeq NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -2762,17 +2760,17 @@ void funct_ifne()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("ifne fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifne fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("ifne NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifne NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -2792,17 +2790,17 @@ void funct_iflt()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("iflt fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("iflt fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("iflt NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("iflt NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -2822,17 +2820,17 @@ void funct_ifge()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("ifge fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifge fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("ifge NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifge NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -2852,17 +2850,17 @@ void funct_ifgt()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("ifgt fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifgt fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("ifgt NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifgt NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -2882,17 +2880,17 @@ void funct_ifle()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("ifle fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifle fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("ifle NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifle NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -2913,17 +2911,17 @@ void funct_if_icmpeq()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("if_icmpeq fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_icmpeq fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("if_icmpeq NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_icmpeq NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -2944,17 +2942,17 @@ void funct_if_icmpne()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("if_icmpne fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_icmpne fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("if_icmpne NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_icmpne NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -2975,17 +2973,17 @@ void funct_if_icmplt()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("if_icmplt fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_icmplt fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("if_icmplt NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_icmplt NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -3006,17 +3004,17 @@ void funct_if_icmpge()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("if_icmpge fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_icmpge fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("if_icmpge NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_icmpge NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -3033,25 +3031,25 @@ void funct_if_icmpgt()
 	aux1 = (signed) pop();
 
 #ifdef DEBUG
-			printf("if_icmpgt %d > %d?\n", aux1, aux2);
-		#endif
+	printf("if_icmpgt %d > %d?\n", aux1, aux2);
+#endif
 
 	if ( aux1 > aux2 )
 	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("if_icmpgt fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_icmpgt fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("if_icmpgt NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_icmpgt NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -3072,17 +3070,17 @@ void funct_if_icmple()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("if_icmple fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_icmple fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("if_icmple NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_icmple NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -3103,17 +3101,17 @@ void funct_if_acmpeq()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("if_acmpeq fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_acmpeq fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("if_acmpeq NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_acmpeq NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -3134,17 +3132,17 @@ void funct_if_acmpne()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("if_acmpne fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_acmpne fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("if_acmpne NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("if_acmpne NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -3159,9 +3157,9 @@ void funct_goto()
 	offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 	current_frame->pc += offset;
 
-	#ifdef DEBUG
-		printf("goto - novo PC = %d\n", current_frame->pc);
-	#endif
+#ifdef DEBUG
+	printf("goto - novo PC = %d\n", current_frame->pc);
+#endif
 }
 
 void funct_jsr()
@@ -3180,7 +3178,7 @@ void funct_jsr()
 #ifdef DEBUG
 	printf("jsr - novo PC = %d\n", current_frame->pc);
 #endif
-	}
+}
 
 void funct_ret()
 {
@@ -3254,7 +3252,7 @@ void funct_tableswitch()
 
 		tableswitch[i] = ((byte1 & 0xFF) << 24) | ((byte2 & 0xFF) << 16) | ((byte3 & 0xFF) << 8) | (byte4 & 0xFF);
 #ifdef DEBUG
-	printf("table %d: %d\n", i, tableswitch[i]);
+		printf("table %d: %d\n", i, tableswitch[i]);
 #endif
 	}
 
@@ -3323,7 +3321,7 @@ void funct_lookupswitch()
 
 		offset[i] = ((byte1 & 0xFF) << 24) | ((byte2 & 0xFF) << 16) | ((byte3 & 0xFF) << 8) | (byte4 & 0xFF);
 #ifdef DEBUG
-	printf("match-offset %d: %d-%d\n", i, match[i], offset[i]);
+		printf("match-offset %d: %d-%d\n", i, match[i], offset[i]);
 #endif
 	}
 
@@ -3453,9 +3451,9 @@ void funct_getstatic()
 
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
-		#ifdef DEBUG
-			printf("getstatic Classe nao reconhecida (%s)\n", class_name);
-		#endif
+#ifdef DEBUG
+		printf("getstatic Classe nao reconhecida (%s)\n", class_name);
+#endif
 
 		if (type[0] == 'J' || type[0] == 'D') {
 			pushU8( 0 );
@@ -3518,9 +3516,9 @@ void funct_putstatic()
 
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
-		#ifdef DEBUG
-			printf("putstatic Classe nao reconhecida (%s)\n", class_name);
-		#endif
+#ifdef DEBUG
+		printf("putstatic Classe nao reconhecida (%s)\n", class_name);
+#endif
 
 		if (type[0] == 'J' || type[0] == 'D') {
 			pop();
@@ -3594,9 +3592,9 @@ void funct_getfield()
 
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
-		#ifdef DEBUG
-			printf("getfield Classe nao reconhecida (%s)\n", class_name);
-		#endif
+#ifdef DEBUG
+		printf("getfield Classe nao reconhecida (%s)\n", class_name);
+#endif
 
 		if (type[0] == 'J' || type[0] == 'D') {
 			pushU8( 0 );
@@ -3665,9 +3663,9 @@ void funct_putfield()
 
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
-		#ifdef DEBUG
-			printf("putfield Classe nao reconhecida (%s)\n", class_name);
-		#endif
+#ifdef DEBUG
+		printf("putfield Classe nao reconhecida (%s)\n", class_name);
+#endif
 
 		if (type[0] == 'J' || type[0] == 'D') {
 			pop();
@@ -3747,7 +3745,7 @@ void funct_invokevirtual()
 	/* se for print ou println */
 	if ( (strcmp(class_name, "java/io/PrintStream") == 0)
 			&& ((strcmp(method_name,"print") == 0) || (strcmp(method_name,"println") == 0) )
-	   ){
+	){
 
 		/* LONG */
 		if (strstr(method_desc, "J") != NULL){
@@ -3756,14 +3754,14 @@ void funct_invokevirtual()
 			value = convert_2x32_to_64_bits(value_low, value_high);
 			printf("%"PRIi64, (int64_t)value);
 
-		/* DOUBLE */
+			/* DOUBLE */
 		} else if(strstr(method_desc, "D") != NULL) {
 			value_low = pop();
 			value_high = pop();
 			value = convert_2x32_to_64_bits(value_low, value_high);
 			printf("%.15f", value);
 
-		/* BOOLEAN */
+			/* BOOLEAN */
 		} else if(strstr(method_desc, "Z") != NULL) {
 
 			if (pop())
@@ -3771,7 +3769,7 @@ void funct_invokevirtual()
 			else
 				printf("false");
 
-		/* CHAR */
+			/* CHAR */
 		} else if(strstr(method_desc, "C") != NULL) {
 
 			/* ARRAY */
@@ -3788,27 +3786,27 @@ void funct_invokevirtual()
 					printf("%c", (int16_t)array_ref +i);
 				}
 
-			/* CHAR */
+				/* CHAR */
 			} else {
 				printf("%c", (int16_t)pop());
 			}
 
-		/* INTEIRO */
+			/* INTEIRO */
 		}else if(strstr(method_desc, "I") != NULL) {
 			printf("%"PRIi32, (int32_t)pop());
 
-		/* FLOAT */
+			/* FLOAT */
 		}else if(strstr(method_desc, "F") != NULL) {
 			vU4 = pop();
 			memcpy(&vfloat, &vU4, sizeof(u4));
 			printf("%f", vfloat);
 
-		/* STRING */
+			/* STRING */
 		}else if(strstr(method_desc, "Ljava/lang/String") != NULL) {
 			vU4 = pop();
 			printf("%s", (char *)vU4);
 
-		/* OBJECT */
+			/* OBJECT */
 		}else if(strstr(method_desc, "Ljava/lang/Object") != NULL) {
 			printf("%p", (void *)pop());
 			/* chamar método toString do object e depois toCharArray()*/
@@ -3831,13 +3829,9 @@ void funct_invokevirtual()
 		}
 
 		if (class == NULL) {
-			fatalErrorMsg(WHERE,"Metodo nao encontrando. Nem mesmo nas classes pai.");
+			printf(" Erro: Metodo nao encontrando.\n");
+			exit(1);
 		}
-
-
-	#ifdef DEBUG
-		printf("invokevirtual %s->%s\n", class_name, getName(class, method->name_index));
-	#endif
 
 		numParams = getNumParameters( class , method );
 
@@ -3846,18 +3840,8 @@ void funct_invokevirtual()
 			fields_tmp[i] = pop();
 		}
 
-	#ifdef DEBUG
-		if (strcmp("println", getName(class, method->name_index)) == 0) {
-			printf("invokestatic Chamou println!\n");
-		}
-	#endif
-
 		if (method->access_flags & ACC_NATIVE ||
 				strcmp("println", getName(class, method->name_index)) == 0) {
-
-			#ifdef DEBUG
-				printf("invokestatic Metodo nativo\n");
-			#endif
 
 			bytes = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->bytes;
 			length = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->length;
@@ -3924,12 +3908,8 @@ void funct_invokespecial()
 	}
 
 	if (class == NULL) {
-		fatalErrorMsg(WHERE,"Metodo nao encontrando. Nem mesmo nas classes pai.");
+		printf("Metodo nao encontrando.\n");
 	}
-
-#ifdef DEBUG
-	printf("invokespecial %s -> %s\n", class_name, getName(class, method->name_index));
-#endif
 
 	numParams = getNumParameters( class , method );
 
@@ -3939,9 +3919,6 @@ void funct_invokespecial()
 	}
 
 	if (method->access_flags & ACC_NATIVE) {
-		#ifdef DEBUG
-			printf("invokestatic Metodo nativo\n");
-		#endif
 
 		bytes = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->bytes;
 		length = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->length;
@@ -4015,9 +3992,9 @@ void funct_invokestatic(){
 	}
 
 	if (method->access_flags & ACC_NATIVE) {
-		#ifdef DEBUG
-			printf("invokestatic Metodo nativo\n");
-		#endif
+#ifdef DEBUG
+		printf("invokestatic Metodo nativo\n");
+#endif
 
 		bytes = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->bytes;
 		length = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->length;
@@ -4070,7 +4047,7 @@ void funct_invokeinterface()
 	class_index_tmp = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->class_index;
 
 	class_name = getName(current_frame->class,
-				((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
+			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
 
 	class_index = carregarClass( class_name );
 	class = getClassByIndex( class_index );
@@ -4085,7 +4062,7 @@ void funct_invokeinterface()
 	}
 
 	if (class == NULL) {
-		fatalErrorMsg(WHERE,"Metodo nao encontrando. Nem mesmo nas classes pai.");
+		printf("Metodo nao encontrando.\n");
 	}
 
 	/* Prepara e executa o metodo */
@@ -4140,7 +4117,9 @@ void funct_newarray(){
 	current_frame->pc++;
 	type = current_frame->code[current_frame->pc];
 
-	if (count < 0) errorMsg(WHERE, "NegativeArraySizeException");
+	if (count < 0) {
+		printf("Erro: Tamanho invalido do array\n");
+	}
 
 	push ((u4)newArray(count, type));
 
@@ -4165,7 +4144,9 @@ void funct_anewarray(){
 	current_frame->pc++;
 	/*index = index | current_frame->code[current_frame->pc];*/
 
-	if (count < 0) errorMsg(WHERE, "NegativeArraySizeException");
+	if (count < 0) {
+		printf("Erro: Tamanho invalido do array\n");
+	}
 
 	push ((u4)newArray(count, 0));
 
@@ -4213,15 +4194,14 @@ void funct_checkcast()
 
 	ref = (struct Object *)pop();
 
-	if (ref == NULL)
-	{
-		errorMsg(WHERE,"Referência nula em 'checkcast'");
+	if (ref == NULL) {
+		printf("Erro: Referencia nula\n");
 	}
 
 
 	if (strcmp(getName(current_frame->class, index), getClassName(ref->this)) == 0)
 	{
-		errorMsg(WHERE,"Objeto não é do tipo informado (deveria lançar exceção)");
+		printf(" Erro: Objeto do tipo errado\n");
 	}
 
 
@@ -4241,9 +4221,8 @@ void funct_instanceof(){
 
 	ref = (struct Object *)pop();
 
-	if (ref == NULL)
-	{
-		errorMsg(WHERE,"Referência nula em 'checkcast'");
+	if (ref == NULL) {
+		printf("Erro: Referencia nula\n");
 	}
 
 	if (strcmp( getName(current_frame->class, index), getClassName(ref->this)) == 0)
@@ -4297,7 +4276,7 @@ void funct_multianewarray()
 	while (array_type[i] == '[')
 		i++;
 #ifdef DEBUG
-		printf("multiarray: type %c\n", array_type[i]);
+	printf("multiarray: type %c\n", array_type[i]);
 #endif
 	switch (array_type[i])
 	{
@@ -4379,17 +4358,17 @@ void funct_ifnull()
 		offset = convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("ifnull fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifnull fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("ifnull NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifnull NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -4409,17 +4388,17 @@ void funct_ifnonnull()
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		current_frame->pc += offset;
 
-		#ifdef DEBUG
-			printf("ifnonnull fez o branch para o PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifnonnull fez o branch para o PC = %d\n", current_frame->pc);
+#endif
 	}
 	else
 	{
 		current_frame->pc += 3;
 
-		#ifdef DEBUG
-			printf("ifnonnull NAO fez o branch PC = %d\n", current_frame->pc);
-		#endif
+#ifdef DEBUG
+		printf("ifnonnull NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
@@ -4437,9 +4416,9 @@ void funct_goto_w()
 
 	current_frame->pc += offset;
 
-	#ifdef DEBUG
-		printf("goto_w - novo PC = %d\n", current_frame->pc);
-	#endif
+#ifdef DEBUG
+	printf("goto_w - novo PC = %d\n", current_frame->pc);
+#endif
 }
 
 void funct_jsr_w()
@@ -4458,8 +4437,8 @@ void funct_jsr_w()
 
 	current_frame->pc += offset;
 
-	#ifdef DEBUG
-		printf("jsr_w - novo PC = %d\n", current_frame->pc);
-	#endif
+#ifdef DEBUG
+	printf("jsr_w - novo PC = %d\n", current_frame->pc);
+#endif
 }
 

@@ -5,7 +5,6 @@
 
 #include "classloader.h"
 
-#include "jvmerr.h"
 #include "carregador.h"
 #include "methods.h"
 #include "instructions.h"
@@ -53,8 +52,9 @@ int main(int argc, char **argv) {
 	method_info *metodoMain;
 	FILE *arquivo;
 
-	if(argc <= 1) {
-			fatalErrorMsg(WHERE, "Argumentos errados.");
+	if(argc > 4) {
+		printf(" Erro: Argumentos demais.\n");
+		exit(1);
 	} else {
 		inicializar();
 		iniciarFlags(argc, argv);
@@ -79,8 +79,10 @@ int main(int argc, char **argv) {
 
 		carregarClass(classeMain);
 
-		if((metodoMain = getMainMethod()) == NULL)
-			fatalErrorMsg(WHERE, "Não foi possível localizar método main.");
+		if((metodoMain = getMainMethod()) == NULL) {
+			printf(" Erro: Não foi possível localizar método main.");
+			exit(1);
+		}
 
 		prepararMetodo(getClassByIndex(0), metodoMain);
 		runMethod();

@@ -7,8 +7,6 @@
 #include "mnemonics.h"
 #include "instructions.h"
 #include "frame.h"
-#include "jvmerr.h"
-
 
 #define WHERE "Methods"
 
@@ -145,8 +143,10 @@ void prepararMetodo(struct ClassFile *class, method_info *method){
 	}
 
 	if (method->attributes_count != 0){
-		if (((attribute_info *)method->attributes[i])->tag != ATTR_Code)
-			fatalErrorMsg(WHERE, "Nao encontrou atributo code no método.");
+		if (((attribute_info *)method->attributes[i])->tag != ATTR_Code) {
+			printf(" Erro: Nao encontrou atributo code no método.");
+			exit(1);
+		}
 		newFrame(class, class->constant_pool, ((Code_attribute *)method->attributes[i]));
 	}
 	else {

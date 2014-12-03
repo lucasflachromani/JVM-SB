@@ -6,7 +6,6 @@
 #include "heap.h"
 #include "carregador.h"
 #include "constantes.h"
-#include "jvmerr.h"
 
 static u4 heap_index;
 static u4 heap_max;
@@ -33,8 +32,10 @@ struct Object* newObject(struct ClassFile *this)
 	Talvez nao precise guardar a referencia*/
 	if (heap_index == heap_max)
 	{		heap = realloc(heap, heap_max + HEAP_INIT);
-		if (heap == NULL)
-			fatalErrorMsg("Heap", "OutOfMemory");
+		if (heap == NULL) {
+			printf(" Erro: Sem memoria\n");
+			exit(1);
+		}
 
 		heap_max += HEAP_INIT;
 	}

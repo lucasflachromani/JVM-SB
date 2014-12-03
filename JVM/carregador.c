@@ -7,7 +7,6 @@
 #include "methods.h"
 #include "mnemonics.h"
 #include "instructions.h"
-#include "jvmerr.h"
 
 #define WHERE "Loader"
 
@@ -57,8 +56,10 @@ int32_t carregarClass(char *class_name){
 	//getchar();
 
 	/* lê a nova classe */
-	if ((classArray[classIndex-1] = read_class_file(path)) == NULL)
-		fatalErrorMsg(WHERE, "Não foi possível abrir arquivo informado.");
+	if ((classArray[classIndex-1] = read_class_file(path)) == NULL) {
+		printf(" Erro: Não foi possível abrir arquivo informado.\n");
+		exit(1);
+	}
 
 	classStaticArray[classIndex-1].class_name = malloc(strlen(class_name)+1);
 	memcpy(classStaticArray[classIndex-1].class_name, class_name, strlen(class_name));
@@ -67,9 +68,6 @@ int32_t carregarClass(char *class_name){
 
 	/* Executa o método de Init Static caso tenha */
 	if ((staticMethod = getInitStaticMethod(classArray[classIndex-1])) != NULL) {
-#ifdef DEBUG
-		printf("\nClass: %s\n", class_name);
-#endif
 		prepararMetodo(classArray[classIndex-1], staticMethod);
 		runMethod();
 	}
