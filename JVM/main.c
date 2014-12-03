@@ -9,9 +9,7 @@
 #include "methods.h"
 #include "instructions.h"
 #include "mnemonics.h"
-#include "printclass.h"
 
-static const char* ARQUIVO_SAIDA = "saida.txt";
 // vetor com o tamanho dos arrays
 struct array *arrayLength;
 
