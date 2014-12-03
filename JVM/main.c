@@ -19,23 +19,26 @@ u4 numArrays;
 // flags
 int possuiNome = 0;
 int imprimirTela = 0;
-int imprimirArquivo = 0;
+int imprimeArq = 0;
 
 // Class Main
-char classeMain[200];
+char fileSrcName[200], fileTrgtName[100];
 
-void iniciarFlags(int argc, char **argv) {
-	int i;
-	for(i = 1; i < argc; i++) {
-		if(!strcmp(argv[i], "-v")) {
-			imprimirTela = 1;
-		} else if(!strcmp(argv[i], "-f")) {
-			imprimirArquivo = 1;
-		}
-		else if(!possuiNome) {
-			memcpy(classeMain, argv[i],(strlen(argv[i]) + 1));
-			possuiNome = 1;
-		}
+void iniciarFlags (int argc, char **argv) {
+
+	if (argc < 2) {
+		printf ("Insira o nome do .class: ");
+		scanf ("%s", fileSrcName);
+		getchar();
+	} else {
+		strcpy (fileSrcName, argv[1]);
+	}
+	
+	if (argc == 3) {
+		strcpy (fileTrgtName, argv[2]);
+		imprimeArq = 1;
+	} else if (argc > 3) {
+		printf ("O programa requer apenas dois argumentos alem do programa. Os demais serao desconsiderados.\n");
 	}
 }
 
@@ -58,13 +61,7 @@ int main(int argc, char **argv) {
 		iniciarInstrucoes();			// Popula array de instrucoes
 		populate_opcode_info();
 
-		if(!possuiNome) {
-			printf("\nDigite o nome do arquivo: ");
-			scanf("%s", classeMain);
-			getchar();
-		}
-
-		carregarClass(classeMain);
+		carregarClass(fileSrcName);
 
 		if((metodoMain = getMainMethod()) == NULL) {
 			printf(" Erro: Não foi possível localizar método main.");
