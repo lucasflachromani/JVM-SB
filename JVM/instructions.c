@@ -1880,445 +1880,237 @@ void funct_ifne() {
 	}
 }
 
-void funct_iflt()
-{
+void funct_iflt() {
 	int32_t aux;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	aux = (signed) pop();
-
-	if (aux < 0)
-	{
+	if (aux < 0) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-#ifdef DEBUG
-		printf("iflt fez o branch para o PC = %d\n", current_frame->pc);
-#endif
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
-#ifdef DEBUG
-		printf("iflt NAO fez o branch PC = %d\n", current_frame->pc);
-#endif
 	}
 }
 
-void funct_ifge()
-{
+void funct_ifge() {
 	int32_t aux;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	aux = (signed) pop();
-
-	if (aux >= 0)
-	{
+	if (aux >= 0) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-#ifdef DEBUG
-		printf("ifge fez o branch para o PC = %d\n", current_frame->pc);
-#endif
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
-#ifdef DEBUG
-		printf("ifge NAO fez o branch PC = %d\n", current_frame->pc);
-#endif
 	}
 }
 
-void funct_ifgt()
-{
+void funct_ifgt() {
 	int32_t aux;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	aux = (signed) pop();
-
-	if (aux > 0)
-	{
+	if (aux > 0) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-#ifdef DEBUG
-		printf("ifgt fez o branch para o PC = %d\n", current_frame->pc);
-#endif
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
-#ifdef DEBUG
-		printf("ifgt NAO fez o branch PC = %d\n", current_frame->pc);
-#endif
 	}
 }
 
-void funct_ifle()
-{
+void funct_ifle() {
 	int32_t aux;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	aux = (signed) pop();
-
-	if (aux <= 0)
-	{
+	if (aux <= 0) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-#ifdef DEBUG
-		printf("ifle fez o branch para o PC = %d\n", current_frame->pc);
-#endif
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
-#ifdef DEBUG
-		printf("ifle NAO fez o branch PC = %d\n", current_frame->pc);
-#endif
 	}
 }
 
-void funct_if_icmpeq()
-{
+void funct_if_icmpeq() {
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	aux1 = (signed) pop();
 	aux2 = (signed) pop();
-
-	if (aux1 == aux2)
-	{
+	if (aux1 == aux2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-#ifdef DEBUG
-		printf("if_icmpeq fez o branch para o PC = %d\n", current_frame->pc);
-#endif
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
-#ifdef DEBUG
-		printf("if_icmpeq NAO fez o branch PC = %d\n", current_frame->pc);
-#endif
 	}
 }
 
-void funct_if_icmpne()
-{
+void funct_if_icmpne() {
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	aux1 = (signed) pop();
 	aux2 = (signed) pop();
-
-	if (aux1 != aux2)
-	{
+	if (aux1 != aux2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-#ifdef DEBUG
-		printf("if_icmpne fez o branch para o PC = %d\n", current_frame->pc);
-#endif
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
-#ifdef DEBUG
-		printf("if_icmpne NAO fez o branch PC = %d\n", current_frame->pc);
-#endif
 	}
 }
 
-void funct_if_icmplt()
-{
+void funct_if_icmplt() {
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	aux2 = (signed) pop();
 	aux1 = (signed) pop();
-
-	if (aux1 < aux2)
-	{
+	if (aux1 < aux2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-#ifdef DEBUG
-		printf("if_icmplt fez o branch para o PC = %d\n", current_frame->pc);
-#endif
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
-#ifdef DEBUG
-		printf("if_icmplt NAO fez o branch PC = %d\n", current_frame->pc);
-#endif
 	}
 }
 
-void funct_if_icmpge()
-{
+void funct_if_icmpge() {
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	aux2 = (signed) pop();
 	aux1 = (signed) pop();
-
-	if (aux1 >= aux2)
-	{
+	if (aux1 >= aux2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-#ifdef DEBUG
 		printf("if_icmpge fez o branch para o PC = %d\n", current_frame->pc);
-#endif
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
-#ifdef DEBUG
-		printf("if_icmpge NAO fez o branch PC = %d\n", current_frame->pc);
-#endif
 	}
 }
 
-void funct_if_icmpgt()
-{
+void funct_if_icmpgt() {
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	aux2 = (signed) pop();
 	aux1 = (signed) pop();
-
-#ifdef DEBUG
-	printf("if_icmpgt %d > %d?\n", aux1, aux2);
-#endif
-
-	if (aux1 > aux2)
-	{
+	if (aux1 > aux2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-#ifdef DEBUG
-		printf("if_icmpgt fez o branch para o PC = %d\n", current_frame->pc);
-#endif
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
-#ifdef DEBUG
-		printf("if_icmpgt NAO fez o branch PC = %d\n", current_frame->pc);
-#endif
 	}
 }
 
-void funct_if_icmple()
-{
+void funct_if_icmple() {
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	aux2 = (signed) pop();
 	aux1 = (signed) pop();
-
-	if (aux1 <= aux2)
-	{
+	if (aux1 <= aux2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-#ifdef DEBUG
-		printf("if_icmple fez o branch para o PC = %d\n", current_frame->pc);
-#endif
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
-#ifdef DEBUG
-		printf("if_icmple NAO fez o branch PC = %d\n", current_frame->pc);
-#endif
 	}
 }
 
-void funct_if_acmpeq()
-{
+void funct_if_acmpeq() {
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	aux2 = (signed) pop();
 	aux1 = (signed) pop();
-
-	if (aux1 == aux2)
-	{
+	if (aux1 == aux2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-#ifdef DEBUG
-		printf("if_acmpeq fez o branch para o PC = %d\n", current_frame->pc);
-#endif
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
-#ifdef DEBUG
-		printf("if_acmpeq NAO fez o branch PC = %d\n", current_frame->pc);
-#endif
 	}
 }
 
-void funct_if_acmpne()
-{
+void funct_if_acmpne() {
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	aux2 = (signed) pop();
 	aux1 = (signed) pop();
-
-	if (aux1 != aux2)
-	{
+	if (aux1 != aux2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-#ifdef DEBUG
-		printf("if_acmpne fez o branch para o PC = %d\n", current_frame->pc);
-#endif
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
-#ifdef DEBUG
-		printf("if_acmpne NAO fez o branch PC = %d\n", current_frame->pc);
-#endif
 	}
 }
 
-void funct_goto()
-{
+void funct_goto() {
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 	frameAtual->pc += offset;
-
-#ifdef DEBUG
-	printf("goto - novo PC = %d\n", current_frame->pc);
-#endif
 }
 
-void funct_jsr()
-{
+void funct_jsr() {
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-
 	push((frameAtual->pc) + 3); /* pc da proxima instrucao */
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 	frameAtual->pc += offset;
-
-#ifdef DEBUG
-	printf("jsr - novo PC = %d\n", current_frame->pc);
-#endif
 }
 
-void funct_ret()
-{
+void funct_ret() {
 	u2 index;
-
 	frameAtual->pc++;
 	index = frameAtual->code[frameAtual->pc];
-
-	if (next_is_wide == 1){
+	if (next_is_wide == 1) {
 		index = index << 8;
 		frameAtual->pc++;
 		index = index | frameAtual->code[frameAtual->pc];
 		next_is_wide = 0;
 	}
-
 	frameAtual->pc = frameAtual->fields[index];
-
-#ifdef DEBUG
-	printf("ret - novo PC: %d\n", current_frame->pc);
-#endif
 }
 
-void funct_tableswitch()
-{
+void funct_tableswitch() {
 	int32_t default_, high, low, index;
 	int32_t *tableswitch;
 	u4 byte1, byte2, byte3, byte4, tableswitch_address, target, table_size, i, offset;
-
 	index = (int32_t)pop();
 	tableswitch_address = frameAtual->pc;
-
 	/* pula os padding bytes */
-	while ((frameAtual->pc + 1) % 4 != 0)
+	while ((frameAtual->pc + 1) % 4 != 0) {
 		frameAtual->pc++;
+	}
 	frameAtual->pc++;
 
 	byte1 = frameAtual->code[frameAtual->pc++];
@@ -2345,39 +2137,25 @@ void funct_tableswitch()
 	table_size = high - low + 1;
 	tableswitch = calloc(sizeof(u4), table_size);
 
-#ifdef DEBUG
-	printf("TABLESWITCH\n-----------\n");
-	printf("table size: %d\n", table_size);
-#endif
-	for (i = 0; i < table_size; i++)
-	{
+	for (i = 0; i < table_size; i++) {
 		byte1 = frameAtual->code[frameAtual->pc++];
 		byte2 = frameAtual->code[frameAtual->pc++];
 		byte3 = frameAtual->code[frameAtual->pc++];
 		byte4 = frameAtual->code[frameAtual->pc++];
-
 		tableswitch[i] = ((byte1 & 0xFF) << 24) | ((byte2 & 0xFF) << 16) | ((byte3 & 0xFF) << 8) | (byte4 & 0xFF);
-#ifdef DEBUG
-		printf("table %d: %d\n", i, tableswitch[i]);
-#endif
 	}
 
-	if (index < low || index > high)
+	if (index < low || index > high) {
 		target = tableswitch_address + default_;
-	else
-	{
+	} else {
 		offset = tableswitch[index - low];
 		target = tableswitch_address + offset;
 	}
 
 	frameAtual->pc = target;
-#ifdef DEBUG
-	printf("new PC: %d\n", current_frame->pc);
-#endif
 }
 
-void funct_lookupswitch()
-{
+void funct_lookupswitch() {
 	int32_t default_, npairs, key;
 	int32_t *match, *offset;
 	u4 byte1, byte2, byte3, byte4, target, lookupswitch_address, i;
@@ -2387,8 +2165,9 @@ void funct_lookupswitch()
 	lookupswitch_address = frameAtual->pc;
 
 	/* pula os padding bytes */
-	while ((frameAtual->pc + 1) % 4 != 0)
+	while ((frameAtual->pc + 1) % 4 != 0) {
 		frameAtual->pc++;
+	}
 	frameAtual->pc++;
 
 	byte1 = frameAtual->code[frameAtual->pc++];
@@ -2407,12 +2186,7 @@ void funct_lookupswitch()
 
 	match = calloc(sizeof(int32_t), npairs);
 	offset = calloc(sizeof(int32_t), npairs);
-#ifdef DEBUG
-	printf("TABLESWITCH\n-----------\n");
-	printf("npairs : %d\n", npairs);
-#endif
-	for (i = 0; i < npairs; i++)
-	{
+	for (i = 0; i < npairs; i++) {
 		byte1 = frameAtual->code[frameAtual->pc++];
 		byte2 = frameAtual->code[frameAtual->pc++];
 		byte3 = frameAtual->code[frameAtual->pc++];
@@ -2426,104 +2200,76 @@ void funct_lookupswitch()
 		byte4 = frameAtual->code[frameAtual->pc++];
 
 		offset[i] = ((byte1 & 0xFF) << 24) | ((byte2 & 0xFF) << 16) | ((byte3 & 0xFF) << 8) | (byte4 & 0xFF);
-#ifdef DEBUG
-		printf("match-offset %d: %d-%d\n", i, match[i], offset[i]);
-#endif
 	}
 
 	i = 0;
 	found = 0;
-	while ((i < npairs) && (!found))
-	{
-		if (match[i] == key)
+	while ((i < npairs) && (!found)) {
+		if (match[i] == key) {
 			found = 1;
+		}
 		i++;
 	}
 	i--;
 
-	if (found)
+	if (found) {
 		target = offset[i] + lookupswitch_address;
-	else
+	} else {
 		target = default_ + lookupswitch_address;
+	}
 
 	frameAtual->pc = target;
-#ifdef DEBUG
-	printf("new PC: %d\n", current_frame->pc);
-#endif
 }
 
-void funct_ireturn()
-{
+void funct_ireturn() {
 	u4 value;
-
 	value = pop();
-
 	returnType = RETURN_32bits;
 	returnValue = (u8)value;
-
 	frameAtual->pc++;
 }
 
-void funct_lreturn()
-{
+void funct_lreturn() {
 	u4 low, high;
-
 	low = pop();
 	high = pop();
-
 	returnType = RETURN_64bits;
 	returnValue = convert_2x32_to_64_bits(low, high);
-
 	frameAtual->pc++;
 }
 
-void funct_freturn()
-{
+void funct_freturn() {
 	u4 value;
-
 	value = pop();
-
 	returnType = RETURN_32bits;
 	returnValue = (u8)value;
-
 	frameAtual->pc++;
 }
 
-void funct_dreturn()
-{
+void funct_dreturn() {
 	u4 low, high;
-
 	low = pop();
 	high = pop();
-
 	returnType = RETURN_64bits;
 	returnValue = convert_2x32_to_64_bits(low, high);
-
 	frameAtual->pc++;
 }
 
-void funct_areturn()
-{
+void funct_areturn() {
 	u4 value;
-
 	value = pop();
-
 	returnType = RETURN_32bits;
 	returnValue = (u8)value;
-
 	frameAtual->pc++;
 }
 
-void funct_return()
-{
+void funct_return() {
 	returnType = RETURN_none;
 	returnValue = 0;
-
 	frameAtual->pc++;
 }
 
-void funct_getstatic()
-{
+void funct_getstatic() {
 	u1 index1, index2;
 	u2 index, name_type_index;
 	u4 class_index_tmp;
@@ -2557,10 +2303,6 @@ void funct_getstatic()
 
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
-#ifdef DEBUG
-		printf("getstatic Classe nao reconhecida (%s)\n", class_name);
-#endif
-
 		if (type[0] == 'J' || type[0] == 'D') {
 			pushU8(0);
 		} else {
@@ -2570,7 +2312,6 @@ void funct_getstatic()
 		frameAtual->pc++;
 		return;
 	}
-
 
 	class_index = carregarClass(class_name);
 
@@ -2586,8 +2327,7 @@ void funct_getstatic()
 	frameAtual->pc++;
 }
 
-void funct_putstatic()
-{
+void funct_putstatic() {
 	u1 index1, index2;
 	u2 index, name_type_index;
 	u4 class_index_tmp;
@@ -2595,7 +2335,6 @@ void funct_putstatic()
 	u4 value1, value2;
 	u8 value;
 	char *class_name, *name, *type;
-
 
 	index1 = (u1) frameAtual->code[++(frameAtual->pc)];
 	index2 = (u1) frameAtual->code[++(frameAtual->pc)];
@@ -2619,13 +2358,8 @@ void funct_putstatic()
 		class_name = getParentName(getClassByName(class_name));
 	}
 
-
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
-#ifdef DEBUG
-		printf("putstatic Classe nao reconhecida (%s)\n", class_name);
-#endif
-
 		if (type[0] == 'J' || type[0] == 'D') {
 			pop();
 			pop();
@@ -2637,26 +2371,21 @@ void funct_putstatic()
 		return;
 	}
 
-
 	/* Pega o valor a ser inserido no field static */
 	if (type[0] == 'J' || type[0] == 'D') {
 		value1 = pop();
 		value2 = pop();
-
 		value = convert_2x32_to_64_bits(value1 , value2);
 	} else {
 		value = (u8) pop();
 	}
 
 	class_index = carregarClass(class_name);
-
 	setStaticFieldValue(class_index , field_index , value);
-
 	frameAtual->pc++;
 }
 
-void funct_getfield()
-{
+void funct_getfield() {
 	u1 low, high;
 	u4 index;
 	int32_t class_index, field_index, name_index;
@@ -2672,7 +2401,6 @@ void funct_getfield()
 
 	index = convert_2x8_to_32_bits(low, high);
 
-
 	class_index = ((struct CONSTANT_Fieldref_info *)(frameAtual->constant_pool[index-1]))->class_index;
 
 	class_name = getName(frameAtual->class,
@@ -2686,10 +2414,8 @@ void funct_getfield()
 	type = getName(frameAtual->class,
 			((struct CONSTANT_NameAndType_info *)(frameAtual->constant_pool[name_type_index-1]))->descriptor_index);
 
-
 	/* Pega a referencia do objeto que tera o field alterado de valor */
 	objeto = (struct Object *) pop();
-
 
 	/* -1 informa que nao encontrou o field na casse corrente */
 	while ((field_index = getFieldIndexByNameAndDesc(class_name, name, strlen(name), type, strlen(type))) == -1) {
@@ -2698,10 +2424,6 @@ void funct_getfield()
 
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
-#ifdef DEBUG
-		printf("getfield Classe nao reconhecida (%s)\n", class_name);
-#endif
-
 		if (type[0] == 'J' || type[0] == 'D') {
 			pushU8(0);
 		} else {
@@ -2711,7 +2433,6 @@ void funct_getfield()
 		frameAtual->pc++;
 		return;
 	}
-
 
 	name_index = frameAtual->class->fields[field_index].name_index;
 
@@ -2728,8 +2449,7 @@ void funct_getfield()
 	frameAtual->pc++;
 }
 
-void funct_putfield()
-{
+void funct_putfield() {
 	u1 low, high;
 	u4 index;
 	int32_t class_index, field_index, name_index;
@@ -2746,12 +2466,10 @@ void funct_putfield()
 
 	index = convert_2x8_to_32_bits(low, high);
 
-
 	class_index = ((struct CONSTANT_Fieldref_info *)(frameAtual->constant_pool[index-1]))->class_index;
 
 	class_name = getName(frameAtual->class,
 			((struct CONSTANT_Class_info *)(frameAtual->constant_pool[class_index-1]))->name_index);
-
 
 	name_type_index = ((struct CONSTANT_Fieldref_info *)(frameAtual->constant_pool[index-1]))->name_and_type_index;
 
@@ -2760,19 +2478,13 @@ void funct_putfield()
 	type = getName(frameAtual->class,
 			((struct CONSTANT_NameAndType_info *)(frameAtual->constant_pool[name_type_index-1]))->descriptor_index);
 
-
 	/* -1 informa que nao encontrou o field na casse corrente */
 	while ((field_index = getFieldIndexByNameAndDesc(class_name, name, strlen(name), type, strlen(type))) == -1) {
 		class_name = getParentName(getClassByName(class_name));
 	}
 
-
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
-#ifdef DEBUG
-		printf("putfield Classe nao reconhecida (%s)\n", class_name);
-#endif
-
 		if (type[0] == 'J' || type[0] == 'D') {
 			pop();
 			pop();
@@ -2784,34 +2496,28 @@ void funct_putfield()
 		return;
 	}
 
-
 	name_index = frameAtual->class->fields[field_index].name_index;
 
 	/* Pega o valor a ser colocado no field */
 	if (type[0] == 'J' || type[0] == 'D') {
 		value1 = pop();
 		value2 = pop();
-
 		/* Pega a referencia do objeto que tera o field alterado de valor */
 		objeto = (struct Object *) pop();
-
 		value = convert_2x32_to_64_bits(value1, value2);
 		setObjectFieldWide(objeto, name_index, value);
 
 	} else {
 		value1 = pop();
-
 		/* Pega a referencia do objeto que tera o field alterado de valor */
 		objeto = (struct Object *) pop();
-
 		setObjectField(objeto, name_index, value1);
 	}
 
 	frameAtual->pc++;
 }
 
-void funct_invokevirtual()
-{
+void funct_invokevirtual() {
 	u4 index, value_high, value_low, vU4, array_ref;
 	u8 value;
 	u1 low, high;
@@ -2828,12 +2534,10 @@ void funct_invokevirtual()
 	struct ClassFile *class;
 	method_info *method;
 
-
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
 
 	index = convert_2x8_to_32_bits(low, high);
-
 
 	class_index_tmp = ((struct CONSTANT_Methodref_info *)(frameAtual->constant_pool[index-1]))->class_index;
 
@@ -2869,26 +2573,25 @@ void funct_invokevirtual()
 
 			/* BOOLEAN */
 		} else if(strstr(method_desc, "Z") != NULL) {
-
-			if (pop())
+			if (pop()) {
 				printf("true");
-			else
+			} else {
 				printf("false");
-
+			}
 			/* CHAR */
 		} else if(strstr(method_desc, "C") != NULL) {
 
 			/* ARRAY */
-			if(strstr(method_desc, "[C") != NULL){
+			if(strstr(method_desc, "[C") != NULL) {
 
 				array_ref = pop();
 
-				for (i = 0; i < numArrays; i++){
+				for (i = 0; i < numArrays; i++) {
 					if (arrayLength[i].ref == array_ref)
 						break;
 				}
 
-				for (j = 0; j < arrayLength[i].size; j++){
+				for (j = 0; j < arrayLength[i].size; j++) {
 					printf("%c", (int16_t)array_ref +i);
 				}
 
@@ -2922,10 +2625,8 @@ void funct_invokevirtual()
 			printf("\n");
 
 	} else {
-
 		class_index = carregarClass(class_name);
 		class = getClassByIndex(class_index);
-
 
 		while (class != NULL && (method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index)) == NULL) {
 			class_name = getParentName(class);
@@ -2973,8 +2674,7 @@ void funct_invokevirtual()
 	frameAtual->pc++;
 }
 
-void funct_invokespecial()
-{
+void funct_invokespecial() {
 	u4 index;
 	u1 low, high;
 	int32_t numParams, i;
@@ -2994,12 +2694,10 @@ void funct_invokespecial()
 
 	index = convert_2x8_to_32_bits(low, high);
 
-
 	class_index_tmp = ((struct CONSTANT_Methodref_info *)(frameAtual->constant_pool[index-1]))->class_index;
 
 	class_name = getName(frameAtual->class,
 			((struct CONSTANT_Class_info *)(frameAtual->constant_pool[class_index_tmp-1]))->name_index);
-
 
 	class_index = carregarClass(class_name);
 	class = getClassByIndex(class_index);
@@ -3069,27 +2767,19 @@ void funct_invokestatic() {
 
 	index = convert_2x8_to_32_bits(low, high);
 
-
 	class_index_tmp = ((struct CONSTANT_Methodref_info *)(frameAtual->constant_pool[index-1]))->class_index;
 
 	class_name = getName(frameAtual->class,
 			((struct CONSTANT_Class_info *)(frameAtual->constant_pool[class_index_tmp-1]))->name_index);
 
-
 	name_type_index = ((struct CONSTANT_Methodref_info *)(frameAtual->constant_pool[index-1]))->name_and_type_index;
-
 
 	class_index = carregarClass(class_name);
 	class = getClassByIndex(class_index);
 
-
 	method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index);
 
 	numParams = getNumParameters(class , method);
-
-#ifdef DEBUG
-	printf("invokestatic %s -> %s (%d)\n", class_name, getName(class, method->name_index), numParams);
-#endif
 
 	fields_tmp = calloc(sizeof(u4),numParams+1);
 	for (i = numParams-1; i >= 0; i--) { /* única diferença pra invokespecial */
@@ -3098,10 +2788,6 @@ void funct_invokestatic() {
 	}
 
 	if (method->access_flags & ACC_NATIVE) {
-#ifdef DEBUG
-		printf("invokestatic Metodo nativo\n");
-#endif
-
 		bytes = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->bytes;
 		length = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->length;
 
@@ -3122,11 +2808,9 @@ void funct_invokestatic() {
 	}
 
 	frameAtual->pc++;
-
 }
 
-void funct_invokeinterface()
-{
+void funct_invokeinterface() {
 	u4 index;
 	u1 low, high, args_count, zero;
 	int32_t class_index, class_index_tmp, i;
@@ -3162,7 +2846,6 @@ void funct_invokeinterface()
 
 	while (class != NULL && (method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index)) == NULL) {
 		class_name = getParentName(class);
-
 		class_index = carregarClass(class_name);
 		class = getClassByIndex(class_index);
 	}
@@ -3179,12 +2862,10 @@ void funct_invokeinterface()
 	}
 
 	runMethod();
-
 	frameAtual->pc++;
 }
 
-void funct_new()
-{
+void funct_new() {
 	u1 low, high;
 	u4 index;
 	char *class_name;
@@ -3204,18 +2885,11 @@ void funct_new()
 	class = getClassByIndex(class_index);
 
 	objeto = newObject(class);
-
-#ifdef DEBUG
-	printf("new %s (%p)\n", class_name, objeto);
-#endif
-
 	push((u4)objeto);
-
 	frameAtual->pc++;
 }
 
 void funct_newarray() {
-
 	u4 count;
 	u1 type;
 
@@ -3228,10 +2902,10 @@ void funct_newarray() {
 	}
 
 	push ((u4)newArray(count, type));
-
 	frameAtual->pc++;
 }
 
+//TODO:OLHAR DEPOIS
 void funct_anewarray() {
 
 	/* algumas coisas estão comentadas pq provavelmente
@@ -3255,23 +2929,16 @@ void funct_anewarray() {
 	}
 
 	push ((u4)newArray(count, 0));
-
 	frameAtual->pc++;
-
 }
 
-void funct_arraylength()
-{
+void funct_arraylength() {
 	int i;
-
 	u4 aref;
-
 	aref = pop();
 
-	for (i = 0; i < numArrays; i++)
-	{
-		if (arrayLength[i].ref == aref)
-		{
+	for (i = 0; i < numArrays; i++) {
+		if (arrayLength[i].ref == aref) {
 			push(arrayLength[i].ref);
 			frameAtual->pc++;
 			return;
@@ -3281,14 +2948,14 @@ void funct_arraylength()
 	}
 
 	push(0);
-
 	frameAtual->pc++;
 }
 
-void funct_athrow() { frameAtual->pc++;  } /* Näo precisa fazer nada além disso */
+void funct_athrow() {
+	frameAtual->pc++;
+}
 
-void funct_checkcast()
-{
+void funct_checkcast() {
 	struct Object *ref;
 	u2 index;
 
@@ -3304,12 +2971,9 @@ void funct_checkcast()
 		printf("Erro: Referencia nula\n");
 	}
 
-
-	if (strcmp(getName(frameAtual->class, index), getClassName(ref->this)) == 0)
-	{
+	if (strcmp(getName(frameAtual->class, index), getClassName(ref->this)) == 0) {
 		printf(" Erro: Objeto do tipo errado\n");
 	}
-
 
 	push((u4)ref);
 	frameAtual->pc++;
@@ -3331,8 +2995,7 @@ void funct_instanceof() {
 		printf("Erro: Referencia nula\n");
 	}
 
-	if (strcmp(getName(frameAtual->class, index), getClassName(ref->this)) == 0)
-	{
+	if (strcmp(getName(frameAtual->class, index), getClassName(ref->this)) == 0) {
 		push(1);
 		frameAtual->pc++;
 		return;
@@ -3342,19 +3005,22 @@ void funct_instanceof() {
 	frameAtual->pc++;
 }
 
-void funct_monitorenter() { pop(); frameAtual->pc++;  } /* só precisa disso */
-
-void funct_monitorexit() { pop(); frameAtual->pc++;  } /* só precisa disso */
-
-void funct_wide() {
-
-	next_is_wide = 1;
-
+void funct_monitorenter() {
+	pop();
 	frameAtual->pc++;
 }
 
-void funct_multianewarray()
-{
+void funct_monitorexit() {
+	pop();
+	frameAtual->pc++;
+}
+
+void funct_wide() {
+	next_is_wide = 1;
+	frameAtual->pc++;
+}
+
+void funct_multianewarray() {
 	u2 indexbyte1, indexbyte2, index, type, atype;
 	u1 dimensions;
 	u4 i, dimension, size;
@@ -3377,74 +3043,73 @@ void funct_multianewarray()
 	array_type = getName(frameAtual->class, ((struct CONSTANT_Class_info*)frameAtual->constant_pool[index -1])->name_index);
 
 	i = 0;
-	while (array_type[i] == '[')
+	while (array_type[i] == '[') {
 		i++;
+	}
 
 	switch (array_type[i]) {
-	case 'L':
-		type = TYPE_reference;
-		atype = TYPE_reference;
-		break;
-	case 'Z':
-		type = TYPE_boolean;
-		atype = TYPE_boolean_size;
-		break;
-	case 'C':
-		type = TYPE_char;
-		atype = TYPE_char_size;
-		break;
-	case 'F':
-		type = TYPE_float;
-		atype = TYPE_float_size;
-		break;
-	case 'D':
-		type = TYPE_double;
-		atype = TYPE_double_size;
-		break;
-	case 'B':
-		type = TYPE_byte;
-		atype = TYPE_byte_size;
-		break;
-	case 'S':
-		type = TYPE_short;
-		atype = TYPE_short_size;
-		break;
-	case 'I':
-		type = TYPE_int;
-		atype = TYPE_int_size;
-		break;
-	case 'J':
-		type = TYPE_long;
-		atype = TYPE_long_size;
-		break;
-	default:
-		type = TYPE_reference;
-		atype = TYPE_reference_size;
-	}
-	for (i = 0; i < dimensions; i++)
-	{
-		size = pop();
-		if (size == 0)
+		case 'L':
+			type = TYPE_reference;
+			atype = TYPE_reference;
 			break;
+		case 'Z':
+			type = TYPE_boolean;
+			atype = TYPE_boolean_size;
+			break;
+		case 'C':
+			type = TYPE_char;
+			atype = TYPE_char_size;
+			break;
+		case 'F':
+			type = TYPE_float;
+			atype = TYPE_float_size;
+			break;
+		case 'D':
+			type = TYPE_double;
+			atype = TYPE_double_size;
+			break;
+		case 'B':
+			type = TYPE_byte;
+			atype = TYPE_byte_size;
+			break;
+		case 'S':
+			type = TYPE_short;
+			atype = TYPE_short_size;
+			break;
+		case 'I':
+			type = TYPE_int;
+			atype = TYPE_int_size;
+			break;
+		case 'J':
+			type = TYPE_long;
+			atype = TYPE_long_size;
+			break;
+		default:
+			type = TYPE_reference;
+			atype = TYPE_reference_size;
+	}
+	for (i = 0; i < dimensions; i++) {
+		size = pop();
+		if (size == 0) {
+			break;
+		}
 
-		if (atype == 1)
+		if (atype == 1) {
 			((u1**)arrayref)[i] = (u1*)newArray(type, size);
-		else if(atype == 2)
+		} else if(atype == 2) {
 			((u2**)arrayref)[i] = (u2*)newArray(type, size);
-		else if(atype == 4)
+		} else if(atype == 4) {
 			((u4**)arrayref)[i] = (u4*)newArray(type, size);
-		else
+		} else {
 			((u8**)arrayref)[i] = (u8*)newArray(type, size);
-
+		}
 	}
 
 	push((u4)arrayref);
-
 	frameAtual->pc++;
 }
 
-void funct_ifnull()
-{
+void funct_ifnull() {
 	int32_t aux;
 	u4 offset;
 	u1 branchbyte1, branchbyte2;
@@ -3454,21 +3119,15 @@ void funct_ifnull()
 
 	aux = (signed) pop();
 
-	if (aux == CONSTANT_Null)
-	{
+	if (aux == CONSTANT_Null) {
 		offset = convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void funct_ifnonnull()
-{
+void funct_ifnonnull() {
 	int32_t aux;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
@@ -3478,16 +3137,11 @@ void funct_ifnonnull()
 
 	aux = (signed) pop();
 
-	if (aux != CONSTANT_Null)
-	{
+	if (aux != CONSTANT_Null) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
@@ -3500,7 +3154,6 @@ void funct_goto_w() {
 	branchbyte4 = frameAtual->code[(frameAtual->pc)+4];
 	offset = (int32_t)(((branchbyte1 & 0xFF)<<24) | ((branchbyte2 & 0xFF)<<16) | ((branchbyte3 & 0xFF)<<8) | (branchbyte1 & 0xFF));
 	frameAtual->pc += offset;
-
 }
 
 void funct_jsr_w() {
