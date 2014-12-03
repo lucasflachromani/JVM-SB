@@ -4,12 +4,7 @@
 #include "constantes.h"
 #include "types.h"
 
-
-/*
- * FUNCOES
- */
 struct ClassFile *class;
-
 
 int open_file(char* file_name);
 void close_file();
@@ -26,6 +21,5 @@ int read_methods();
 int read_attributes();
 struct ClassFile * read_class_file(char *nome_arq);
 void free_class_file(struct ClassFile* class_file);
-
 
 #endif

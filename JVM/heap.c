@@ -32,12 +32,12 @@ struct Object* newObject(struct ClassFile *this)
 	Talvez nao precise guardar a referencia*/
 	if (heap_index == heap_max)
 	{		heap = realloc(heap, heap_max + HEAP_INIT);
-		if (heap == NULL) {
-			printf(" Erro: Sem memoria\n");
-			exit(1);
-		}
+	if (heap == NULL) {
+		printf(" Erro: Sem memoria\n");
+		exit(1);
+	}
 
-		heap_max += HEAP_INIT;
+	heap_max += HEAP_INIT;
 	}
 
 	object = calloc(sizeof(struct Object),1);
@@ -145,24 +145,24 @@ void* newArray(u4 count, u1 type){
 
 	switch (type){
 
-		case TYPE_reference: size = 4; /*reference*/
-				break;
-		case TYPE_boolean: size = 1;/*boolean*/
-				break;
-		case TYPE_char: size = 2;/*char*/
-				break;
-		case TYPE_float: size= 4;/*float*/
-				break;
-		case TYPE_double: size = 8;/*double*/
-				break;
-		case TYPE_byte: size = 1;/*byte*/
-				break;
-		case TYPE_short: size = 2;/*short*/
-				break;
-		case TYPE_int: size = 4;/*int*/
-				 break;
-		case TYPE_long: size = 8;/*long*/
-				 break;
+	case TYPE_reference: size = 4; /*reference*/
+	break;
+	case TYPE_boolean: size = 1;/*boolean*/
+	break;
+	case TYPE_char: size = 2;/*char*/
+	break;
+	case TYPE_float: size= 4;/*float*/
+	break;
+	case TYPE_double: size = 8;/*double*/
+	break;
+	case TYPE_byte: size = 1;/*byte*/
+	break;
+	case TYPE_short: size = 2;/*short*/
+	break;
+	case TYPE_int: size = 4;/*int*/
+	break;
+	case TYPE_long: size = 8;/*long*/
+	break;
 
 	}
 

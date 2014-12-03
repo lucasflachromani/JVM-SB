@@ -442,13 +442,13 @@ void funct_ldc()
 	switch(tag)
 	{
 	case (CONSTANT_Integer):
-					push ( ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->bytes);
+							push ( ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->bytes);
 	break;
 	case (CONSTANT_Float):
-					push ( ((struct CONSTANT_Float_info *) current_frame->constant_pool[indice-1])->bytes);
+							push ( ((struct CONSTANT_Float_info *) current_frame->constant_pool[indice-1])->bytes);
 	break;
 	case (CONSTANT_String):
-					string_index = ((struct CONSTANT_String_info *) current_frame->constant_pool[indice-1])->string_index;
+							string_index = ((struct CONSTANT_String_info *) current_frame->constant_pool[indice-1])->string_index;
 	push ( (u4)getName(current_frame->class, string_index) );
 	break;
 	}
@@ -476,13 +476,13 @@ void funct_ldc_w()
 	switch(tag)
 	{
 	case (CONSTANT_Integer):
-					push ( ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->bytes);
+							push ( ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->bytes);
 	break;
 	case (CONSTANT_Float):
-					push ( ((struct CONSTANT_Float_info *) current_frame->constant_pool[indice-1])->bytes);
+							push ( ((struct CONSTANT_Float_info *) current_frame->constant_pool[indice-1])->bytes);
 	break;
 	case (CONSTANT_String):
-					string_index = ((struct CONSTANT_String_info *) current_frame->constant_pool[indice-1])->string_index;
+							string_index = ((struct CONSTANT_String_info *) current_frame->constant_pool[indice-1])->string_index;
 	push ( (u4)getName(current_frame->class, string_index) );
 	break;
 	}
@@ -509,11 +509,11 @@ void funct_ldc2_w()
 	switch(tag)
 	{
 	case (CONSTANT_Long):
-					push ( ((struct CONSTANT_Long_info *) current_frame->constant_pool[indice-1])->high_bytes);
+							push ( ((struct CONSTANT_Long_info *) current_frame->constant_pool[indice-1])->high_bytes);
 	push ( ((struct CONSTANT_Long_info *) current_frame->constant_pool[indice-1])->low_bytes);
 	break;
 	case (CONSTANT_Double):
-					push ( ((struct CONSTANT_Double_info *) current_frame->constant_pool[indice-1])->high_bytes);
+							push ( ((struct CONSTANT_Double_info *) current_frame->constant_pool[indice-1])->high_bytes);
 	push ( ((struct CONSTANT_Double_info *) current_frame->constant_pool[indice-1])->low_bytes);
 	break;
 	}

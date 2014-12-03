@@ -423,7 +423,7 @@ void populate_opcode_info() {
 	op_info[0xba].operands_count = 0;
 
 	for (i = 0xcb; i < 0xfe; i++) {
-	  op_info[i].operands_count = 0;
+		op_info[i].operands_count = 0;
 	}
 }
 

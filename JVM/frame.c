@@ -2,7 +2,7 @@
 #include <stdlib.h>
 /**
 	Frame atual e' o topo da pilha
-	*/
+ */
 static struct frame_stack *stack = NULL;
 
 

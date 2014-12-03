@@ -21,16 +21,18 @@ void replace(char * o_string, char * s_string, char * r_string);
  * Será carregada para o vetor classArray no novo índice (numClasses -1).
  * \return Class Index
  */
-int32_t carregarClass(char *class_name){
+int32_t carregarClass(char *class_name) {
 
 	int32_t i, classIndex;
 	char *path;
 	method_info *staticMethod;
 
-	if (class_name == NULL) return -1;
+	if (class_name == NULL) {
+		return -1;
+	}
 
 	/* procura em classArray se a classe já foi carregada */
-	for (i = 0; i < numClasses; i++){
+	for (i = 0; i < numClasses; i++) {
 		if (strcmp(class_name, getClassName(classArray[i])) == 0)
 			return i;
 	}
@@ -49,7 +51,7 @@ int32_t carregarClass(char *class_name){
 	else
 		sprintf(path, "%s%s.class", caminho, class_name);
 
-	printf("\nPATH = %s\n", path);
+	printf("\nPATH = %s\n", path);//REMOVER
 	//getchar();
 	//getchar();
 
@@ -83,7 +85,7 @@ int32_t carregarClass(char *class_name){
 
 	/* carrega a superclasse da classe carregada */
 	carregarClass(parent);
-//	loadClass(getParentName(classArray[classIndex-1]));
+	//	loadClass(getParentName(classArray[classIndex-1]));
 
 	//================================================================================
 
@@ -94,20 +96,16 @@ int32_t carregarClass(char *class_name){
 /*!
  * Retorna string com nome da classe a partir de ponteiro para ClassFile
  */
-char *getClassName(struct ClassFile *class){
+char *getClassName(struct ClassFile *class) {
 	u2 this_class = class->this_class;
-
 	u2 name_index = ((struct CONSTANT_Class_info*)class->constant_pool[this_class-1])->name_index;
-
 	return getName( class , name_index );
 }
-
 
 /*!
  * Retorna string com nome da super classe a partir de ponteiro para ClassFile
  */
-char *getParentName(struct ClassFile *class){
-
+char *getParentName(struct ClassFile *class) {
 	u2 super_class, name_index, length;
 	u1 *name;
 	char *class_name;
@@ -133,14 +131,12 @@ char *getParentName(struct ClassFile *class){
 /*!
  * Retorna ponteiro pra ClassFile a partir de string \a class_name.
  */
-struct ClassFile * getClassByName(char *class_name){
-
+struct ClassFile * getClassByName(char *class_name) {
 	int i;
-
 	if (!class_name)
 		return NULL;
 
-	for (i = 0; i < numClasses; i++){
+	for (i = 0; i < numClasses; i++) {
 		if (strcmp(class_name, getClassName(classArray[i])) == 0)
 			return classArray[i];
 	}
@@ -152,14 +148,14 @@ struct ClassFile * getClassByName(char *class_name){
  * Não consegui colocar essas definicoes no .h, nao sei o motivo.
  * Entao tive q fazer esses dois getters.
  */
-struct ClassFile * getClassByIndex(int index){
+struct ClassFile * getClassByIndex(int index) {
 	if (index >= numClasses) {
 		return NULL;
 	}
 	return classArray[index];
 }
 
-int getNumClasses(){
+int getNumClasses() {
 	return numClasses;
 }
 
@@ -177,7 +173,7 @@ int32_t getFieldIndexByNameAndDesc(char *class_name, char *name, u2 name_len, ch
 	}
 
 	/* Procura pelo Field de acordo com o nome e o desc */
-	for (i = 0; main_class && i < main_class->fields_count; i++){
+	for (i = 0; main_class && i < main_class->fields_count; i++) {
 
 		m_name = ((struct CONSTANT_Utf8_info *)(main_class->constant_pool[(main_class->fields[i].name_index-1)]))->bytes;
 		m_name_len = ((struct CONSTANT_Utf8_info *)(main_class->constant_pool[(main_class->fields[i].name_index-1)]))->length;

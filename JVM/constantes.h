@@ -2,7 +2,6 @@
 #ifndef CONSTANTES_H_
 #define CONSTANTES_H_
 
-
 /*
  * Access flags
  */
@@ -19,7 +18,6 @@
 #define ACC_ABSTRACT  0x0400
 #define ACC_STRICT    0x0800
 
-
 /*
  * Constant's flags
  */
@@ -34,7 +32,6 @@
 #define CONSTANT_Double             6
 #define CONSTANT_NameAndType        12
 #define CONSTANT_Utf8               1
-
 
 /*
  * Attributes flags
@@ -70,11 +67,11 @@
 #define	TYPE_short_size		2
 #define	TYPE_int_size 		4
 #define	TYPE_long_size		8
+
 /*
  * NULL
  */
 #define CONSTANT_Null 0
-
 
 /*
  * RETURN
@@ -82,6 +79,5 @@
 #define RETURN_none 	0
 #define RETURN_32bits 	1
 #define RETURN_64bits 	2
-
 
 #endif

@@ -4,11 +4,9 @@
 
 #include "classloader.h"
 
-
 /* Variaveis usadas para saber qual o retorno da funcao */
 u1 returnType;
 u8 returnValue;
-
 
 method_info * getMainMethod();
 method_info * getInitStaticMethod();
@@ -19,4 +17,4 @@ void runMethod();
 void prepararMetodo(struct ClassFile *class, method_info *method);
 void finishMethod();
 
-#endif /* METHODS_H_ */
+#endif

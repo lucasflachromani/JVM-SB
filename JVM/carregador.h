@@ -2,9 +2,7 @@
 #ifndef CARREGADOR_H_
 #define CARREGADOR_H_
 
-
 #include "classloader.h"
-
 
 int32_t carregarClass(char *);
 char *getClassName(struct ClassFile *class);
@@ -16,5 +14,4 @@ int32_t getFieldIndexByNameAndDesc(char *class_name, char *name, u2 name_len, ch
 u8 getStaticFieldValue(int32_t class_index, int32_t field_index);
 void setStaticFieldValue(int32_t class_index, int32_t field_index, u8 value);
 
-
-#endif /* CARREGADOR_H_ */
+#endif

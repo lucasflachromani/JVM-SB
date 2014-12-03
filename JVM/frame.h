@@ -5,8 +5,7 @@
 #include "types.h"
 #include "carregador.h"
 
-struct frame 
-{
+struct frame {
 	u4					*fields;
 	void				**constant_pool;
 	struct ClassFile 	*class;
@@ -20,8 +19,7 @@ struct frame
 /**
  Pilha de frame.
  */
-struct frame_stack
-{
+struct frame_stack {
 	struct frame *value;
 	struct frame_stack *next;
 };
@@ -30,6 +28,5 @@ struct frame *current_frame;
 
 void newFrame(struct ClassFile *class, void **constant_pool, Code_attribute *code_attribute);
 void freeFrame();
- 
 
 #endif

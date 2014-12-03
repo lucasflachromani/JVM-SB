@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-#define HEAP_INIT 15
+#define HEAP_INIT 32
 
 struct Object {
 	struct ClassFile *this;
@@ -17,8 +17,6 @@ struct array{
 	u4 size;
 };
 
-
-
 /**
  * Referencia para objeto (objectref na pilha) e' do tipo struct Object *
  */
@@ -27,7 +25,6 @@ struct Object **heap;
 /* número de arrays alocados e vetor com o tamanho dos arrays */
 struct array *arrayLength;
 u4 numArrays;
-
 
 void newHeap();
 struct Object* newObject(struct ClassFile *this);

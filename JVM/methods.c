@@ -29,7 +29,7 @@ method_info * getMainMethod(){
 		desc_length = ((struct CONSTANT_Utf8_info *)(main_class->constant_pool[(main_class->methods[i].descriptor_index-1)]))->length;
 
 		if ((strncmp("main", (char *)name, name_length) == 0)
-			&& (strncmp("([Ljava/lang/String;)V", (char *)desc, desc_length) == 0))
+				&& (strncmp("([Ljava/lang/String;)V", (char *)desc, desc_length) == 0))
 			return &(main_class->methods[i]);
 	}
 
@@ -53,7 +53,7 @@ method_info * getInitStaticMethod(struct ClassFile *main_class) {
 		desc_length = ((struct CONSTANT_Utf8_info *)(main_class->constant_pool[(main_class->methods[i].descriptor_index-1)]))->length;
 
 		if ((strncmp("<clinit>", (char *)name, name_length) == 0)
-			&& (strncmp("()V", (char *)desc, desc_length) == 0))
+				&& (strncmp("()V", (char *)desc, desc_length) == 0))
 			return &(main_class->methods[i]);
 	}
 
@@ -91,7 +91,7 @@ method_info * getMethodByNameAndDescIndex(struct ClassFile *main_class, struct C
 			continue;
 
 		if ((strncmp((char *)name, (char *)m_name , m_name_len) == 0)
-			&& (strncmp((char *)desc, (char *)m_desc , m_desc_len) == 0))
+				&& (strncmp((char *)desc, (char *)m_desc , m_desc_len) == 0))
 			return (main_class->methods + i);
 	}
 
@@ -120,11 +120,11 @@ void runMethod(){
 	returnType = RETURN_none;
 	returnValue = 0;
 
-	#ifdef DEBUG
+#ifdef DEBUG
 	if (current_frame != NULL) {
 		printf("\nClass: %s\n", getClassName(current_frame->class));
 	}
-	#endif
+#endif
 }
 
 
@@ -180,7 +180,7 @@ int32_t getNumParameters(struct ClassFile *class, method_info *method){
 			prm++;
 
 		} else if ((bytes[i] == 'B')||(bytes[i] == 'C')||(bytes[i] == 'F')||
-		(bytes[i] == 'I')||(bytes[i] == 'S')||(bytes[i] == 'Z') ){
+				(bytes[i] == 'I')||(bytes[i] == 'S')||(bytes[i] == 'Z') ){
 			prm++;
 		} else if ((bytes[i] == 'D')||(bytes[i] == 'J')){
 			prm+=2;

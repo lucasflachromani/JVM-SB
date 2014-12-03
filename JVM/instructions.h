@@ -15,8 +15,6 @@ void (*instr[256]) ();
 /* Inicializa o array de instruções */
 void iniciarInstrucoes();
 
-
-
 /* As instruções possíveis */
 void funct_nop();
 void funct_aconst_null();
@@ -221,4 +219,4 @@ void funct_ifnonnull();
 void funct_goto_w();
 void funct_jsr_w();
 
-#endif /* INSTRUCTIONS_H_ */
+#endif

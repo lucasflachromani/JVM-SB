@@ -14,5 +14,4 @@ void show_fields();
 void print_name(u1 *string, u2 length);
 void print_mnemonics(u1 *bytecode, u2 size);
 
-
-#endif /* PRINTCLASS_H */
+#endif
