@@ -13,7 +13,7 @@
 #include "methods.h"
 #include "heap.h"
 
-extern struct frame *frameAtual;
+extern struct frame *current_frame;
 extern struct array *arrayLength;
 extern u4 numArrays;
 
@@ -26,11 +26,19 @@ int next_is_wide = 0;
 extern opcode_info *op_info;
 
 
-void execute_instruction(u1 opcode) {
+void execute_instruction(u1 opcode)
+{
+#ifdef DEBUG
+	struct OPCODE_info opcode_tmp = op_info[opcode];
+	printf("\t%s\n", opcode_tmp.desc);
+#endif
+
 	instr[opcode]();
 }
 
-void  iniciarInstrucoes() {
+
+void  iniciarInstrucoes()
+{
 	instr[0x00] = funct_nop;
 	instr[0x01] = funct_aconst_null;
 	instr[0x02] = funct_iconst_m1;
@@ -219,2057 +227,3179 @@ void  iniciarInstrucoes() {
 	instr[0xc9] = funct_jsr_w;
 }
 
-void funct_nop() {
-	frameAtual->pc++;
+void funct_nop()
+{
+	current_frame->pc++;
 }
 
-void funct_aconst_null() {
-	push (CONSTANT_Null);
-	frameAtual->pc++;
+void funct_aconst_null()
+{
+	push ( CONSTANT_Null );
+
+	current_frame->pc++;
 }
 
-void funct_iconst_m1() {
-	push(-1);
-	frameAtual->pc++;
+void funct_iconst_m1()
+{
+	push( -1 );
+
+	current_frame->pc++;
 }
 
-void funct_iconst_0() {
-	push(0);
-	frameAtual->pc++;
+void funct_iconst_0()
+{
+	push( 0 );
+
+	current_frame->pc++;
 }
 
-void funct_iconst_1() {
-	push(1);
-	frameAtual->pc++;
+void funct_iconst_1()
+{
+	push( 1 );
+
+	current_frame->pc++;
 }
 
-void funct_iconst_2() {
-	push(2);
-	frameAtual->pc++;
+void funct_iconst_2()
+{
+	push( 2 );
+
+	current_frame->pc++;
 }
 
-void funct_iconst_3() {
-	push(3);
-	frameAtual->pc++;
+void funct_iconst_3()
+{
+	push( 3 );
+
+	current_frame->pc++;
 }
 
-void funct_iconst_4() {
-	push(4);
-	frameAtual->pc++;
+void funct_iconst_4()
+{
+	push( 4 );
+
+	current_frame->pc++;
 }
 
-void funct_iconst_5() {
-	push(5);
-	frameAtual->pc++;
+void funct_iconst_5()
+{
+	push( 5 );
+
+	current_frame->pc++;
 }
 
-void funct_lconst_0() {
+void funct_lconst_0()
+{
 	push (0);
 	push (0);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_lconst_1() {
+void funct_lconst_1()
+{
 	push (0);
 	push (1);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_fconst_0() {
+void funct_fconst_0()
+{
 	u4 *aux;
 	float f = 0.0;
+
 	aux = (u4*) malloc(sizeof(u4));
 	memcpy(aux, &f, sizeof(u4));
+
 	push(*aux); /* Para recuperar o valor, deve-se fazer outro memcpy para um float */
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_fconst_1() {
+void funct_fconst_1()
+{
 	u4 *aux;
 	float f = 1.0;
+
 	aux = (u4*) malloc(sizeof(u4));
 	memcpy(aux, &f, sizeof(u4));
+
 	push(*aux); /* Para recuperar o valor, deve-se fazer outro memcpy para um float */
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_fconst_2() {
+void funct_fconst_2()
+{
 	u4 *aux;
 	float f = 2.0;
+
 	aux = (u4*) malloc(sizeof(u4));
 	memcpy(aux, &f, sizeof(u4));
+
 	push(*aux); /* Para recuperar o valor, deve-se fazer outro memcpy para um float */
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_dconst_0() {
+void funct_dconst_0()
+{
 	u4 aux_4;
 	u8 *aux_8;
 	double d = 0.0;
+
 	aux_8 = (u8*) malloc(sizeof(u8));
 	memcpy(aux_8, &d, 2*sizeof(u4));
 	aux_4 = *aux_8 >> 32;
 	push(aux_4);
+
 	aux_4 = *aux_8;
 	push(aux_4);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 
 	/*  Funcao para recuperar o double:
 	 *
 		double d;
 		u8 x = 0x0000000000000000, y = 0x0000000000000000;
-		memcpy(&x, &high, sizeof(u4));
-		memcpy(&y, &aux_4, sizeof(u4));
+		memcpy(&x, &high, sizeof(u4) );
+		memcpy(&y, &aux_4, sizeof(u4) );
 		x <<= 32;
 		x |= y;
 		memcpy(&d, &x, 2*sizeof(u4));
 	 */
 }
 
-void funct_dconst_1() {
+void funct_dconst_1()
+{
 	u4 aux_4;
 	u8 *aux_8;
 	double d = 1.0;
+
 	aux_8 = (u8*) malloc(sizeof(u8));
 	memcpy(aux_8, &d, 2*sizeof(u4));
 	aux_4 = *aux_8 >> 32;
 	push(aux_4);
+
 	aux_4 = *aux_8;
 	push(aux_4);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_bipush() {
-	int8_t aux = (int8_t) frameAtual->code[(++frameAtual->pc)];
-	push((u4)aux);
-	frameAtual->pc++;
+void funct_bipush()
+{
+	int8_t aux = (int8_t) current_frame->code[(++current_frame->pc)];
+
+	push( (u4)aux );
+
+	current_frame->pc++;
 }
 
-void funct_sipush() {
+void funct_sipush()
+{
 	u1 low, high;
 	int16_t aux;
-	frameAtual->pc++;
-	high = frameAtual->code[frameAtual->pc];
-	frameAtual->pc++;
-	low = frameAtual->code[frameAtual->pc];
-	aux = (int16_t)convert_2x8_to_32_bits(low, high);
-	push((u4)aux);
-	frameAtual->pc++;
+
+	current_frame->pc++;
+	high = current_frame->code[current_frame->pc];
+	current_frame->pc++;
+	low = current_frame->code[current_frame->pc];
+
+	aux = (int16_t)convert_2x8_to_32_bits( low, high );
+	push( (u4)aux );
+
+	current_frame->pc++;
 }
 
-void funct_ldc() {
+void funct_ldc()
+{
 	u1 indice, tag;
 	u2 string_index;
-	frameAtual->pc++;
-	indice = frameAtual->code[frameAtual->pc];
-	tag = ((struct CONSTANT_Integer_info *) frameAtual->constant_pool[indice-1])->tag;
 
-	switch(tag) {
-		case (CONSTANT_Integer):
-			push (((struct CONSTANT_Integer_info *) frameAtual->constant_pool[indice-1])->bytes);
-			break;
-		case (CONSTANT_Float):
-			push (((struct CONSTANT_Float_info *) frameAtual->constant_pool[indice-1])->bytes);
-			break;
-		case (CONSTANT_String):
-			string_index = ((struct CONSTANT_String_info *) frameAtual->constant_pool[indice-1])->string_index;
-			push ((u4)getName(frameAtual->class, string_index));
-			break;
+	current_frame->pc++;
+	indice = current_frame->code[current_frame->pc];
+
+	tag = ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->tag;
+
+	switch(tag)
+	{
+	case (CONSTANT_Integer):
+							push ( ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->bytes);
+	break;
+	case (CONSTANT_Float):
+							push ( ((struct CONSTANT_Float_info *) current_frame->constant_pool[indice-1])->bytes);
+	break;
+	case (CONSTANT_String):
+							string_index = ((struct CONSTANT_String_info *) current_frame->constant_pool[indice-1])->string_index;
+	push ( (u4)getName(current_frame->class, string_index) );
+	break;
 	}
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_ldc_w() {
+void funct_ldc_w()
+{
 	u1 tag;
 	u4 indice;
 	u4 high, low;
 	u2 string_index;
 
-	frameAtual->pc++;
-	high = frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	high = current_frame->code[current_frame->pc];
 
-	frameAtual->pc++;
-	low = frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	low = current_frame->code[current_frame->pc];
 
-	indice = convert_2x8_to_32_bits(low, high);
+	indice = convert_2x8_to_32_bits( low, high );
 
-	tag = ((struct CONSTANT_Integer_info *) frameAtual->constant_pool[indice-1])->tag;
+	tag = ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->tag;
 
-	switch(tag) {
-		case (CONSTANT_Integer):
-			push (((struct CONSTANT_Integer_info *) frameAtual->constant_pool[indice-1])->bytes);
-			break;
-		case (CONSTANT_Float):
-			push (((struct CONSTANT_Float_info *) frameAtual->constant_pool[indice-1])->bytes);
-			break;
-		case (CONSTANT_String):
-			string_index = ((struct CONSTANT_String_info *) frameAtual->constant_pool[indice-1])->string_index;
-			push ((u4)getName(frameAtual->class, string_index));
-			break;
+	switch(tag)
+	{
+	case (CONSTANT_Integer):
+							push ( ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->bytes);
+	break;
+	case (CONSTANT_Float):
+							push ( ((struct CONSTANT_Float_info *) current_frame->constant_pool[indice-1])->bytes);
+	break;
+	case (CONSTANT_String):
+							string_index = ((struct CONSTANT_String_info *) current_frame->constant_pool[indice-1])->string_index;
+	push ( (u4)getName(current_frame->class, string_index) );
+	break;
 	}
 
-	frameAtual->pc++;
+	current_frame->pc++;
 }
 
-void funct_ldc2_w() {
+void funct_ldc2_w()
+{
 	u1 tag;
 	u4 indice;
 	u4 high, low;
 
-	frameAtual->pc++;
-	high = frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	high = current_frame->code[current_frame->pc];
 
-	frameAtual->pc++;
-	low = frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	low = current_frame->code[current_frame->pc];
 
-	indice = convert_2x8_to_32_bits(low, high);
+	indice = convert_2x8_to_32_bits( low, high );
 
-	tag = ((struct CONSTANT_Long_info *) frameAtual->constant_pool[indice-1])->tag;
+	tag = ((struct CONSTANT_Long_info *) current_frame->constant_pool[indice-1])->tag;
 
-	switch(tag) {
-		case (CONSTANT_Long):
-			push (((struct CONSTANT_Long_info *) frameAtual->constant_pool[indice-1])->high_bytes);
-			push (((struct CONSTANT_Long_info *) frameAtual->constant_pool[indice-1])->low_bytes);
-			break;
-		case (CONSTANT_Double):
-			push (((struct CONSTANT_Double_info *) frameAtual->constant_pool[indice-1])->high_bytes);
-			push (((struct CONSTANT_Double_info *) frameAtual->constant_pool[indice-1])->low_bytes);
-			break;
+	switch(tag)
+	{
+	case (CONSTANT_Long):
+							push ( ((struct CONSTANT_Long_info *) current_frame->constant_pool[indice-1])->high_bytes);
+	push ( ((struct CONSTANT_Long_info *) current_frame->constant_pool[indice-1])->low_bytes);
+	break;
+	case (CONSTANT_Double):
+							push ( ((struct CONSTANT_Double_info *) current_frame->constant_pool[indice-1])->high_bytes);
+	push ( ((struct CONSTANT_Double_info *) current_frame->constant_pool[indice-1])->low_bytes);
+	break;
 	}
 
-	frameAtual->pc++;
+	current_frame->pc++;
 }
 
-void funct_iload() {
-	u2 index;
-	frameAtual->pc++;
-	index = frameAtual->code[frameAtual->pc];
+void funct_iload()
+{
 
-	if (next_is_wide == 1) {
+	u2 index;
+	current_frame->pc++;
+	index = current_frame->code[current_frame->pc];
+
+	if (next_is_wide == 1){
 		index = index << 8;
-		frameAtual->pc++;
-		index = index | frameAtual->code[frameAtual->pc];
+		current_frame->pc++;
+		index = index | current_frame->code[current_frame->pc];
 		next_is_wide = 0;
 	}
 
-	push (frameAtual->fields[index]);
-	frameAtual->pc++;
+	push (current_frame->fields[index]);
+
+	current_frame->pc++;
 }
 
-void funct_lload() {
+void funct_lload()
+{
 	u2 index = 0;
 
-	frameAtual->pc++;
-	index = frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	index = current_frame->code[current_frame->pc];
 
-	if (next_is_wide == 1) {
+	if (next_is_wide == 1){
 		index = index << 8;
-		frameAtual->pc++;
-		index = index | frameAtual->code[frameAtual->pc];
+		current_frame->pc++;
+		index = index | current_frame->code[current_frame->pc];
 		next_is_wide = 0;
 	}
 
 	/* push high first */
-	push (frameAtual->fields[index]);
-	push (frameAtual->fields[index+1]);
+	push (current_frame->fields[index]);
+	push (current_frame->fields[index+1]);
 
-	frameAtual->pc++;
+#ifdef DEBUG
+	printf("lload %hu %ld\n", index, convert_2x32_to_64_bits(current_frame->fields[index+1],current_frame->fields[index]));
+#endif
+
+	current_frame->pc++;
 }
 
 
-void funct_fload() {
+void funct_fload()
+{
+
 	u2 index;
-	frameAtual->pc++;
-	index = frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	index = current_frame->code[current_frame->pc];
 
 	if (next_is_wide == 1){
 		index = index << 8;
-		frameAtual->pc++;
-		index = index | frameAtual->code[frameAtual->pc];
+		current_frame->pc++;
+		index = index | current_frame->code[current_frame->pc];
 		next_is_wide = 0;
 	}
 
-	push(frameAtual->fields[index]);
-	frameAtual->pc++;
+	push(current_frame->fields[index]);
+
+#ifdef DEBUG
+	float f;
+	memcpy(&f, &(current_frame->fields[index]), sizeof(u4));
+	printf("fload %hu %f\n", index, f);
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_dload() {
+void funct_dload()
+{
+
 	u2 index;
-	frameAtual->pc++;
-	index = frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	index = current_frame->code[current_frame->pc];
 
 	if (next_is_wide == 1){
 		index = index << 8;
-		frameAtual->pc++;
-		index = index | frameAtual->code[frameAtual->pc];
+		current_frame->pc++;
+		index = index | current_frame->code[current_frame->pc];
 		next_is_wide = 0;
 	}
 
 	/* push high first */
-	push (frameAtual->fields[index]);
-	push (frameAtual->fields[index+1]);
-	frameAtual->pc++;
+	push (current_frame->fields[index]);
+	push (current_frame->fields[index+1]);
+
+	current_frame->pc++;
 }
 
-void funct_aload() {
+void funct_aload()
+{
+
 	u2 index;
-	frameAtual->pc++;
-	index = frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	index = current_frame->code[current_frame->pc];
 
 	if (next_is_wide == 1){
 		index = index << 8;
-		frameAtual->pc++;
-		index = index | frameAtual->code[frameAtual->pc];
+		current_frame->pc++;
+		index = index | current_frame->code[current_frame->pc];
 		next_is_wide = 0;
 	}
 
-	push (frameAtual->fields[index]);
-	frameAtual->pc++;
+	push (current_frame->fields[index]);
+
+	current_frame->pc++;
 }
 
-void funct_iload_0() {
-	push(frameAtual->fields[0]);
-	frameAtual->pc++;
+void funct_iload_0()
+{
+	push( current_frame->fields[0] );
+
+	current_frame->pc++;
 }
 
-void funct_iload_1() {
-	push(frameAtual->fields[1]);
-	frameAtual->pc++;
+void funct_iload_1()
+{
+	push( current_frame->fields[1] );
+
+	current_frame->pc++;
 }
 
-void funct_iload_2() {
-	push(frameAtual->fields[2]);
-	frameAtual->pc++;
+void funct_iload_2()
+{
+	push( current_frame->fields[2] );
+
+	current_frame->pc++;
 }
 
-void funct_iload_3() {
-	push(frameAtual->fields[3]);
-	frameAtual->pc++;
+void funct_iload_3()
+{
+	push( current_frame->fields[3] );
+
+	current_frame->pc++;
 }
 
-void funct_lload_0() {
-	push(frameAtual->fields[0]);
-	push(frameAtual->fields[1]);
-	frameAtual->pc++;
+void funct_lload_0()
+{
+
+	push( current_frame->fields[0] );
+	push( current_frame->fields[1] );
+
+	current_frame->pc++;
 }
 
-void funct_lload_1() {
-	push(frameAtual->fields[1]);
-	push(frameAtual->fields[2]);
-	frameAtual->pc++;
+void funct_lload_1()
+{
+	push( current_frame->fields[1] );
+	push( current_frame->fields[2] );
+
+	current_frame->pc++;
 }
 
-void funct_lload_2() {
-	push(frameAtual->fields[2]);
-	push(frameAtual->fields[3]);
-	frameAtual->pc++;
+void funct_lload_2()
+{
+	push( current_frame->fields[2] );
+	push( current_frame->fields[3] );
+
+	current_frame->pc++;
 }
 
-void funct_lload_3() {
-	push(frameAtual->fields[3]);
-	push(frameAtual->fields[4]);
-	frameAtual->pc++;
+void funct_lload_3()
+{
+	push( current_frame->fields[3] );
+	push( current_frame->fields[4] );
+
+#ifdef DEBUG
+	printf("lload_3 %ld\n", convert_2x32_to_64_bits(current_frame->fields[4],current_frame->fields[3]));
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_fload_0() {
-	push(frameAtual->fields[0]);
-	frameAtual->pc++;
+void funct_fload_0()
+{
+	push( current_frame->fields[0] );
+
+#ifdef DEBUG
+	float f;
+	memcpy(&f, &(current_frame->fields[0]), sizeof(u4));
+	printf("fload_0 %f\n", f);
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_fload_1() {
-	push(frameAtual->fields[1]);
-	frameAtual->pc++;
+void funct_fload_1()
+{
+	push( current_frame->fields[1] );
+
+#ifdef DEBUG
+	float f;
+	memcpy(&f, &(current_frame->fields[1]), sizeof(u4));
+	printf("fload_1 %f\n", f);
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_fload_2() {
-	push(frameAtual->fields[2]);
-	frameAtual->pc++;
+void funct_fload_2()
+{
+	push( current_frame->fields[2] );
+
+#ifdef DEBUG
+	float f;
+	memcpy(&f, &(current_frame->fields[2]), sizeof(u4));
+	printf("fload_2 %f\n", f);
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_fload_3() {
-	push(frameAtual->fields[3]);
-	frameAtual->pc++;
+void funct_fload_3()
+{
+	push( current_frame->fields[3] );
+
+#ifdef DEBUG
+	float f;
+	memcpy(&f, &(current_frame->fields[3]), sizeof(u4));
+	printf("fload_3 %f\n", f);
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_dload_0() {
-	push(frameAtual->fields[0]);
-	push(frameAtual->fields[1]);
-	frameAtual->pc++;
+
+void funct_dload_0()
+{
+	push( current_frame->fields[0] );
+	push( current_frame->fields[1] );
+
+	current_frame->pc++;
 }
 
-void funct_dload_1() {
-	push(frameAtual->fields[1]);
-	push(frameAtual->fields[2]);
-	frameAtual->pc++;
+void funct_dload_1()
+{
+	push( current_frame->fields[1] );
+	push( current_frame->fields[2] );
+
+#ifdef DEBUG
+	printf("dload_1 %f\n", convert_2x32_to_64_bits(current_frame->fields[1],current_frame->fields[2]));
+#endif
+
+	current_frame->pc++;
+}
+void funct_dload_2()
+{
+	push( current_frame->fields[2] );
+	push( current_frame->fields[3] );
+
+#ifdef DEBUG
+	printf("dload_2 %f\n", convert_2x32_to_64_bits(current_frame->fields[2],current_frame->fields[3]));
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_dload_2() {
-	push(frameAtual->fields[2]);
-	push(frameAtual->fields[3]);
-	frameAtual->pc++;
+void funct_dload_3()
+{
+	push( current_frame->fields[3] );
+	push( current_frame->fields[4] );
+
+#ifdef DEBUG
+	printf("dload_3 %f\n", convert_2x32_to_64_bits(current_frame->fields[3],current_frame->fields[4]));
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_dload_3() {
-	push(frameAtual->fields[3]);
-	push(frameAtual->fields[4]);
-	frameAtual->pc++;
+void funct_aload_0()
+{
+	push( current_frame->fields[0] );
+	current_frame->pc++;
 }
 
-void funct_aload_0() {
-	push(frameAtual->fields[0]);
-	frameAtual->pc++;
+void funct_aload_1()
+{
+	push( current_frame->fields[1] );
+
+#ifdef DEBUG
+	printf("aload_1: %u\n", current_frame->fields[1]);
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_aload_1() {
-	push(frameAtual->fields[1]);
-	frameAtual->pc++;
+void funct_aload_2()
+{
+	push( current_frame->fields[2] );
+
+	current_frame->pc++;
 }
 
-void funct_aload_2() {
-	push(frameAtual->fields[2]);
-	frameAtual->pc++;
+void funct_aload_3()
+{
+	push( current_frame->fields[3] );
+
+	current_frame->pc++;
 }
 
-void funct_aload_3() {
-	push(frameAtual->fields[3]);
-	frameAtual->pc++;
-}
+void funct_iaload()
+{
 
-void funct_iaload() {
 	u4 index;
 	void *ref;
+
 	index = pop();
 	ref = (void *)pop();
-	push(((u4 *)ref)[index]);
-	frameAtual->pc++;
+
+	push( ((u4 *)ref)[index]);
+
+	current_frame->pc++;
 }
 
-void funct_laload() {
+void funct_laload()
+{
+
 	u4 index;
 	void *ref;
+
 	index = pop();
 	ref = (void *)pop();
+
+#ifdef DEBUG
+	printf("laload: %ld\n", ((u8 *)ref)[index]);
+#endif
+
 	pushU8(((u8 *)ref)[index]);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_faload() {
+void funct_faload()
+{
+
 	u4 index, res;
 	void *ref;
+
 	index = pop();
 	ref = (void *)pop();
+
 	memcpy(&res, &((float *)ref)[index], sizeof(u4));
 	push(res);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_daload() {
+void funct_daload()
+{
+
 	u4 index;
 	void *ref;
+
 	index = pop();
 	ref = (void *)pop();
+
 	pushU8(((u8 *)ref)[index]);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_aaload() {
+void funct_aaload()
+{
+
 	u4 index;
 	void *ref;
+
 	index = pop();
 	ref = (void *)pop();
-	push(((u4 *)ref)[index]);
-	frameAtual->pc++;
+
+	push( ((u4 *)ref)[index]);
+
+	current_frame->pc++;
 }
 
-void funct_baload() {
+void funct_baload()
+{
+
 	u4 index;
 	void *ref;
+
 	index = pop();
 	ref = (void *)pop();
-	push((u4)(((u1*)ref)[index]));
-	frameAtual->pc++;
+
+	push((u4)( ((u1*)ref)[index] ));
+
+	current_frame->pc++;
 }
 
-void funct_caload() {
+void funct_caload()
+{
+
 	u4 index;
 	void *ref;
+
 	index = pop();
 	ref = (void *)pop();
-	push((u4)(((u2*)ref)[index]));
-	frameAtual->pc++;
+
+	push((u4)( ((u2*)ref)[index] ));
+
+	current_frame->pc++;
+
 }
 
-void funct_saload() {
+void funct_saload()
+{
+
 	u4 index;
 	void *ref;
+
 	index = pop();
 	ref = (void *)pop();
-	push((u4)(((u2*)ref)[index]));
-	frameAtual->pc++;
+
+	push((u4)( ((u2*)ref)[index] ));
+
+	current_frame->pc++;
+
 }
 
-void funct_istore() {
+void funct_istore()
+{
 	u2 index;
 	u4 value;
-	frameAtual->pc++;
-	index = frameAtual->code[frameAtual->pc];
+
+	current_frame->pc++;
+	index = current_frame->code[current_frame->pc];
+
 	value = pop();
-	frameAtual->fields[index] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[index] = value;
+
+	current_frame->pc++;
 }
 
-void funct_lstore() {
+void funct_lstore()
+{
 	u2 index;
 	u4 high, low;
-	frameAtual->pc++;
-	index = frameAtual->code[frameAtual->pc];
+
+	current_frame->pc++;
+	index = current_frame->code[current_frame->pc];
+
 	low = pop();
 	high = pop();
-	frameAtual->fields[index] = high;
-	frameAtual->fields[index + 1] = low;
-	frameAtual->pc++;
+
+	current_frame->fields[index] = high;
+	current_frame->fields[index + 1] = low;
+
+#ifdef DEBUG
+	printf("lstore %hu %ld\n", index, convert_2x32_to_64_bits(low,high));
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_fstore() {
+void funct_fstore()
+{
 	u2 index;
 	u4 value;
-	frameAtual->pc++;
-	index = frameAtual->code[frameAtual->pc];
+
+	current_frame->pc++;
+	index = current_frame->code[current_frame->pc];
+
 	value = pop();
-	frameAtual->fields[index] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[index] = value;
+
+	current_frame->pc++;
 }
 
-void funct_dstore() {
+void funct_dstore()
+{
 	u2 index;
 	u4 high, low;
-	frameAtual->pc++;
-	index = frameAtual->code[frameAtual->pc];
+
+	current_frame->pc++;
+	index = current_frame->code[current_frame->pc];
+
 	low = pop();
 	high = pop();
-	frameAtual->fields[index] = low;
-	frameAtual->fields[index + 1] = high;
-	frameAtual->pc++;
+
+	current_frame->fields[index] = low;
+	current_frame->fields[index + 1] = high;
+
+#ifdef DEBUG
+	printf("lstore: %f\n", convert_2x32_to_64_bits(current_frame->fields[index],current_frame->fields[index+1]));
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_astore() {
+void funct_astore()
+{
 	u2 index;
 	u4 value;
-	frameAtual->pc++;
-	index = frameAtual->code[frameAtual->pc];
+
+	current_frame->pc++;
+	index = current_frame->code[current_frame->pc];
+
 	value = pop();
-	frameAtual->fields[index] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[index] = value;
+
+	current_frame->pc++;
 }
 
-void funct_istore_0() {
+void funct_istore_0()
+{
 	u4 value;
+
 	value = pop();
-	frameAtual->fields[0] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[0] = value;
+
+	current_frame->pc++;
 }
 
-void funct_istore_1() {
+void funct_istore_1()
+{
 	u4 value;
+
 	value = pop();
-	frameAtual->fields[1] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[1] = value;
+
+	current_frame->pc++;
 }
 
-void funct_istore_2() {
+void funct_istore_2()
+{
 	u4 value;
+
 	value = pop();
-	frameAtual->fields[2] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[2] = value;
+
+	current_frame->pc++;
 }
 
-void funct_istore_3() {
+void funct_istore_3()
+{
 	u4 value;
+
 	value = pop();
-	frameAtual->fields[3] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[3] = value;
+
+	current_frame->pc++;
 }
 
-void funct_lstore_0() {
+void funct_lstore_0()
+{
 	u4 high, low;
+
 	low = pop();
 	high = pop();
-	frameAtual->fields[0] = high;
-	frameAtual->fields[1] = low;
-	frameAtual->pc++;
+
+	current_frame->fields[0] = high;
+	current_frame->fields[1] = low;
+
+	current_frame->pc++;
 }
 
-void funct_lstore_1() {
+void funct_lstore_1()
+{
 	u4 high, low;
+
 	low = pop();
 	high = pop();
-	frameAtual->fields[1] = high;
-	frameAtual->fields[2] = low;
-	frameAtual->pc++;
+
+	current_frame->fields[1] = high;
+	current_frame->fields[2] = low;
+
+#ifdef DEBUG
+	printf("lstore1: %ld\n", convert_2x32_to_64_bits(current_frame->fields[2],current_frame->fields[1]));
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_lstore_2() {
+void funct_lstore_2()
+{
 	u4 high, low;
+
 	low = pop();
 	high = pop();
-	frameAtual->fields[2] = high;
-	frameAtual->fields[3] = low;
-	frameAtual->pc++;
+
+	current_frame->fields[2] = high;
+	current_frame->fields[3] = low;
+
+	current_frame->pc++;
 }
 
-void funct_lstore_3() {
+void funct_lstore_3()
+{
 	u4 high, low;
+
 	low = pop();
 	high = pop();
-	frameAtual->fields[3] = high;
-	frameAtual->fields[4] = low;
-	frameAtual->pc++;
+
+	current_frame->fields[3] = high;
+	current_frame->fields[4] = low;
+
+	current_frame->pc++;
 }
 
-void funct_fstore_0() {
+void funct_fstore_0()
+{
 	u4  value;
+
 	value = pop();
-	frameAtual->fields[0] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[0] = value;
+
+	current_frame->pc++;
 }
 
-void funct_fstore_1() {
+void funct_fstore_1()
+{
 	u4 value;
+
 	value = pop();
-	frameAtual->fields[1] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[1] = value;
+
+	current_frame->pc++;
 }
 
-void funct_fstore_2() {
+void funct_fstore_2()
+{
 	u4 value;
+
 	value = pop();
-	frameAtual->fields[2] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[2] = value;
+
+	current_frame->pc++;
 }
 
-void funct_fstore_3() {
+void funct_fstore_3()
+{
 	u4 value;
+
 	value = pop();
-	frameAtual->fields[3] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[3] = value;
+
+	current_frame->pc++;
 }
 
-void funct_dstore_0() {
+void funct_dstore_0()
+{
 	u4 high, low;
+
 	low = pop();
 	high = pop();
-	frameAtual->fields[0] = low;
-	frameAtual->fields[1] = high;
-	frameAtual->pc++;
+
+	current_frame->fields[0] = low;
+	current_frame->fields[1] = high;
+
+#ifdef DEBUG
+	printf("dstore0: %f\n", convert_2x32_to_64_bits(current_frame->fields[0],current_frame->fields[1]));
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_dstore_1() {
+void funct_dstore_1()
+{
 	u4 high, low;
+
 	low = pop();
 	high = pop();
-	frameAtual->fields[1] = low;
-	frameAtual->fields[2] = high;
-	frameAtual->pc++;
+
+	current_frame->fields[1] = low;
+	current_frame->fields[2] = high;
+
+#ifdef DEBUG
+	printf("dstore1: %f\n", convert_2x32_to_64_bits(current_frame->fields[1],current_frame->fields[2]));
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_dstore_2() {
+void funct_dstore_2()
+{
 	u4 high, low;
+
 	low = pop();
 	high = pop();
-	frameAtual->fields[2] = low;
-	frameAtual->fields[3] = high;
-	frameAtual->pc++;
+
+	current_frame->fields[2] = low;
+	current_frame->fields[3] = high;
+
+#ifdef DEBUG
+	printf("dstore2: %f\n", convert_2x32_to_64_bits(current_frame->fields[2],current_frame->fields[3]));
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_dstore_3() {
+void funct_dstore_3()
+{
 	u4 high, low;
+
 	low = pop();
 	high = pop();
-	frameAtual->fields[3] = low;
-	frameAtual->fields[4] = high;
-	frameAtual->pc++;
+
+	current_frame->fields[3] = low;
+	current_frame->fields[4] = high;
+
+#ifdef DEBUG
+	printf("dstore3: %f\n", convert_2x32_to_64_bits(current_frame->fields[3],current_frame->fields[4]));
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_astore_0() {
+void funct_astore_0()
+{
 	u4 value;
+
 	value = pop();
-	frameAtual->fields[0] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[0] = value;
+
+	current_frame->pc++;
 }
 
-void funct_astore_1() {
+void funct_astore_1()
+{
 	u4 value;
+
 	value = pop();
-	frameAtual->fields[1] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[1] = value;
+
+	current_frame->pc++;
 }
 
-void funct_astore_2() {
+void funct_astore_2()
+{
 	u4 value;
+
 	value = pop();
-	frameAtual->fields[2] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[2] = value;
+
+	current_frame->pc++;
 }
 
-void funct_astore_3() {
+void funct_astore_3()
+{
 	u4 value;
+
 	value = pop();
-	frameAtual->fields[3] = value;
-	frameAtual->pc++;
+
+	current_frame->fields[3] = value;
+
+	current_frame->pc++;
 }
 
-void funct_iastore() {
+void funct_iastore()
+{
+
 	u4 index, value;
 	void *ref;
+
 	value = pop();
 	index = pop();
 	ref = (void *)pop();
+
 	((u4 *)ref)[index] = value;
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_lastore() {
+void funct_lastore()
+{
+
 	u4 index, low, high;
 	u8 value;
 	void *ref;
+
 	low = pop();
 	high = pop();
 	value = convert_2x32_to_64_bits(low, high);
+
 	index = pop();
 	ref = (void *)pop();
+
 	((u8 *)ref)[index] = value;
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_fastore() {
+void funct_fastore()
+{
+
 	u4 index, value;
 	void *ref;
+
 	value = pop();
 	index = pop();
 	ref = (void *)pop();
+
 	((u4 *)ref)[index] = value;
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_dastore() {
+void funct_dastore()
+{
+
 	u4 index, low, high;
 	u8 value;
 	void *ref;
+
 	low = pop();
 	high = pop();
 	value = convert_2x32_to_64_bits(low, high);
+
 	index = pop();
 	ref = (void *)pop();
+
 	((u8 *)ref)[index] = value;
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_aastore() {
+void funct_aastore()
+{
+
 	u4 index, value;
 	void *ref;
+
 	value = pop();
 	index = pop();
 	ref = (void *)pop();
+
 	((u4 *)ref)[index] = value;
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_bastore() {
+void funct_bastore()
+{
+
 	u4 index, value;
 	void *ref;
+
 	value = pop();
 	index = pop();
 	ref = (void *)pop();
+
 	((u1 *)ref)[index] = (u1)value;
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_castore() {
+void funct_castore()
+{
+
 	u4 index, value;
 	void *ref;
+
 	value = pop();
 	index = pop();
 	ref = (void *)pop();
+
 	((u2 *)ref)[index] = (u2)value;
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_sastore() {
+void funct_sastore()
+{
+
 	u4 index, value;
 	void *ref;
+
 	value = pop();
 	index = pop();
 	ref = (void *)pop();
+
 	((u2 *)ref)[index] = (u2)value;
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_pop() {
+void funct_pop()
+{
 	pop();
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_pop2() {
+void funct_pop2()
+{
 	pop();
 	pop();
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_dup() {
+void funct_dup()
+{
 	u4 aux;
+
 	aux = pop();
 	push(aux);
 	push(aux);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_dup_x1() {
+void funct_dup_x1()
+{
 	u4 aux1, aux2;
+
 	aux1 = pop();
 	aux2 = pop();
+
 	push(aux1);
 	push(aux2);
 	push(aux1);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_dup_x2() {
+void funct_dup_x2()
+{
 	u4 value1, value2, value3;
+
 	value1 = pop();
 	value2 = pop();
 	value3 = pop();
+
+
 	push(value1);
 	push(value3);
 	push(value2);
 	push(value1);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_dup2() {
+void funct_dup2()
+{
 	u4 value1, value2;
+
 	value1 = pop();
 	value2 = pop();
+
 	push(value2);
 	push(value1);
 	push(value2);
 	push(value1);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_dup2_x1() {
+void funct_dup2_x1()
+{
 	u4 value1, value2, value3;
+
 	value1 = pop();
 	value2 = pop();
 	value3 = pop();
+
 	push(value2);
 	push(value1);
 	push(value3);
 	push(value2);
 	push(value1);
-	frameAtual->pc++;
-}
 
-void funct_dup2_x2() {
+	current_frame->pc++;
+}
+void funct_dup2_x2()
+{
 	u4 value1, value2, value3, value4;
+
 	value1 = pop();
 	value2 = pop();
 	value3 = pop();
 	value4 = pop();
+
 	push(value2);
 	push(value1);
 	push(value4);
 	push(value3);
 	push(value2);
 	push(value1);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_swap() {
+
+void funct_swap()
+{
 	u4 aux1, aux2;
+
 	aux1 = pop();
 	aux2 = pop();
+
 	push(aux1);
 	push(aux2);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_iadd() {
+void funct_iadd()
+{
 	u4 aux1, aux2;
+
 	aux1 = pop();
 	aux2 = pop();
+
 	push (aux1 + aux2);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_ladd() {
+void funct_ladd()
+{
 	int64_t aux1, aux2;
 	u4 low, high;
+
 	low = pop();
 	high = pop();
-	aux1 = convert_2x32_to_64_bits(low, high);
+	aux1 = convert_2x32_to_64_bits( low, high );
+
 	low = pop();
 	high = pop();
-	aux2 = convert_2x32_to_64_bits(low, high);
+	aux2 = convert_2x32_to_64_bits( low, high );
+
 	pushU8(aux1 + aux2);
-	frameAtual->pc++;
+
+#ifdef DEBUG
+	printf("ladd %ld\n", aux1+aux2);
+#endif
+
+	current_frame->pc++;
 }
 
-void funct_fadd() {
+void funct_fadd()
+{
 	float f1, f2;
 	u4 aux1, aux2;
+
 	aux1 = pop();
 	memcpy(&f1, &aux1, sizeof(u4));
 	aux2 = pop();
 	memcpy(&f2, &aux2, sizeof(u4));
+
 	f1 += f2;
 	memcpy(&aux1, &f1, sizeof(u4));
-	push(aux1);
-	frameAtual->pc++;
+
+	push( aux1 );
+
+	current_frame->pc++;
 }
 
-void funct_dadd() {
+void funct_dadd()
+{
 	double aux1, aux2;
 	u4 high, low;
 	u8 aux;
+
 	low = pop();
 	high = pop();
 	aux = convert_2x32_to_64_bits(low, high);
 	memcpy(&aux1, &aux, sizeof(u8));
+
 	low = pop();
 	high = pop();
 	aux = convert_2x32_to_64_bits(low, high);
 	memcpy(&aux2, &aux, sizeof(u8));
+
 	aux1 += aux2;
+
 	memcpy(&aux, &aux1, sizeof(u8));
 	convert_64_bits_to_2x32(aux, &low, &high);
+
 	push(high);
 	push(low);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_isub() {
+void funct_isub()
+{
 	u4 aux1, aux2;
+
 	aux1 = pop();
 	aux2 = pop();
+
 	push (aux2 - aux1);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_lsub() {
+void funct_lsub()
+{
 	int64_t aux1, aux2;
 	u4 low, high;
+
 	low = pop();
 	high = pop();
-	aux1 = (signed)convert_2x32_to_64_bits(low, high);
+	aux1 = (signed)convert_2x32_to_64_bits( low, high );
+
 	low = pop();
 	high = pop();
-	aux2 = (signed)convert_2x32_to_64_bits(low, high);
+	aux2 = (signed)convert_2x32_to_64_bits( low, high );
+
+
 	pushU8(aux2 - aux1);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_fsub() {
+void funct_fsub()
+{
 	u4 aux1, aux2, result;
 	float value1, value2;
+
 	aux2 = pop();
 	aux1 = pop();
+
 	memcpy(&value1, &aux1, sizeof(u4));
 	memcpy(&value2, &aux2, sizeof(u4));
+
 	value1 -= value2;
+
 	memcpy(&result, &value1, sizeof(u4));
+
+#ifdef DEBUG
+	printf("fsub %X\n", value1);
+#endif
+
 	push(result);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_dsub() {
+void funct_dsub()
+{
 	u4 high1, low1, high2, low2;
 	double value1, value2;
 	u8 result;
+
 	low2 = pop();
 	high2 = pop();
 	low1 = pop();
 	high1 = pop();
+
 	value1 = convert_cast_2x32_bits_to_double(low1, high1);
 	value2 = convert_cast_2x32_bits_to_double(low2, high2);
+
 	value1 -= value2;
 	memcpy(&result, &value1, sizeof(u8));
+
+#ifdef DEBUG
+	printf("dsub %f\n", value1);
+#endif
+
 	pushU8(result);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_imul() {
+void funct_imul()
+{
 	int32_t value1, value2;
+
 	value1 = (int32_t)pop();
 	value2 = (int32_t)pop();
+
+#ifdef DEBUG
+	printf("imul %d\n", value1 * value2);
+#endif
+
 	push((u4)(value1 * value2));
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_lmul() {
+void funct_lmul()
+{
 	int64_t value1, value2, result;
 	u4 high1, low1, high2, low2;
+
 	low1 = pop();
 	high1 = pop();
 	low2 = pop();
 	high2 = pop();
+
 	value1 = (int64_t)convert_2x32_to_64_bits(low1, high1);
 	value2 = (int64_t)convert_2x32_to_64_bits(low2, high2);
+
 	result = value1 * value2;
+
+#ifdef DEBUG
+	printf("lmul %ld\n", result);
+#endif
+
 	pushU8(((u8)result));
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_fmul() {
+void funct_fmul()
+{
 	u4 aux1, aux2, result;
 	float value1, value2;
+
 	aux1 = pop();
 	aux2 = pop();
+
 	memcpy(&value1, &aux1, sizeof(u4));
 	memcpy(&value2, &aux2, sizeof(u4));
+
+#ifdef DEBUG
+	printf("fmul %f\n", value1 * value2);
+#endif
+
 	value1 *= value2;
 	memcpy(&result, &value1, sizeof(u4));
 	push(result);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_dmul() {
+void funct_dmul()
+{
 	u4 high1, low1, high2, low2;
 	double value1, value2;
 	u8 value;
+
 	low1 = pop();
 	high1 = pop();
 	low2 = pop();
 	high2 = pop();
+
 	value1 = convert_cast_2x32_bits_to_double(low1, high1);
 	value2 = convert_cast_2x32_bits_to_double(low2, high2);
+
+#ifdef DEBUG
+	printf("dmul %f\n", value1 * value2);
+#endif
+
 	value1 *= value2;
 	memcpy(&value, &value1, sizeof(u8));
-	pushU8(value);
-	frameAtual->pc++;
+
+	pushU8( value );
+
+	current_frame->pc++;
 }
 
-void funct_idiv() {
+void funct_idiv()
+{
 	int32_t value1, value2;
+
 	value2 = (int32_t)pop();
 	value1 = (int32_t)pop();
+
+#ifdef DEBUG
+	printf("idiv %d\n", value1 / value2);
+#endif
+
 	push(value1 / value2);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_ldiv() {
+void funct_ldiv()
+{
 	int64_t value1, value2, result;
 	u4 high1, low1, high2, low2;
+
 	low2 = pop();
 	high2 = pop();
 	low1 = pop();
 	high1 = pop();
+
 	value1 = (int64_t)convert_2x32_to_64_bits(low1, high1);
 	value2 = (int64_t)convert_2x32_to_64_bits(low2, high2);
+
 	result = value1 / value2;
+
+#ifdef DEBUG
+	printf("ldiv %ld\n", result);
+#endif
+
 	pushU8(result);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_fdiv() {
+void funct_fdiv()
+{
 	u4 aux1, aux2, result;
 	float value1, value2;
+
 	aux2 = pop();
 	aux1 = pop();
+
 	memcpy(&value1, &aux1, sizeof(u4));
 	memcpy(&value2, &aux2, sizeof(u4));
+
+#ifdef DEBUG
+	printf("fdiv %f\n", value1 / value2);
+#endif
+
 	value1 /= value2;
 	memcpy(&result, &value1, sizeof(u4));
 	push(result);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_ddiv() {
+void funct_ddiv()
+{
 	u4 high1, low1, high2, low2;
 	double value1, value2;
 	u8 aux;
+
 	low2 = pop();
 	high2 = pop();
 	low1 = pop();
 	high1 = pop();
+
 	value1 = convert_cast_2x32_bits_to_double(low1, high1);
 	value2 = convert_cast_2x32_bits_to_double(low2, high2);
+
+#ifdef DEBUG
+	printf("ddiv %f\n", value1 / value2);
+#endif
+
 	value1 /= value2;
 	memcpy(&aux, &value1, sizeof(u8));
-	pushU8(aux);
-	frameAtual->pc++;
+	pushU8( aux );
+
+	current_frame->pc++;
 }
 
-void funct_irem() {
+void funct_irem()
+{
 	u4 value1, value2;
+
 	value2 = pop();
 	value1 = pop();
-	push(value1 % value2);
-	frameAtual->pc++;
+
+	push( value1 % value2 );
+
+	current_frame->pc++;
+
 }
 
-void funct_lrem() {
+void funct_lrem()
+{
 	int64_t aux1, aux2;
 	u4 low, high;
+
 	low = pop();
 	high = pop();
-	aux2 = (signed) convert_2x32_to_64_bits(low , high);
+	aux2 = (signed) convert_2x32_to_64_bits( low , high );
+
 	low = pop();
 	high = pop();
-	aux1 = (signed) convert_2x32_to_64_bits(low , high);
+	aux1 = (signed) convert_2x32_to_64_bits( low , high );
+
 	aux1 = aux1 % aux2;
-	push((u8)aux1);
-	frameAtual->pc++;
+
+	push( (u8)aux1 );
+
+	current_frame->pc++;
 }
 
-void funct_frem() {
+void funct_frem()
+{
 	float f1, f2;
 	u4 aux1, aux2;
+
 	aux1 = pop();
 	memcpy(&f2, &aux1, sizeof(u4));
 	aux2 = pop();
 	memcpy(&f1, &aux2, sizeof(u4));
-	f1 = fmodf(f1 , f2);
+
+	f1 = fmodf( f1 , f2 );
 	memcpy(&aux1, &f1, sizeof(u4));
-	push(aux1);
-	frameAtual->pc++;
+
+	push( aux1 );
+
+	current_frame->pc++;
 }
 
-void funct_drem() {
+void funct_drem()
+{
 	double d1, d2;
 	u4 low, high;
 	u8 aux;
+
 	low = pop();
 	high = pop();
-	aux = convert_2x32_to_64_bits(low , high);
+	aux = convert_2x32_to_64_bits( low , high );
 	memcpy(&d2, &aux, sizeof(u8));
+
 	low = pop();
 	high = pop();
-	aux = convert_2x32_to_64_bits(low , high);
+	aux = convert_2x32_to_64_bits( low , high );
 	memcpy(&d1, &aux, sizeof(u8));
-	d1 = fmod(d1 , d2);
+
+	d1 = fmod( d1 , d2 );
+
 	memcpy(&aux, &d1, sizeof(u8));
-	pushU8(aux);
-	frameAtual->pc++;
+
+	pushU8( aux );
+
+	current_frame->pc++;
 }
 
-void funct_ineg() {
+void funct_ineg()
+{
 	int32_t aux;
+
 	aux = (int32_t) pop();
 	aux = -aux;
-	push((u4)aux);
-	frameAtual->pc++;
+
+	push( (u4)aux );
+
+	current_frame->pc++;
 }
 
-void funct_lneg() {
+void funct_lneg()
+{
 	int64_t aux;
 	u4 low, high;
+
 	low = pop();
 	high = pop();
-	aux = (int64_t) convert_2x32_to_64_bits(low , high);
+	aux = (int64_t) convert_2x32_to_64_bits( low , high );
+
 	aux = -aux;
-	pushU8((u8)aux);
-	frameAtual->pc++;
+
+	pushU8( (u8)aux );
+
+	current_frame->pc++;
 }
 
-void funct_fneg() {
+void funct_fneg()
+{
 	float f;
 	u4 aux;
+
 	aux = pop();
 	memcpy(&f, &aux, sizeof(u4));
+
 	f = -f;
+
 	memcpy(&aux, &f, sizeof(u4));
-	push(aux);
-	frameAtual->pc++;
+	push( aux );
+
+	current_frame->pc++;
 }
 
-void funct_dneg() {
+void funct_dneg()
+{
 	double d;
 	u4 low, high;
 	u8 aux;
+
 	low = pop();
 	high = pop();
-	aux = convert_2x32_to_64_bits(low , high);
+	aux = convert_2x32_to_64_bits( low , high );
 	memcpy(&d, &aux, sizeof(u8));
+
 	d = -d;
+
 	memcpy(&aux, &d, sizeof(u8));
-	pushU8(aux);
-	frameAtual->pc++;
+	pushU8( aux );
+
+	current_frame->pc++;
 }
 
-void funct_ishl() {
+void funct_ishl()
+{
 	u4 mask = 0x1f;  /*... 0001 1111*/
 	u4 aux1, aux2;
+
 	aux2 = pop();
 	aux2 &= mask;
+
 	aux1 = pop();
 	aux1 <<= aux2;
-	push(aux1);
-	frameAtual->pc++;
+
+	push( aux1 );
+
+	current_frame->pc++;
 }
 
-void funct_lshl() {
+void funct_lshl()
+{
 	int64_t aux1;
 	u4 mask = 0x3f;  /*... 00011 1111*/
 	u4 low, high, aux2;
+
 	aux2 = pop();
 	aux2 &= mask;
+
 	low = pop();
 	high = pop();
-	aux1 = (signed) convert_2x32_to_64_bits(low , high);
+	aux1 = (signed) convert_2x32_to_64_bits( low , high );
+
 	aux1 <<= aux2;
-	push((u8)aux1);
-	frameAtual->pc++;
+
+	push( (u8)aux1 );
+
+	current_frame->pc++;
 }
 
-void funct_ishr() {
+void funct_ishr()
+{
 	u4 mask = 0x1f;  /* ... 0001 1111 */
 	u4 aux1, i;
 	int32_t aux2;
+
 	aux1 = pop();
 	aux1 &= mask;
+
 	aux2 = (int32_t)pop();
+
 	for (i = 0; i < aux1; i++) {
 		aux2 /= 2;
 	}
-	push((u4)aux2);
-	frameAtual->pc++;
+
+	push( (u4)aux2 );
+
+	current_frame->pc++;
 }
 
-void funct_lshr() {
+void funct_lshr()
+{
 	u4 mask = 0x3f;  /*... 00011 1111*/
 	u8 aux1 = 0xffffffffffffffff;  /* 1111 1111 ... */
 	u8 aux4 = 0x8000000000000000;  /* 1000 0000 ... */
+
 	u4 low, high;
 	int64_t aux3;
 	u4 aux2;
+
 	aux2 = pop();
 	aux2 &= mask;
+
 	/* Deixa os (64-aux2) bits iniciais com 1 */
 	aux1 <<= (64-aux2);
+
 	low = pop();
 	high = pop();
-	aux3 = (signed) convert_2x32_to_64_bits(low , high);
+	aux3 = (signed) convert_2x32_to_64_bits( low , high );
+
 	/* Verifica qual é o primeiro bit */
 	aux4 = aux3 & aux4;
+
 	aux3 >>= aux2;
+
 	if (aux4) {
 		aux3 |= aux1;
 	}
-	push((u8)aux3);
-	frameAtual->pc++;
+
+	push( (u8)aux3 );
+
+	current_frame->pc++;
 }
 
-void funct_iushr() {
+void funct_iushr()
+{
 	u4 mask = 0x1f;  /* ... 0001 1111 */
 	u4 aux1, aux2;
+
 	aux2 = pop();
 	aux2 &= mask;
+
 	aux1 = pop();
 	aux1 >>= aux2;
-	push(aux1);
-	frameAtual->pc++;
+
+	push( aux1 );
+
+	current_frame->pc++;
 }
 
-void funct_lushr() {
+void funct_lushr()
+{
 	int64_t aux1;
 	u4 mask = 0x3f;  /*... 00011 1111*/
 	u4 aux2;
 	u4 low, high;
+
 	aux2 = pop();
 	aux2 &= mask;
+
 	low = pop();
 	high = pop();
-	aux1 = (signed) convert_2x32_to_64_bits(low , high);
+	aux1 = (signed) convert_2x32_to_64_bits( low , high );
+
 	aux1 >>= aux2;
-	pushU8((u8)aux1);
-	frameAtual->pc++;
+
+	pushU8( (u8)aux1 );
+
+	current_frame->pc++;
 }
 
-void funct_iand() {
+void funct_iand()
+{
 	u4 aux1, aux2;
+
 	aux1 = pop();
 	aux2 = pop();
+
 	aux1 &= aux2;
-	push(aux1);
-	frameAtual->pc++;
+
+	push( aux1 );
+
+	current_frame->pc++;
 }
 
-void funct_land() {
+void funct_land()
+{
 	u8 aux1, aux2;
 	u4 low, high;
+
 	low = pop();
 	high = pop();
-	aux1 = convert_2x32_to_64_bits(low , high);
+	aux1 = convert_2x32_to_64_bits( low , high );
+
 	low = pop();
 	high = pop();
-	aux2 = convert_2x32_to_64_bits(low , high);
+	aux2 = convert_2x32_to_64_bits( low , high );
+
 	aux1 &= aux2;
-	pushU8(aux1);
-	frameAtual->pc++;
+
+	pushU8( aux1 );
+
+	current_frame->pc++;
 }
 
-void funct_ior() {
+void funct_ior()
+{
 	u4 aux1, aux2;
+
 	aux1 = pop();
 	aux2 = pop();
+
 	aux1 |= aux2;
-	push(aux1);
-	frameAtual->pc++;
+
+	push( aux1 );
+
+	current_frame->pc++;
 }
 
-void funct_lor() {
+void funct_lor()
+{
 	u8 aux1, aux2;
 	u4 low, high;
+
 	low = pop();
 	high = pop();
-	aux1 = convert_2x32_to_64_bits(low , high);
+	aux1 = convert_2x32_to_64_bits( low , high );
+
 	low = pop();
 	high = pop();
-	aux2 = convert_2x32_to_64_bits(low , high);
+	aux2 = convert_2x32_to_64_bits( low , high );
+
 	aux1 |= aux2;
-	pushU8(aux1);
-	frameAtual->pc++;
+
+	pushU8( aux1 );
+
+	current_frame->pc++;
 }
 
-void funct_ixor() {
+void funct_ixor()
+{
 	u4 aux1, aux2;
+
 	aux1 = pop();
 	aux2 = pop();
+
 	aux1 ^= aux2;
-	push(aux1);
-	frameAtual->pc++;
+
+	push( aux1 );
+
+	current_frame->pc++;
 }
 
-void funct_lxor() {
+void funct_lxor()
+{
 	u8 aux1, aux2;
 	u4 low, high;
+
 	low = pop();
 	high = pop();
-	aux1 = convert_2x32_to_64_bits(low , high);
+	aux1 = convert_2x32_to_64_bits( low , high );
+
 	low = pop();
 	high = pop();
-	aux2 = convert_2x32_to_64_bits(low , high);
+	aux2 = convert_2x32_to_64_bits( low , high );
+
 	aux1 ^= aux2;
-	pushU8(aux1);
-	frameAtual->pc++;
+
+	pushU8( aux1 );
+
+	current_frame->pc++;
 }
 
-void funct_iinc() {
-	u1 field_index = frameAtual->code[++(frameAtual->pc)];
-	u4 aux = frameAtual->fields[field_index];
-	u1 aux2 = frameAtual->code[++(frameAtual->pc)];
+void funct_iinc()
+{
+	u1 field_index = current_frame->code[++(current_frame->pc)];
+
+	u4 aux = current_frame->fields[field_index];
+	u1 aux2 = current_frame->code[++(current_frame->pc)];
+
 	int8_t index = (int8_t) aux;
 	int8_t constant = (int8_t) aux2;
+
 	index += constant;
-	frameAtual->fields[field_index] = (u4) index;
-	frameAtual->pc++;
+
+	current_frame->fields[field_index] = (u4) index;
+
+	current_frame->pc++;
 }
 
-void funct_i2l() {
+void funct_i2l()
+{
 	u4 mask = 0x80000000;  /* 1000 0000 ... */
 	u8 extend = 0xffffffff00000000;
+
 	u4 aux1, aux3;
 	int64_t aux2;
+
 	aux1 = pop();
+
 	/* Verifica qual é o primeiro bit */
 	aux3 = aux1 & mask;
+
 	aux2 = (int64_t) aux1;
+
 	/* Extende o 1 do sinal caso seja */
 	if (aux3) {
 		aux2 |= extend;
 	}
-	pushU8(aux2);
-	frameAtual->pc++;
+
+	pushU8( aux2 );
+
+	current_frame->pc++;
 }
 
-void funct_i2f() {
+void funct_i2f()
+{
 	u4 aux2;
 	int32_t aux;
 	float f;
+
 	aux = (int32_t)pop();
 	f = (float)aux;
+
 	memcpy(&aux2, &f, sizeof(u4));
-	push(aux2);
-	frameAtual->pc++;
+
+	push( aux2 );
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("i2f converteu para %f\n", f);
+#endif
 }
 
-void funct_i2d() {
+void funct_i2d()
+{
 	double d;
 	int32_t aux1;
 	u8 aux2;
+
 	aux1 = (int32_t)pop();
+
 	d = (double)aux1;
+
 	memcpy(&aux2, &d, sizeof(u8));
-	pushU8(aux2);
-	frameAtual->pc++;
+
+	pushU8( aux2 );
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("i2d converteu para %f\n", d);
+#endif
 }
 
-void funct_l2i() {
+void funct_l2i()
+{
 	u4 low, high;
+
 	low = pop();
 	high = pop();
+
 	push(low);
-	frameAtual->pc++;
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("l2i econverteu para %d\n", low);
+#endif
 }
 
-void funct_l2f() {
+void funct_l2f()
+{
 	u4 low, high, *aux;
 	float f;
+
 	low = pop();
 	high = pop();
+
 	f = (float) convert_cast_2x32_bits_to_double(low, high);
+
 	aux = (u4*) malloc(sizeof(u4));
 	memcpy(aux, &f, sizeof(u4));
+
 	push(*aux); /* Para recuperar o valor, deve-se fazer outro memcpy para um float */
-	frameAtual->pc++;
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("l2f converteu para %f\n", f);
+#endif
 }
 
-void funct_l2d() {
+void funct_l2d()
+{
 	u4 low, high, aux_4;
 	u8 *aux_8;
 	double d;
+
 	low = pop();
 	high = pop();
+
 	d =  convert_cast_2x32_bits_to_double(low, high);
+
 	aux_8 = (u8*) malloc(sizeof(u8));
 	memcpy(aux_8, &d, 2*sizeof(u4));
 	aux_4 = *aux_8 >> 32;
 	push(aux_4);
+
 	aux_4 = *aux_8;
 	push(aux_4);
-	frameAtual->pc++;
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("l2d converteu para %f\n", d);
+#endif
 }
 
-void funct_f2i() {
+void funct_f2i()
+{
 	u4 aux;
 	float f;
+
 	aux = pop();
 	memcpy(&f, &aux, sizeof(u4));
+
 	aux = (u4) f;
-	push(aux);
-	frameAtual->pc++;
+	push( aux );
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("f2i converteu para %d\n", aux);
+#endif
 }
 
-void funct_f2l() {
+void funct_f2l()
+{
 	u4 aux_4;
 	u8 aux_8;
 	float f;
+
 	aux_4 = pop();
 	memcpy(&f, &aux_4, sizeof(u4));
+
 	aux_8 = (u8) f;
-	pushU8(aux_8);
-	frameAtual->pc++;
+	pushU8( aux_8 );
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("f2l converteu para %ld\n", aux_8);
+#endif
 }
 
-void funct_f2d() {
+void funct_f2d()
+{
 	u4 aux_4;
 	u8 aux_8;
 	float f;
 	double d;
+
 	aux_4 = pop();
 	memcpy(&f, &aux_4, sizeof(u4));
+
 	d = (double) f;
 	memcpy(&aux_8, &d, 2*sizeof(u4));
-	pushU8(aux_8);
-	frameAtual->pc++;
+	pushU8( aux_8 );
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("f2d converteu para %f\n", d);
+#endif
 }
 
-void funct_d2i() {
+void funct_d2i()
+{
 	u4 low, high;
 	int32_t resp;
 	u8 aux;
 	double d;
+
 	low = pop();
 	high = pop();
 	aux = convert_2x32_to_64_bits(low, high);
 	memcpy(&d, &aux, 2*sizeof(u4));
+
 	resp = (int32_t) d;
-	push((u4)resp);
-	frameAtual->pc++;
+	push( (u4)resp );
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("d2i converteu para %d\n", resp);
+#endif
 }
 
-void funct_d2l() {
+void funct_d2l()
+{
 	u4 low, high;
 	u8 aux;
 	double d;
+
 	low = pop();
 	high = pop();
 	aux = convert_2x32_to_64_bits(low, high);
+
 	memcpy(&d, &aux, 2*sizeof(u4));
 	aux = (u8) d;
-	push(aux);
-	frameAtual->pc++;
+	push( aux );
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("d2l converteu para %ld\n", aux);
+#endif
 }
 
-void funct_d2f() {
+void funct_d2f()
+{
 	u4 low, high, resp;
 	u8 aux;
 	double d;
 	float f;
+
 	low = pop();
 	high = pop();
 	aux = convert_2x32_to_64_bits(low, high);
+
 	memcpy(&d, &aux, 2*sizeof(u4));
 	f = (float) d;
+
 	memcpy(&resp, &f, sizeof(u4));
-	push(resp);
-	frameAtual->pc++;
+	push( resp );
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("d2f converteu para %f\n", f);
+#endif
 }
 
-void funct_i2b() {
+void funct_i2b()
+{
 	int8_t aux;
 	int32_t aux2;
+
 	aux = (int8_t) pop();
 	aux2 = (int32_t)aux;
-	push((u4)aux2);
-	frameAtual->pc++;
+
+	push( (u4)aux2 );
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("i2b converteu para %c\n", aux);
+#endif
 }
 
-void funct_i2c() {
+void funct_i2c()
+{
 	int16_t aux;
 	int32_t aux2;
+
 	aux = (int16_t) pop();
 	aux2 = (int32_t)aux;
-	push((u4)aux2);
-	frameAtual->pc++;
+
+	push( (u4)aux2 );
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("i2c converteu para %hu\n", aux);
+#endif
 }
 
-void funct_i2s() {
+void funct_i2s()
+{
 	int16_t aux;
 	int32_t aux2;
+
 	aux = (int16_t) pop();
 	aux2 = (int32_t)aux;
-	push((u4)aux2);
-	frameAtual->pc++;
+
+	push( (u4)aux2 );
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("i2c converteu para %hu\n", aux);
+#endif
 }
 
-void funct_lcmp() {
+void funct_lcmp()
+{
 	int32_t resp;
 	u4 low, high;
 	u8 aux1, aux2;
+
 	low = pop();
 	high = pop();
 	aux2 = convert_2x32_to_64_bits(low, high);
+
 	low = pop();
 	high = pop();
 	aux1 = convert_2x32_to_64_bits(low, high);
-	if (aux1 == aux2) {
+
+	if ( aux1 == aux2 )
 		resp = 0;
-	} else if (aux1 > aux2) {
+	else if ( aux1 > aux2 )
 		resp = 1;
-	} else {
+	else
 		resp = -1;
-	}
+
 	push((u4) resp);
-	frameAtual->pc++;
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("lcmp empilhou %d\n", resp);
+#endif
 }
 
-void funct_fcmpl() {
+void funct_fcmpl()
+{
 	int32_t resp;
 	u4 aux;
 	float f1, f2;
+
 	aux = pop();
 	memcpy(&f2, &aux, sizeof(u4));
+
 	aux = pop();
 	memcpy(&f1, &aux, sizeof(u4));
-	if (f1 == f2) {
+
+	if ( f1 == f2 )
 		resp = 0;
-	} else if (f1 > f2) {
+	else if ( f1 > f2 )
 		resp = 1;
-	} else {
+	else
 		resp = -1;
-	}
+
 	push((u4) resp);
-	frameAtual->pc++;
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("fcmpl empilhou %d\n", resp);
+#endif
 }
 
-void funct_fcmpg() {
+void funct_fcmpg()
+{
 	int32_t resp;
 	u4 aux;
 	float f1, f2;
+
 	aux = pop();
 	memcpy(&f2, &aux, sizeof(u4));
+
 	aux = pop();
 	memcpy(&f1, &aux, sizeof(u4));
-	if (f1 == f2) {
+
+	if ( f1 == f2 )
 		resp = 0;
-	} else if (f1 > f2) {
+	else if ( f1 > f2 )
 		resp = 1;
-	} else {
+	else
 		resp = -1;
-	}
+
 	push((u4) resp);
-	frameAtual->pc++;
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("fcmpg empilhou %d\n", resp);
+#endif
 }
 
-void funct_dcmpl() {
+void funct_dcmpl()
+{
 	int32_t resp;
 	u4 low, high;
 	u8 aux;
 	double d1, d2;
+
 	low = pop();
 	high = pop();
 	aux = convert_2x32_to_64_bits(low, high);
 	memcpy(&d2, &aux, 2*sizeof(u4));
+
 	low = pop();
 	high = pop();
 	aux = convert_2x32_to_64_bits(low, high);
 	memcpy(&d1, &aux, 2*sizeof(u4));
-	if (d1 == d2) {
+
+	if ( d1 == d2 )
 		resp = 0;
-	} else if (d1 > d2) {
+	else if ( d1 > d2 )
 		resp = 1;
-	} else {
+	else
 		resp = -1;
-	}
+
 	push((u4) resp);
-	frameAtual->pc++;
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("dcmpl empilhou %d\n", resp);
+#endif
 }
 
-void funct_dcmpg() {
+void funct_dcmpg()
+{
 	int32_t resp;
 	u4 low, high;
 	u8 aux;
 	double d1, d2;
+
 	low = pop();
 	high = pop();
 	aux = convert_2x32_to_64_bits(low, high);
 	memcpy(&d2, &aux, 2*sizeof(u4));
+
 	low = pop();
 	high = pop();
 	aux = convert_2x32_to_64_bits(low, high);
 	memcpy(&d1, &aux, 2*sizeof(u4));
-	if (d1 == d2) {
+
+	if ( d1 == d2 )
 		resp = 0;
-	} else if (d1 > d2) {
+	else if ( d1 > d2 )
 		resp = 1;
-	} else {
+	else
 		resp = -1;
-	}
+
 	push((u4) resp);
-	frameAtual->pc++;
+
+	current_frame->pc++;
+
+#ifdef DEBUG
+	printf("dcmpg empilhou %d\n", resp);
+#endif
 }
 
-void funct_ifeq() {
+void funct_ifeq()
+{
 	int32_t aux;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux = (signed) pop();
-	if (aux == 0) {
+
+	if ( aux == 0 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("ifeq fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("ifeq NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_ifne() {
+void funct_ifne()
+{
 	int32_t aux;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux = (signed) pop();
-	if (aux != 0) {
+
+	if ( aux != 0 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("ifne fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("ifne NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_iflt() {
+void funct_iflt()
+{
 	int32_t aux;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux = (signed) pop();
-	if (aux < 0) {
+
+	if ( aux < 0 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("iflt fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("iflt NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_ifge() {
+void funct_ifge()
+{
 	int32_t aux;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux = (signed) pop();
-	if (aux >= 0) {
+
+	if ( aux >= 0 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("ifge fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("ifge NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_ifgt() {
+void funct_ifgt()
+{
 	int32_t aux;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux = (signed) pop();
-	if (aux > 0) {
+
+	if ( aux > 0 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("ifgt fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("ifgt NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_ifle() {
+void funct_ifle()
+{
 	int32_t aux;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux = (signed) pop();
-	if (aux <= 0) {
+
+	if ( aux <= 0 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("ifle fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("ifle NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_if_icmpeq() {
+void funct_if_icmpeq()
+{
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux1 = (signed) pop();
 	aux2 = (signed) pop();
-	if (aux1 == aux2) {
+
+	if ( aux1 == aux2 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("if_icmpeq fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("if_icmpeq NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_if_icmpne() {
+void funct_if_icmpne()
+{
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux1 = (signed) pop();
 	aux2 = (signed) pop();
-	if (aux1 != aux2) {
+
+	if ( aux1 != aux2 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("if_icmpne fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("if_icmpne NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_if_icmplt() {
+void funct_if_icmplt()
+{
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux2 = (signed) pop();
 	aux1 = (signed) pop();
-	if (aux1 < aux2) {
+
+	if ( aux1 < aux2 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("if_icmplt fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("if_icmplt NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_if_icmpge() {
+void funct_if_icmpge()
+{
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux2 = (signed) pop();
 	aux1 = (signed) pop();
-	if (aux1 >= aux2) {
+
+	if ( aux1 >= aux2 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
 		printf("if_icmpge fez o branch para o PC = %d\n", current_frame->pc);
-	} else {
-		frameAtual->pc += 3;
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("if_icmpge NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_if_icmpgt() {
+void funct_if_icmpgt()
+{
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux2 = (signed) pop();
 	aux1 = (signed) pop();
-	if (aux1 > aux2) {
+
+#ifdef DEBUG
+	printf("if_icmpgt %d > %d?\n", aux1, aux2);
+#endif
+
+	if ( aux1 > aux2 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("if_icmpgt fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("if_icmpgt NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_if_icmple() {
+void funct_if_icmple()
+{
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux2 = (signed) pop();
 	aux1 = (signed) pop();
-	if (aux1 <= aux2) {
+
+	if ( aux1 <= aux2 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("if_icmple fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("if_icmple NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_if_acmpeq() {
+void funct_if_acmpeq()
+{
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux2 = (signed) pop();
 	aux1 = (signed) pop();
-	if (aux1 == aux2) {
+
+	if ( aux1 == aux2 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("if_acmpeq fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("if_acmpeq NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_if_acmpne() {
+void funct_if_acmpne()
+{
 	int32_t aux1, aux2;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	aux2 = (signed) pop();
 	aux1 = (signed) pop();
-	if (aux1 != aux2) {
+
+	if ( aux1 != aux2 )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("if_acmpne fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("if_acmpne NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_goto() {
+void funct_goto()
+{
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-	frameAtual->pc += offset;
+	current_frame->pc += offset;
+
+#ifdef DEBUG
+	printf("goto - novo PC = %d\n", current_frame->pc);
+#endif
 }
 
-void funct_jsr() {
+void funct_jsr()
+{
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
-	push((frameAtual->pc) + 3); /* pc da proxima instrucao */
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+
+	push((current_frame->pc) + 3); /* pc da proxima instrucao */
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+
 	offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-	frameAtual->pc += offset;
+	current_frame->pc += offset;
+
+#ifdef DEBUG
+	printf("jsr - novo PC = %d\n", current_frame->pc);
+#endif
 }
 
-void funct_ret() {
+void funct_ret()
+{
 	u2 index;
-	frameAtual->pc++;
-	index = frameAtual->code[frameAtual->pc];
-	if (next_is_wide == 1) {
+
+	current_frame->pc++;
+	index = current_frame->code[current_frame->pc];
+
+	if (next_is_wide == 1){
 		index = index << 8;
-		frameAtual->pc++;
-		index = index | frameAtual->code[frameAtual->pc];
+		current_frame->pc++;
+		index = index | current_frame->code[current_frame->pc];
 		next_is_wide = 0;
 	}
-	frameAtual->pc = frameAtual->fields[index];
+
+	current_frame->pc = current_frame->fields[index];
+
+#ifdef DEBUG
+	printf("ret - novo PC: %d\n", current_frame->pc);
+#endif
 }
 
-void funct_tableswitch() {
+void funct_tableswitch()
+{
 	int32_t default_, high, low, index;
 	int32_t *tableswitch;
 	u4 byte1, byte2, byte3, byte4, tableswitch_address, target, table_size, i, offset;
-	index = (int32_t)pop();
-	tableswitch_address = frameAtual->pc;
-	/* pula os padding bytes */
-	while ((frameAtual->pc + 1) % 4 != 0) {
-		frameAtual->pc++;
-	}
-	frameAtual->pc++;
 
-	byte1 = frameAtual->code[frameAtual->pc++];
-	byte2 = frameAtual->code[frameAtual->pc++];
-	byte3 = frameAtual->code[frameAtual->pc++];
-	byte4 = frameAtual->code[frameAtual->pc++];
+	index = (int32_t)pop();
+	tableswitch_address = current_frame->pc;
+
+	/* pula os padding bytes */
+	while ((current_frame->pc + 1) % 4 != 0)
+		current_frame->pc++;
+	current_frame->pc++;
+
+	byte1 = current_frame->code[current_frame->pc++];
+	byte2 = current_frame->code[current_frame->pc++];
+	byte3 = current_frame->code[current_frame->pc++];
+	byte4 = current_frame->code[current_frame->pc++];
 
 	default_ = ((byte1 & 0xFF) << 24) | ((byte2 & 0xFF) << 16) | ((byte3 & 0xFF) << 8) | (byte4 & 0xFF);
 
-	byte1 = frameAtual->code[frameAtual->pc++];
-	byte2 = frameAtual->code[frameAtual->pc++];
-	byte3 = frameAtual->code[frameAtual->pc++];
-	byte4 = frameAtual->code[frameAtual->pc++];
+	byte1 = current_frame->code[current_frame->pc++];
+	byte2 = current_frame->code[current_frame->pc++];
+	byte3 = current_frame->code[current_frame->pc++];
+	byte4 = current_frame->code[current_frame->pc++];
 
 	low = ((byte1 & 0xFF) << 24) | ((byte2 & 0xFF) << 16) | ((byte3 & 0xFF) << 8) | (byte4 & 0xFF);
 
-	byte1 = frameAtual->code[frameAtual->pc++];
-	byte2 = frameAtual->code[frameAtual->pc++];
-	byte3 = frameAtual->code[frameAtual->pc++];
-	byte4 = frameAtual->code[frameAtual->pc++];
+	byte1 = current_frame->code[current_frame->pc++];
+	byte2 = current_frame->code[current_frame->pc++];
+	byte3 = current_frame->code[current_frame->pc++];
+	byte4 = current_frame->code[current_frame->pc++];
 
 	high = ((byte1 & 0xFF) << 24) | ((byte2 & 0xFF) << 16) | ((byte3 & 0xFF) << 8) | (byte4 & 0xFF);
 
 	table_size = high - low + 1;
 	tableswitch = calloc(sizeof(u4), table_size);
 
-	for (i = 0; i < table_size; i++) {
-		byte1 = frameAtual->code[frameAtual->pc++];
-		byte2 = frameAtual->code[frameAtual->pc++];
-		byte3 = frameAtual->code[frameAtual->pc++];
-		byte4 = frameAtual->code[frameAtual->pc++];
+#ifdef DEBUG
+	printf("TABLESWITCH\n-----------\n");
+	printf("table size: %d\n", table_size);
+#endif
+	for (i = 0; i < table_size; i++)
+	{
+		byte1 = current_frame->code[current_frame->pc++];
+		byte2 = current_frame->code[current_frame->pc++];
+		byte3 = current_frame->code[current_frame->pc++];
+		byte4 = current_frame->code[current_frame->pc++];
+
 		tableswitch[i] = ((byte1 & 0xFF) << 24) | ((byte2 & 0xFF) << 16) | ((byte3 & 0xFF) << 8) | (byte4 & 0xFF);
+#ifdef DEBUG
+		printf("table %d: %d\n", i, tableswitch[i]);
+#endif
 	}
 
-	if (index < low || index > high) {
+	if (index < low || index > high)
 		target = tableswitch_address + default_;
-	} else {
+	else
+	{
 		offset = tableswitch[index - low];
 		target = tableswitch_address + offset;
 	}
 
-	frameAtual->pc = target;
+	current_frame->pc = target;
+#ifdef DEBUG
+	printf("new PC: %d\n", current_frame->pc);
+#endif
 }
 
-void funct_lookupswitch() {
+void funct_lookupswitch()
+{
 	int32_t default_, npairs, key;
 	int32_t *match, *offset;
 	u4 byte1, byte2, byte3, byte4, target, lookupswitch_address, i;
 	u1 found;
 
 	key = (int32_t)pop();
-	lookupswitch_address = frameAtual->pc;
+	lookupswitch_address = current_frame->pc;
 
 	/* pula os padding bytes */
-	while ((frameAtual->pc + 1) % 4 != 0) {
-		frameAtual->pc++;
-	}
-	frameAtual->pc++;
+	while ((current_frame->pc + 1) % 4 != 0)
+		current_frame->pc++;
+	current_frame->pc++;
 
-	byte1 = frameAtual->code[frameAtual->pc++];
-	byte2 = frameAtual->code[frameAtual->pc++];
-	byte3 = frameAtual->code[frameAtual->pc++];
-	byte4 = frameAtual->code[frameAtual->pc++];
+	byte1 = current_frame->code[current_frame->pc++];
+	byte2 = current_frame->code[current_frame->pc++];
+	byte3 = current_frame->code[current_frame->pc++];
+	byte4 = current_frame->code[current_frame->pc++];
 
 	default_ = ((byte1 & 0xFF) << 24) | ((byte2 & 0xFF) << 16) | ((byte3 & 0xFF) << 8) | (byte4 & 0xFF);
 
-	byte1 = frameAtual->code[frameAtual->pc++];
-	byte2 = frameAtual->code[frameAtual->pc++];
-	byte3 = frameAtual->code[frameAtual->pc++];
-	byte4 = frameAtual->code[frameAtual->pc++];
+	byte1 = current_frame->code[current_frame->pc++];
+	byte2 = current_frame->code[current_frame->pc++];
+	byte3 = current_frame->code[current_frame->pc++];
+	byte4 = current_frame->code[current_frame->pc++];
 
 	npairs = ((byte1 & 0xFF) << 24) | ((byte2 & 0xFF) << 16) | ((byte3 & 0xFF) << 8) | (byte4 & 0xFF);
 
 	match = calloc(sizeof(int32_t), npairs);
 	offset = calloc(sizeof(int32_t), npairs);
-	for (i = 0; i < npairs; i++) {
-		byte1 = frameAtual->code[frameAtual->pc++];
-		byte2 = frameAtual->code[frameAtual->pc++];
-		byte3 = frameAtual->code[frameAtual->pc++];
-		byte4 = frameAtual->code[frameAtual->pc++];
+#ifdef DEBUG
+	printf("TABLESWITCH\n-----------\n");
+	printf("npairs : %d\n", npairs);
+#endif
+	for (i = 0; i < npairs; i++)
+	{
+		byte1 = current_frame->code[current_frame->pc++];
+		byte2 = current_frame->code[current_frame->pc++];
+		byte3 = current_frame->code[current_frame->pc++];
+		byte4 = current_frame->code[current_frame->pc++];
 
 		match[i] = ((byte1 & 0xFF) << 24) | ((byte2 & 0xFF) << 16) | ((byte3 & 0xFF) << 8) | (byte4 & 0xFF);
 
-		byte1 = frameAtual->code[frameAtual->pc++];
-		byte2 = frameAtual->code[frameAtual->pc++];
-		byte3 = frameAtual->code[frameAtual->pc++];
-		byte4 = frameAtual->code[frameAtual->pc++];
+		byte1 = current_frame->code[current_frame->pc++];
+		byte2 = current_frame->code[current_frame->pc++];
+		byte3 = current_frame->code[current_frame->pc++];
+		byte4 = current_frame->code[current_frame->pc++];
 
 		offset[i] = ((byte1 & 0xFF) << 24) | ((byte2 & 0xFF) << 16) | ((byte3 & 0xFF) << 8) | (byte4 & 0xFF);
+#ifdef DEBUG
+		printf("match-offset %d: %d-%d\n", i, match[i], offset[i]);
+#endif
 	}
 
 	i = 0;
 	found = 0;
-	while ((i < npairs) && (!found)) {
-		if (match[i] == key) {
+	while ((i < npairs) && (!found))
+	{
+		if (match[i] == key)
 			found = 1;
-		}
 		i++;
 	}
 	i--;
 
-	if (found) {
+	if (found)
 		target = offset[i] + lookupswitch_address;
-	} else {
+	else
 		target = default_ + lookupswitch_address;
-	}
 
-	frameAtual->pc = target;
+	current_frame->pc = target;
+#ifdef DEBUG
+	printf("new PC: %d\n", current_frame->pc);
+#endif
 }
 
-void funct_ireturn() {
+void funct_ireturn()
+{
 	u4 value;
+
 	value = pop();
+
 	returnType = RETURN_32bits;
 	returnValue = (u8)value;
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_lreturn() {
+void funct_lreturn()
+{
 	u4 low, high;
+
 	low = pop();
 	high = pop();
+
 	returnType = RETURN_64bits;
 	returnValue = convert_2x32_to_64_bits(low, high);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_freturn() {
+void funct_freturn()
+{
 	u4 value;
+
 	value = pop();
+
 	returnType = RETURN_32bits;
 	returnValue = (u8)value;
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_dreturn() {
+void funct_dreturn()
+{
 	u4 low, high;
+
 	low = pop();
 	high = pop();
+
 	returnType = RETURN_64bits;
 	returnValue = convert_2x32_to_64_bits(low, high);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_areturn() {
+void funct_areturn()
+{
 	u4 value;
+
 	value = pop();
+
 	returnType = RETURN_32bits;
 	returnValue = (u8)value;
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_return() {
+void funct_return()
+{
 	returnType = RETURN_none;
 	returnValue = 0;
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_getstatic() {
+void funct_getstatic()
+{
 	u1 index1, index2;
 	u2 index, name_type_index;
 	u4 class_index_tmp;
@@ -2278,22 +3408,22 @@ void funct_getstatic() {
 	char *class_name, *name, *type;
 
 
-	index1 = (u1) frameAtual->code[++(frameAtual->pc)];
-	index2 = (u1) frameAtual->code[++(frameAtual->pc)];
+	index1 = (u1) current_frame->code[++(current_frame->pc)];
+	index2 = (u1) current_frame->code[++(current_frame->pc)];
 
 	index = ((u2)index1 << 8) | (u2)index2;
 
-	class_index_tmp = ((struct CONSTANT_Fieldref_info *)(frameAtual->constant_pool[index-1]))->class_index;
+	class_index_tmp = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->class_index;
 
-	class_name = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constant_pool[class_index_tmp-1]))->name_index);
+	class_name = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
 
-	name_type_index = ((struct CONSTANT_Fieldref_info *)(frameAtual->constant_pool[index-1]))->name_and_type_index;
+	name_type_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
 
-	name = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constant_pool[name_type_index-1]))->name_index);
-	type = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constant_pool[name_type_index-1]))->descriptor_index);
+	name = getName(current_frame->class,
+			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->name_index);
+	type = getName(current_frame->class,
+			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->descriptor_index);
 
 
 	/* -1 informa que nao encontrou o field na casse corrente */
@@ -2303,31 +3433,37 @@ void funct_getstatic() {
 
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
+#ifdef DEBUG
+		printf("getstatic Classe nao reconhecida (%s)\n", class_name);
+#endif
+
 		if (type[0] == 'J' || type[0] == 'D') {
-			pushU8(0);
+			pushU8( 0 );
 		} else {
-			push(0);
+			push( 0 );
 		}
 
-		frameAtual->pc++;
+		current_frame->pc++;
 		return;
 	}
 
-	class_index = carregarClass(class_name);
 
-	value = getStaticFieldValue(class_index , field_index);
+	class_index = carregarClass( class_name );
+
+	value = getStaticFieldValue( class_index , field_index );
 
 	/* Verifica se eh Double ou Long para saber quantos bits colocar na pilha */
 	if (type[0] == 'J' || type[0] == 'D') {
-		pushU8(value);
+		pushU8( value );
 	} else {
-		push((u4)value);
+		push( (u4)value );
 	}
 
-	frameAtual->pc++;
+	current_frame->pc++;
 }
 
-void funct_putstatic() {
+void funct_putstatic()
+{
 	u1 index1, index2;
 	u2 index, name_type_index;
 	u4 class_index_tmp;
@@ -2336,30 +3472,36 @@ void funct_putstatic() {
 	u8 value;
 	char *class_name, *name, *type;
 
-	index1 = (u1) frameAtual->code[++(frameAtual->pc)];
-	index2 = (u1) frameAtual->code[++(frameAtual->pc)];
+
+	index1 = (u1) current_frame->code[++(current_frame->pc)];
+	index2 = (u1) current_frame->code[++(current_frame->pc)];
 
 	index = ((u2)index1 << 8) | (u2)index2;
 
-	class_index_tmp = ((struct CONSTANT_Fieldref_info *)(frameAtual->constant_pool[index-1]))->class_index;
+	class_index_tmp = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->class_index;
 
-	class_name = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constant_pool[class_index_tmp-1]))->name_index);
+	class_name = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
 
-	name_type_index = ((struct CONSTANT_Fieldref_info *)(frameAtual->constant_pool[index-1]))->name_and_type_index;
+	name_type_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
 
-	name = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constant_pool[name_type_index-1]))->name_index);
-	type = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constant_pool[name_type_index-1]))->descriptor_index);
+	name = getName(current_frame->class,
+			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->name_index);
+	type = getName(current_frame->class,
+			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->descriptor_index);
 
 	/* -1 informa que nao encontrou o field na casse corrente */
 	while ((field_index = getFieldIndexByNameAndDesc(class_name, name, strlen(name), type, strlen(type))) == -1) {
 		class_name = getParentName(getClassByName(class_name));
 	}
 
+
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
+#ifdef DEBUG
+		printf("putstatic Classe nao reconhecida (%s)\n", class_name);
+#endif
+
 		if (type[0] == 'J' || type[0] == 'D') {
 			pop();
 			pop();
@@ -2367,25 +3509,30 @@ void funct_putstatic() {
 			pop();
 		}
 
-		frameAtual->pc++;
+		current_frame->pc++;
 		return;
 	}
+
 
 	/* Pega o valor a ser inserido no field static */
 	if (type[0] == 'J' || type[0] == 'D') {
 		value1 = pop();
 		value2 = pop();
-		value = convert_2x32_to_64_bits(value1 , value2);
+
+		value = convert_2x32_to_64_bits( value1 , value2 );
 	} else {
 		value = (u8) pop();
 	}
 
-	class_index = carregarClass(class_name);
-	setStaticFieldValue(class_index , field_index , value);
-	frameAtual->pc++;
+	class_index = carregarClass( class_name );
+
+	setStaticFieldValue( class_index , field_index , value );
+
+	current_frame->pc++;
 }
 
-void funct_getfield() {
+void funct_getfield()
+{
 	u1 low, high;
 	u4 index;
 	int32_t class_index, field_index, name_index;
@@ -2396,26 +3543,29 @@ void funct_getfield() {
 	u4 value_aux;
 	u8 value;
 
-	high = frameAtual->code[++(frameAtual->pc)];
-	low = frameAtual->code[++(frameAtual->pc)];
+	high = current_frame->code[++(current_frame->pc)];
+	low = current_frame->code[++(current_frame->pc)];
 
 	index = convert_2x8_to_32_bits(low, high);
 
-	class_index = ((struct CONSTANT_Fieldref_info *)(frameAtual->constant_pool[index-1]))->class_index;
 
-	class_name = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constant_pool[class_index-1]))->name_index);
+	class_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->class_index;
+
+	class_name = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index-1]))->name_index);
 
 
-	name_type_index = ((struct CONSTANT_Fieldref_info *)(frameAtual->constant_pool[index-1]))->name_and_type_index;
+	name_type_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
 
-	name = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constant_pool[name_type_index-1]))->name_index);
-	type = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constant_pool[name_type_index-1]))->descriptor_index);
+	name = getName(current_frame->class,
+			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->name_index);
+	type = getName(current_frame->class,
+			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->descriptor_index);
+
 
 	/* Pega a referencia do objeto que tera o field alterado de valor */
 	objeto = (struct Object *) pop();
+
 
 	/* -1 informa que nao encontrou o field na casse corrente */
 	while ((field_index = getFieldIndexByNameAndDesc(class_name, name, strlen(name), type, strlen(type))) == -1) {
@@ -2424,32 +3574,38 @@ void funct_getfield() {
 
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
+#ifdef DEBUG
+		printf("getfield Classe nao reconhecida (%s)\n", class_name);
+#endif
+
 		if (type[0] == 'J' || type[0] == 'D') {
-			pushU8(0);
+			pushU8( 0 );
 		} else {
-			push(0);
+			push( 0 );
 		}
 
-		frameAtual->pc++;
+		current_frame->pc++;
 		return;
 	}
 
-	name_index = frameAtual->class->fields[field_index].name_index;
+
+	name_index = current_frame->class->fields[field_index].name_index;
 
 	/* Pega o valor do field */
 	if (type[0] == 'J' || type[0] == 'D') {
 		value = getObjectFieldWide(objeto, name_index);
-		pushU8(value);
+		pushU8( value );
 
 	} else {
 		value_aux = getObjectField(objeto, name_index);
-		push(value_aux);
+		push( value_aux );
 	}
 
-	frameAtual->pc++;
+	current_frame->pc++;
 }
 
-void funct_putfield() {
+void funct_putfield()
+{
 	u1 low, high;
 	u4 index;
 	int32_t class_index, field_index, name_index;
@@ -2461,30 +3617,38 @@ void funct_putfield() {
 	u8 value;
 
 
-	high = frameAtual->code[++(frameAtual->pc)];
-	low = frameAtual->code[++(frameAtual->pc)];
+	high = current_frame->code[++(current_frame->pc)];
+	low = current_frame->code[++(current_frame->pc)];
 
 	index = convert_2x8_to_32_bits(low, high);
 
-	class_index = ((struct CONSTANT_Fieldref_info *)(frameAtual->constant_pool[index-1]))->class_index;
 
-	class_name = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constant_pool[class_index-1]))->name_index);
+	class_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->class_index;
 
-	name_type_index = ((struct CONSTANT_Fieldref_info *)(frameAtual->constant_pool[index-1]))->name_and_type_index;
+	class_name = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index-1]))->name_index);
 
-	name = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constant_pool[name_type_index-1]))->name_index);
-	type = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constant_pool[name_type_index-1]))->descriptor_index);
+
+	name_type_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
+
+	name = getName(current_frame->class,
+			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->name_index);
+	type = getName(current_frame->class,
+			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->descriptor_index);
+
 
 	/* -1 informa que nao encontrou o field na casse corrente */
 	while ((field_index = getFieldIndexByNameAndDesc(class_name, name, strlen(name), type, strlen(type))) == -1) {
 		class_name = getParentName(getClassByName(class_name));
 	}
 
+
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
+#ifdef DEBUG
+		printf("putfield Classe nao reconhecida (%s)\n", class_name);
+#endif
+
 		if (type[0] == 'J' || type[0] == 'D') {
 			pop();
 			pop();
@@ -2492,32 +3656,38 @@ void funct_putfield() {
 			pop();
 		}
 
-		frameAtual->pc++;
+		current_frame->pc++;
 		return;
 	}
 
-	name_index = frameAtual->class->fields[field_index].name_index;
+
+	name_index = current_frame->class->fields[field_index].name_index;
 
 	/* Pega o valor a ser colocado no field */
 	if (type[0] == 'J' || type[0] == 'D') {
 		value1 = pop();
 		value2 = pop();
+
 		/* Pega a referencia do objeto que tera o field alterado de valor */
 		objeto = (struct Object *) pop();
+
 		value = convert_2x32_to_64_bits(value1, value2);
 		setObjectFieldWide(objeto, name_index, value);
 
 	} else {
 		value1 = pop();
+
 		/* Pega a referencia do objeto que tera o field alterado de valor */
 		objeto = (struct Object *) pop();
+
 		setObjectField(objeto, name_index, value1);
 	}
 
-	frameAtual->pc++;
+	current_frame->pc++;
 }
 
-void funct_invokevirtual() {
+void funct_invokevirtual()
+{
 	u4 index, value_high, value_low, vU4, array_ref;
 	u8 value;
 	u1 low, high;
@@ -2534,27 +3704,29 @@ void funct_invokevirtual() {
 	struct ClassFile *class;
 	method_info *method;
 
-	high = frameAtual->code[++(frameAtual->pc)];
-	low = frameAtual->code[++(frameAtual->pc)];
+
+	high = current_frame->code[++(current_frame->pc)];
+	low = current_frame->code[++(current_frame->pc)];
 
 	index = convert_2x8_to_32_bits(low, high);
 
-	class_index_tmp = ((struct CONSTANT_Methodref_info *)(frameAtual->constant_pool[index-1]))->class_index;
 
-	class_name = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constant_pool[class_index_tmp-1]))->name_index);
+	class_index_tmp = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->class_index;
 
-	name_type_index = ((struct CONSTANT_Methodref_info *)(frameAtual->constant_pool[index-1]))->name_and_type_index;
+	class_name = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
 
-	method_name_index = ((struct CONSTANT_NameAndType_info *)(frameAtual->constant_pool[name_type_index-1]))->name_index;
-	method_desc_index = ((struct CONSTANT_NameAndType_info *)(frameAtual->constant_pool[name_type_index-1]))->descriptor_index;
+	name_type_index = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
 
-	method_desc = getName(frameAtual->class, method_desc_index);
-	method_name = getName(frameAtual->class, method_name_index);
+	method_name_index = ((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->name_index;
+	method_desc_index = ((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->descriptor_index;
+
+	method_desc = getName(current_frame->class, method_desc_index);
+	method_name = getName(current_frame->class, method_name_index);
 
 	/* se for print ou println */
-	if ((strcmp(class_name, "java/io/PrintStream") == 0)
-			&& ((strcmp(method_name,"print") == 0) || (strcmp(method_name,"println") == 0))
+	if ( (strcmp(class_name, "java/io/PrintStream") == 0)
+			&& ((strcmp(method_name,"print") == 0) || (strcmp(method_name,"println") == 0) )
 	){
 
 		/* LONG */
@@ -2573,25 +3745,26 @@ void funct_invokevirtual() {
 
 			/* BOOLEAN */
 		} else if(strstr(method_desc, "Z") != NULL) {
-			if (pop()) {
+
+			if (pop())
 				printf("true");
-			} else {
+			else
 				printf("false");
-			}
+
 			/* CHAR */
 		} else if(strstr(method_desc, "C") != NULL) {
 
 			/* ARRAY */
-			if(strstr(method_desc, "[C") != NULL) {
+			if(strstr(method_desc, "[C") != NULL){
 
 				array_ref = pop();
 
-				for (i = 0; i < numArrays; i++) {
+				for (i = 0; i < numArrays; i++){
 					if (arrayLength[i].ref == array_ref)
 						break;
 				}
 
-				for (j = 0; j < arrayLength[i].size; j++) {
+				for (j = 0; j < arrayLength[i].size; j++){
 					printf("%c", (int16_t)array_ref +i);
 				}
 
@@ -2618,21 +3791,23 @@ void funct_invokevirtual() {
 			/* OBJECT */
 		}else if(strstr(method_desc, "Ljava/lang/Object") != NULL) {
 			printf("%p", (void *)pop());
-			/* chamar método toString do object e depois toCharArray() */
+			/* chamar método toString do object e depois toCharArray()*/
 		}
 
 		if (strcmp(method_name,"println") == 0)
 			printf("\n");
 
 	} else {
-		class_index = carregarClass(class_name);
-		class = getClassByIndex(class_index);
 
-		while (class != NULL && (method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index)) == NULL) {
+		class_index = carregarClass( class_name );
+		class = getClassByIndex( class_index );
+
+
+		while (class != NULL && (method = getMethodByNameAndDescIndex(class, current_frame->class, name_type_index)) == NULL) {
 			class_name = getParentName(class);
 
-			class_index = carregarClass(class_name);
-			class = getClassByIndex(class_index);
+			class_index = carregarClass( class_name );
+			class = getClassByIndex( class_index );
 		}
 
 		if (class == NULL) {
@@ -2640,7 +3815,7 @@ void funct_invokevirtual() {
 			exit(1);
 		}
 
-		numParams = getNumParameters(class , method);
+		numParams = getNumParameters( class , method );
 
 		fields_tmp = calloc(sizeof(u4),numParams+1);
 		for (i = numParams; i >= 0; i--) {
@@ -2654,16 +3829,16 @@ void funct_invokevirtual() {
 			length = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->length;
 
 			if (bytes[length-1] == 'D' || bytes[length-1] == 'J') {
-				pushU8(0);
+				pushU8( 0 );
 			} else if (bytes[length-1] != 'V') {
-				push(0);
+				push( 0 );
 			}
 
 		} else {
 			prepararMetodo(class, method);
 
 			for (i = numParams; i >= 0; i--) {
-				frameAtual->fields[i] = fields_tmp[i];
+				current_frame->fields[i] = fields_tmp[i];
 			}
 
 			runMethod();
@@ -2671,10 +3846,11 @@ void funct_invokevirtual() {
 
 	}
 
-	frameAtual->pc++;
+	current_frame->pc++;
 }
 
-void funct_invokespecial() {
+void funct_invokespecial()
+{
 	u4 index;
 	u1 low, high;
 	int32_t numParams, i;
@@ -2689,33 +3865,35 @@ void funct_invokespecial() {
 	struct ClassFile *class;
 	method_info *method;
 
-	high = frameAtual->code[++(frameAtual->pc)];
-	low = frameAtual->code[++(frameAtual->pc)];
+	high = current_frame->code[++(current_frame->pc)];
+	low = current_frame->code[++(current_frame->pc)];
 
 	index = convert_2x8_to_32_bits(low, high);
 
-	class_index_tmp = ((struct CONSTANT_Methodref_info *)(frameAtual->constant_pool[index-1]))->class_index;
 
-	class_name = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constant_pool[class_index_tmp-1]))->name_index);
+	class_index_tmp = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->class_index;
 
-	class_index = carregarClass(class_name);
-	class = getClassByIndex(class_index);
+	class_name = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
 
-	name_type_index = ((struct CONSTANT_Methodref_info *)(frameAtual->constant_pool[index-1]))->name_and_type_index;
 
-	while (class != NULL && (method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index)) == NULL) {
+	class_index = carregarClass( class_name );
+	class = getClassByIndex( class_index );
+
+	name_type_index = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
+
+	while (class != NULL && (method = getMethodByNameAndDescIndex(class, current_frame->class, name_type_index)) == NULL) {
 		class_name = getParentName(class);
 
-		class_index = carregarClass(class_name);
-		class = getClassByIndex(class_index);
+		class_index = carregarClass( class_name );
+		class = getClassByIndex( class_index );
 	}
 
 	if (class == NULL) {
 		printf("Metodo nao encontrando.\n");
 	}
 
-	numParams = getNumParameters(class , method);
+	numParams = getNumParameters( class , method );
 
 	fields_tmp = calloc(sizeof(u4),numParams+1);
 	for (i = numParams; i >= 0; i--) {
@@ -2728,25 +3906,25 @@ void funct_invokespecial() {
 		length = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->length;
 
 		if (bytes[length-1] == 'D' || bytes[length-1] == 'J') {
-			pushU8(0);
+			pushU8( 0 );
 		} else if (bytes[length-1] != 'V') {
-			push(0);
+			push( 0 );
 		}
 
 	} else {
 		prepararMetodo(class, method);
 
 		for (i = numParams; i >= 0; i--) {
-			frameAtual->fields[i] = fields_tmp[i];
+			current_frame->fields[i] = fields_tmp[i];
 		}
 
 		runMethod();
 	}
 
-	frameAtual->pc++;
+	current_frame->pc++;
 }
 
-void funct_invokestatic() {
+void funct_invokestatic(){
 
 	u4 index;
 	u1 low, high;
@@ -2762,24 +3940,32 @@ void funct_invokestatic() {
 	struct ClassFile *class;
 	method_info *method;
 
-	high = frameAtual->code[++(frameAtual->pc)];
-	low = frameAtual->code[++(frameAtual->pc)];
+	high = current_frame->code[++(current_frame->pc)];
+	low = current_frame->code[++(current_frame->pc)];
 
 	index = convert_2x8_to_32_bits(low, high);
 
-	class_index_tmp = ((struct CONSTANT_Methodref_info *)(frameAtual->constant_pool[index-1]))->class_index;
 
-	class_name = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constant_pool[class_index_tmp-1]))->name_index);
+	class_index_tmp = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->class_index;
 
-	name_type_index = ((struct CONSTANT_Methodref_info *)(frameAtual->constant_pool[index-1]))->name_and_type_index;
+	class_name = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
 
-	class_index = carregarClass(class_name);
-	class = getClassByIndex(class_index);
 
-	method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index);
+	name_type_index = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
 
-	numParams = getNumParameters(class , method);
+
+	class_index = carregarClass( class_name );
+	class = getClassByIndex( class_index );
+
+
+	method = getMethodByNameAndDescIndex(class, current_frame->class, name_type_index);
+
+	numParams = getNumParameters( class , method );
+
+#ifdef DEBUG
+	printf("invokestatic %s -> %s (%d)\n", class_name, getName(class, method->name_index), numParams);
+#endif
 
 	fields_tmp = calloc(sizeof(u4),numParams+1);
 	for (i = numParams-1; i >= 0; i--) { /* única diferença pra invokespecial */
@@ -2788,29 +3974,35 @@ void funct_invokestatic() {
 	}
 
 	if (method->access_flags & ACC_NATIVE) {
+#ifdef DEBUG
+		printf("invokestatic Metodo nativo\n");
+#endif
+
 		bytes = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->bytes;
 		length = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->length;
 
 		if (bytes[length-1] == 'D' || bytes[length-1] == 'J') {
-			pushU8(0);
+			pushU8( 0 );
 		} else if (bytes[length-1] != 'V') {
-			push(0);
+			push( 0 );
 		}
 
 	} else {
 		prepararMetodo(class, method);
 
 		for (i = numParams-1; i >= 0; i--) {
-			frameAtual->fields[i] = fields_tmp[i];
+			current_frame->fields[i] = fields_tmp[i];
 		}
 
 		runMethod();
 	}
 
-	frameAtual->pc++;
+	current_frame->pc++;
+
 }
 
-void funct_invokeinterface() {
+void funct_invokeinterface()
+{
 	u4 index;
 	u1 low, high, args_count, zero;
 	int32_t class_index, class_index_tmp, i;
@@ -2821,12 +4013,12 @@ void funct_invokeinterface() {
 	struct ClassFile *class;
 	method_info *method;
 
-	high = frameAtual->code[++(frameAtual->pc)];
-	low = frameAtual->code[++(frameAtual->pc)];
+	high = current_frame->code[++(current_frame->pc)];
+	low = current_frame->code[++(current_frame->pc)];
 	index = convert_2x8_to_32_bits(low, high);
 
-	args_count = frameAtual->code[++(frameAtual->pc)];
-	zero = frameAtual->code[++(frameAtual->pc)];
+	args_count = current_frame->code[++(current_frame->pc)];
+	zero = current_frame->code[++(current_frame->pc)];
 
 	/* pega da pilha os argumentos e o objectref */
 	fields_tmp = calloc(sizeof(u4),args_count+1);
@@ -2834,20 +4026,21 @@ void funct_invokeinterface() {
 		fields_tmp[i] = pop();
 	}
 
-	class_index_tmp = ((struct CONSTANT_Methodref_info *)(frameAtual->constant_pool[index-1]))->class_index;
+	class_index_tmp = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->class_index;
 
-	class_name = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constant_pool[class_index_tmp-1]))->name_index);
+	class_name = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
 
-	class_index = carregarClass(class_name);
-	class = getClassByIndex(class_index);
+	class_index = carregarClass( class_name );
+	class = getClassByIndex( class_index );
 
-	name_type_index = ((struct CONSTANT_Methodref_info *)(frameAtual->constant_pool[index-1]))->name_and_type_index;
+	name_type_index = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
 
-	while (class != NULL && (method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index)) == NULL) {
+	while (class != NULL && (method = getMethodByNameAndDescIndex(class, current_frame->class, name_type_index)) == NULL) {
 		class_name = getParentName(class);
-		class_index = carregarClass(class_name);
-		class = getClassByIndex(class_index);
+
+		class_index = carregarClass( class_name );
+		class = getClassByIndex( class_index );
 	}
 
 	if (class == NULL) {
@@ -2858,14 +4051,16 @@ void funct_invokeinterface() {
 	prepararMetodo(class, method);
 
 	for (i = args_count; i >= 0; i--) {
-		frameAtual->fields[i] = fields_tmp[i];
+		current_frame->fields[i] = fields_tmp[i];
 	}
 
 	runMethod();
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_new() {
+void funct_new()
+{
 	u1 low, high;
 	u4 index;
 	char *class_name;
@@ -2873,40 +4068,47 @@ void funct_new() {
 	struct ClassFile *class;
 	struct Object *objeto;
 
-	high = frameAtual->code[++(frameAtual->pc)];
-	low = frameAtual->code[++(frameAtual->pc)];
+	high = current_frame->code[++(current_frame->pc)];
+	low = current_frame->code[++(current_frame->pc)];
 
 	index = convert_2x8_to_32_bits(low, high);
 
-	class_name = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constant_pool[index-1]))->name_index);
+	class_name = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constant_pool[index-1]))->name_index);
 
 	class_index = carregarClass(class_name);
 	class = getClassByIndex(class_index);
 
 	objeto = newObject(class);
-	push((u4)objeto);
-	frameAtual->pc++;
+
+#ifdef DEBUG
+	printf("new %s (%p)\n", class_name, objeto);
+#endif
+
+	push( (u4)objeto );
+
+	current_frame->pc++;
 }
 
-void funct_newarray() {
+void funct_newarray(){
+
 	u4 count;
 	u1 type;
 
 	count = pop();
-	frameAtual->pc++;
-	type = frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	type = current_frame->code[current_frame->pc];
 
 	if (count < 0) {
 		printf("Erro: Tamanho invalido do array\n");
 	}
 
 	push ((u4)newArray(count, type));
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-//TODO:OLHAR DEPOIS
-void funct_anewarray() {
+void funct_anewarray(){
 
 	/* algumas coisas estão comentadas pq provavelmente
 	 * não são necessárias  */
@@ -2917,11 +4119,11 @@ void funct_anewarray() {
 
 	count = pop();
 
-	frameAtual->pc++;
+	current_frame->pc++;
 	/*index = current_frame->code[current_frame->pc];
 	index = index << 8;*/
 
-	frameAtual->pc++;
+	current_frame->pc++;
 	/*index = index | current_frame->code[current_frame->pc];*/
 
 	if (count < 0) {
@@ -2929,41 +4131,48 @@ void funct_anewarray() {
 	}
 
 	push ((u4)newArray(count, 0));
-	frameAtual->pc++;
+
+	current_frame->pc++;
+
 }
 
-void funct_arraylength() {
+void funct_arraylength()
+{
 	int i;
+
 	u4 aref;
+
 	aref = pop();
 
-	for (i = 0; i < numArrays; i++) {
-		if (arrayLength[i].ref == aref) {
+	for (i = 0; i < numArrays; i++)
+	{
+		if (arrayLength[i].ref == aref)
+		{
 			push(arrayLength[i].ref);
-			frameAtual->pc++;
+			current_frame->pc++;
 			return;
 		}
 
-		frameAtual->pc++;
+		current_frame->pc++;
 	}
 
 	push(0);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_athrow() {
-	frameAtual->pc++;
-}
+void funct_athrow(){ current_frame->pc++;  } /* Näo precisa fazer nada além disso */
 
-void funct_checkcast() {
+void funct_checkcast()
+{
 	struct Object *ref;
 	u2 index;
 
-	frameAtual->pc++;
-	index = frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	index = current_frame->code[current_frame->pc];
 	index = index << 8;
-	frameAtual->pc++;
-	index = index | frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	index = index | current_frame->code[current_frame->pc];
 
 	ref = (struct Object *)pop();
 
@@ -2971,23 +4180,26 @@ void funct_checkcast() {
 		printf("Erro: Referencia nula\n");
 	}
 
-	if (strcmp(getName(frameAtual->class, index), getClassName(ref->this)) == 0) {
+
+	if (strcmp(getName(current_frame->class, index), getClassName(ref->this)) == 0)
+	{
 		printf(" Erro: Objeto do tipo errado\n");
 	}
 
+
 	push((u4)ref);
-	frameAtual->pc++;
+	current_frame->pc++;
 }
 
-void funct_instanceof() {
+void funct_instanceof(){
 	struct Object *ref;
 	u2 index;
 
-	frameAtual->pc++;
-	index = frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	index = current_frame->code[current_frame->pc];
 	index = index << 8;
-	frameAtual->pc++;
-	index = index | frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	index = index | current_frame->code[current_frame->pc];
 
 	ref = (struct Object *)pop();
 
@@ -2995,176 +4207,220 @@ void funct_instanceof() {
 		printf("Erro: Referencia nula\n");
 	}
 
-	if (strcmp(getName(frameAtual->class, index), getClassName(ref->this)) == 0) {
+	if (strcmp( getName(current_frame->class, index), getClassName(ref->this)) == 0)
+	{
 		push(1);
-		frameAtual->pc++;
+		current_frame->pc++;
 		return;
 	}
 
 	push(0);
-	frameAtual->pc++;
+	current_frame->pc++;
 }
 
-void funct_monitorenter() {
-	pop();
-	frameAtual->pc++;
-}
+void funct_monitorenter(){ pop(); current_frame->pc++;  } /* só precisa disso */
 
-void funct_monitorexit() {
-	pop();
-	frameAtual->pc++;
-}
+void funct_monitorexit(){ pop(); current_frame->pc++;  } /* só precisa disso */
 
-void funct_wide() {
+void funct_wide(){
+
 	next_is_wide = 1;
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_multianewarray() {
+void funct_multianewarray()
+{
 	u2 indexbyte1, indexbyte2, index, type, atype;
 	u1 dimensions;
 	u4 i, dimension, size;
 	void *arrayref;
 	char *array_type;
 
-	frameAtual->pc++;
-	indexbyte1 = frameAtual->code[frameAtual->pc];
-	frameAtual->pc++;
-	indexbyte1 = frameAtual->code[frameAtual->pc];
-	frameAtual->pc++;
-	indexbyte1 = frameAtual->code[frameAtual->pc];
-	frameAtual->pc++;
-	dimensions = frameAtual->code[frameAtual->pc];
+	current_frame->pc++;
+	indexbyte1 = current_frame->code[current_frame->pc];
+	current_frame->pc++;
+	indexbyte1 = current_frame->code[current_frame->pc];
+	current_frame->pc++;
+	indexbyte1 = current_frame->code[current_frame->pc];
+	current_frame->pc++;
+	dimensions = current_frame->code[current_frame->pc];
 
 	index = ((indexbyte1 & 0xFF) << 8) | (indexbyte2 & 0xFF);
 
+
+
 	dimension = pop();
 	arrayref = newArray(dimension, TYPE_reference);
-	array_type = getName(frameAtual->class, ((struct CONSTANT_Class_info*)frameAtual->constant_pool[index -1])->name_index);
+	array_type = getName(current_frame->class, ((struct CONSTANT_Class_info*)current_frame->constant_pool[index -1])->name_index);
 
 	i = 0;
-	while (array_type[i] == '[') {
+	while (array_type[i] == '[')
 		i++;
+#ifdef DEBUG
+	printf("multiarray: type %c\n", array_type[i]);
+#endif
+	switch (array_type[i])
+	{
+	case 'L':
+		type = TYPE_reference;
+		atype = TYPE_reference;
+		break;
+	case 'Z':
+		type = TYPE_boolean;
+		atype = TYPE_boolean_size;
+		break;
+	case 'C':
+		type = TYPE_char;
+		atype = TYPE_char_size;
+		break;
+	case 'F':
+		type = TYPE_float;
+		atype = TYPE_float_size;
+		break;
+	case 'D':
+		type = TYPE_double;
+		atype = TYPE_double_size;
+		break;
+	case 'B':
+		type = TYPE_byte;
+		atype = TYPE_byte_size;
+		break;
+	case 'S':
+		type = TYPE_short;
+		atype = TYPE_short_size;
+		break;
+	case 'I':
+		type = TYPE_int;
+		atype = TYPE_int_size;
+		break;
+	case 'J':
+		type = TYPE_long;
+		atype = TYPE_long_size;
+		break;
+	default:
+		type = TYPE_reference;
+		atype = TYPE_reference_size;
 	}
-
-	switch (array_type[i]) {
-		case 'L':
-			type = TYPE_reference;
-			atype = TYPE_reference;
-			break;
-		case 'Z':
-			type = TYPE_boolean;
-			atype = TYPE_boolean_size;
-			break;
-		case 'C':
-			type = TYPE_char;
-			atype = TYPE_char_size;
-			break;
-		case 'F':
-			type = TYPE_float;
-			atype = TYPE_float_size;
-			break;
-		case 'D':
-			type = TYPE_double;
-			atype = TYPE_double_size;
-			break;
-		case 'B':
-			type = TYPE_byte;
-			atype = TYPE_byte_size;
-			break;
-		case 'S':
-			type = TYPE_short;
-			atype = TYPE_short_size;
-			break;
-		case 'I':
-			type = TYPE_int;
-			atype = TYPE_int_size;
-			break;
-		case 'J':
-			type = TYPE_long;
-			atype = TYPE_long_size;
-			break;
-		default:
-			type = TYPE_reference;
-			atype = TYPE_reference_size;
-	}
-	for (i = 0; i < dimensions; i++) {
+	for (i = 0; i < dimensions; i++)
+	{
 		size = pop();
-		if (size == 0) {
+		if (size == 0)
 			break;
-		}
 
-		if (atype == 1) {
+		if (atype == 1)
 			((u1**)arrayref)[i] = (u1*)newArray(type, size);
-		} else if(atype == 2) {
+		else if(atype == 2)
 			((u2**)arrayref)[i] = (u2*)newArray(type, size);
-		} else if(atype == 4) {
+		else if(atype == 4)
 			((u4**)arrayref)[i] = (u4*)newArray(type, size);
-		} else {
+		else
 			((u8**)arrayref)[i] = (u8*)newArray(type, size);
-		}
+
 	}
 
 	push((u4)arrayref);
-	frameAtual->pc++;
+
+	current_frame->pc++;
 }
 
-void funct_ifnull() {
+void funct_ifnull()
+{
 	int32_t aux;
 	u4 offset;
 	u1 branchbyte1, branchbyte2;
 
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
 
 	aux = (signed) pop();
 
-	if (aux == CONSTANT_Null) {
+	if ( aux == CONSTANT_Null )
+	{
 		offset = convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("ifnull fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("ifnull NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_ifnonnull() {
+void funct_ifnonnull()
+{
 	int32_t aux;
 	int16_t offset;
 	u1 branchbyte1, branchbyte2;
 
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
 
 	aux = (signed) pop();
 
-	if (aux != CONSTANT_Null) {
+	if ( aux != CONSTANT_Null )
+	{
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-	} else {
-		frameAtual->pc += 3;
+		current_frame->pc += offset;
+
+#ifdef DEBUG
+		printf("ifnonnull fez o branch para o PC = %d\n", current_frame->pc);
+#endif
+	}
+	else
+	{
+		current_frame->pc += 3;
+
+#ifdef DEBUG
+		printf("ifnonnull NAO fez o branch PC = %d\n", current_frame->pc);
+#endif
 	}
 }
 
-void funct_goto_w() {
+void funct_goto_w()
+{
 	int32_t offset;
 	u4 branchbyte1, branchbyte2, branchbyte3, branchbyte4;
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-	branchbyte3 = frameAtual->code[(frameAtual->pc)+3];
-	branchbyte4 = frameAtual->code[(frameAtual->pc)+4];
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+	branchbyte3 = current_frame->code[(current_frame->pc)+3];
+	branchbyte4 = current_frame->code[(current_frame->pc)+4];
+
 	offset = (int32_t)(((branchbyte1 & 0xFF)<<24) | ((branchbyte2 & 0xFF)<<16) | ((branchbyte3 & 0xFF)<<8) | (branchbyte1 & 0xFF));
-	frameAtual->pc += offset;
+
+	current_frame->pc += offset;
+
+#ifdef DEBUG
+	printf("goto_w - novo PC = %d\n", current_frame->pc);
+#endif
 }
 
-void funct_jsr_w() {
+void funct_jsr_w()
+{
 	int32_t offset;
 	u4 branchbyte1, branchbyte2, branchbyte3, branchbyte4;
-	push((frameAtual->pc) + 5);
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-	branchbyte3 = frameAtual->code[(frameAtual->pc)+3];
-	branchbyte4 = frameAtual->code[(frameAtual->pc)+4];
+
+	push((current_frame->pc) + 5);
+
+	branchbyte1 = current_frame->code[(current_frame->pc)+1];
+	branchbyte2 = current_frame->code[(current_frame->pc)+2];
+	branchbyte3 = current_frame->code[(current_frame->pc)+3];
+	branchbyte4 = current_frame->code[(current_frame->pc)+4];
+
 	offset = (int32_t)(((branchbyte1 & 0xFF)<<24) | ((branchbyte2 & 0xFF)<<16) | ((branchbyte3 & 0xFF)<<8) | (branchbyte1 & 0xFF));
-	frameAtual->pc += offset;
+
+	current_frame->pc += offset;
+
+#ifdef DEBUG
+	printf("jsr_w - novo PC = %d\n", current_frame->pc);
+#endif
 }
 
