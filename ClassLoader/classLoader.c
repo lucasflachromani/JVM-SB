@@ -28,15 +28,38 @@
  * @ param argv vetor contendo nome dos arquivos e inteiro que
  * decide se sera gerado arquivo de saida ou nao
  */
+ 
+int imprimeArq = 0;
+ 
 int main (int argc, char * argv[]) {
     FILE * file, * fileTrgt;
-    char fileSrc[50], accessType[70];
+    char fileSrc [100], accessType[70];
     classStructure cs;
     
     carregar_opcode_informacao();
 
-    strcpy (fileSrc, argv[1]);
-    file = fopen (fileSrc, "rb");
+	if (argc < 2) {
+		printf ("Insira o nome do .class: ");
+		scanf ("%s", fileSrc);
+		getchar();
+	} else {
+		strcpy (fileSrc, argv[1]);
+	}
+	file = fopen (fileSrc, "rb");
+	while (!file) {
+		printf ("Arquivo nao existe!\nInsira o nome do .class: ");
+		scanf ("%s", fileSrc);
+		getchar ();
+		file = fopen (fileSrc, "rb");
+	}
+	
+	if (argc == 3) {
+		fileTrgt = fopen (argv[2], "w");
+		imprimeArq = 1;
+	} else if (argc > 3) {
+		printf ("O programa requer apenas dois argumentos alem do programa. Os demais serao desconsiderados.\n");
+	}
+
     if (verifyMagic(file, &cs) && file) {
         storeVersions(file, &cs);               //armazena todos os dados em memoria
         storeConstantPool(file, &cs);
@@ -48,11 +71,12 @@ int main (int argc, char * argv[]) {
         storeAttributes(file, &cs);
     }
     else {
-        printf("\nERRO: O arquivo não e do tipo .class");
+        printf("\nERRO: O arquivo nao e do tipo .class");
+		fclose (file);
+		exit(1);
     }
-    
-    fileTrgt = fopen (argv[2], "w");
-    if (strcmp (argv[2], "")) {                 //armazena todos os dados em arquivo texto
+	
+    if (imprimeArq) {                 //armazena todos os dados em arquivo texto
         fprintf(fileTrgt, "Nome do arquivo: %s\n\n", fileSrc);
         saveGeneral(fileTrgt, &cs, accessType);
         saveConstantPool(fileTrgt, &cs);
@@ -61,9 +85,9 @@ int main (int argc, char * argv[]) {
         saveMethods(fileTrgt, &cs);
         saveAttributes(fileTrgt, &cs);
         printf("Arquivo texto gerado.\n");
+		fclose (fileTrgt);
     }
-    
-    fclose (fileTrgt);
+	
     fclose (file);
     
     printf("Programa Finalizado.\n");
@@ -463,12 +487,15 @@ void getAccessPerm (int intValue, char * target) {
     
     if isBitActivated(intValue, 4) strcat (target, "static ");
     if isBitActivated(intValue, 5) strcat (target, "final ");
-    if isBitActivated(intValue, 6) strcat (target, "synchronized ");
+    if isBitActivated(intValue, 6) strcat (target, "super ");
     if isBitActivated(intValue, 7) strcat (target, "volatile ");
     if isBitActivated(intValue, 8) strcat (target, "transient ");
     if isBitActivated(intValue, 9) strcat (target, "native ");
+	//synthetic 0x1000
     if isBitActivated(intValue, 10) strcat (target, "interface ");
+	//0x200
     if isBitActivated(intValue, 11) strcat (target, "abstract ");
+	//0x400
 }
 
 /* @ brief Funcao que salva em arquivo os valores da pool de constantes
