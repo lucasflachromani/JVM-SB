@@ -5,13 +5,13 @@
 #include "classloader.h"
 
 int32_t carregarClass(char *);
-char *getClassName(struct ClassFile *class);
-char *getParentName(struct ClassFile *class);
+char *getClassName(classStructure *class);
+char *getParentName(classStructure *class);
 int getNumClasses();
-struct ClassFile * getClassByName(char *class_name);
-struct ClassFile * getClassByIndex(int index);
-int32_t getFieldIndexByNameAndDesc(char *class_name, char *name, u2 name_len, char *desc, u2 desc_len);
-u8 getStaticFieldValue(int32_t class_index, int32_t field_index);
-void setStaticFieldValue(int32_t class_index, int32_t field_index, u8 value);
+classStructure * getClassByName(char *className);
+classStructure * getClassByIndex(int index);
+int32_t getFieldIndexByNameAndDesc(char *className, char *name, u2 name_len, char *desc, u2 desc_len);
+u8 getStaticFieldValue(int32_t classIndex, int32_t field_index);
+void setStaticFieldValue(int32_t classIndex, int32_t field_index, u8 value);
 
 #endif

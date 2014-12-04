@@ -48,7 +48,7 @@ void inicializar() {
 }
 
 int main(int argc, char **argv) {
-	method_info *metodoMain;
+	methodInfo *metodoMain;
 	FILE *arquivo;
 
 	inicializar ();

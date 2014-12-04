@@ -416,24 +416,24 @@ void funct_sipush()
 void funct_ldc()
 {
 	u1 indice, tag;
-	u2 string_index;
+	u2 stringIndex;
 
 	current_frame->pc++;
 	indice = current_frame->code[current_frame->pc];
 
-	tag = ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->tag;
+	tag = ((struct CONSTANT_Integer_info *) current_frame->constantPool[indice-1])->tag;
 
 	switch(tag)
 	{
 	case (CONSTANT_Integer):
-							push ( ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->bytes);
+							push ( ((struct CONSTANT_Integer_info *) current_frame->constantPool[indice-1])->bytes);
 	break;
 	case (CONSTANT_Float):
-							push ( ((struct CONSTANT_Float_info *) current_frame->constant_pool[indice-1])->bytes);
+							push ( ((struct CONSTANT_Float_info *) current_frame->constantPool[indice-1])->bytes);
 	break;
 	case (CONSTANT_String):
-							string_index = ((struct CONSTANT_String_info *) current_frame->constant_pool[indice-1])->string_index;
-	push ( (u4)getName(current_frame->class, string_index) );
+							stringIndex = ((struct CONSTANT_String_info *) current_frame->constantPool[indice-1])->stringIndex;
+	push ( (u4)getName(current_frame->class, stringIndex) );
 	break;
 	}
 
@@ -445,7 +445,7 @@ void funct_ldc_w()
 	u1 tag;
 	u4 indice;
 	u4 high, low;
-	u2 string_index;
+	u2 stringIndex;
 
 	current_frame->pc++;
 	high = current_frame->code[current_frame->pc];
@@ -455,19 +455,19 @@ void funct_ldc_w()
 
 	indice = convert_2x8_to_32_bits( low, high );
 
-	tag = ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->tag;
+	tag = ((struct CONSTANT_Integer_info *) current_frame->constantPool[indice-1])->tag;
 
 	switch(tag)
 	{
 	case (CONSTANT_Integer):
-							push ( ((struct CONSTANT_Integer_info *) current_frame->constant_pool[indice-1])->bytes);
+							push ( ((struct CONSTANT_Integer_info *) current_frame->constantPool[indice-1])->bytes);
 	break;
 	case (CONSTANT_Float):
-							push ( ((struct CONSTANT_Float_info *) current_frame->constant_pool[indice-1])->bytes);
+							push ( ((struct CONSTANT_Float_info *) current_frame->constantPool[indice-1])->bytes);
 	break;
 	case (CONSTANT_String):
-							string_index = ((struct CONSTANT_String_info *) current_frame->constant_pool[indice-1])->string_index;
-	push ( (u4)getName(current_frame->class, string_index) );
+							stringIndex = ((struct CONSTANT_String_info *) current_frame->constantPool[indice-1])->stringIndex;
+	push ( (u4)getName(current_frame->class, stringIndex) );
 	break;
 	}
 
@@ -488,17 +488,17 @@ void funct_ldc2_w()
 
 	indice = convert_2x8_to_32_bits( low, high );
 
-	tag = ((struct CONSTANT_Long_info *) current_frame->constant_pool[indice-1])->tag;
+	tag = ((struct CONSTANT_Long_info *) current_frame->constantPool[indice-1])->tag;
 
 	switch(tag)
 	{
 	case (CONSTANT_Long):
-							push ( ((struct CONSTANT_Long_info *) current_frame->constant_pool[indice-1])->high_bytes);
-	push ( ((struct CONSTANT_Long_info *) current_frame->constant_pool[indice-1])->low_bytes);
+							push ( ((struct CONSTANT_Long_info *) current_frame->constantPool[indice-1])->highBytes);
+	push ( ((struct CONSTANT_Long_info *) current_frame->constantPool[indice-1])->lowBytes);
 	break;
 	case (CONSTANT_Double):
-							push ( ((struct CONSTANT_Double_info *) current_frame->constant_pool[indice-1])->high_bytes);
-	push ( ((struct CONSTANT_Double_info *) current_frame->constant_pool[indice-1])->low_bytes);
+							push ( ((struct CONSTANT_Double_info *) current_frame->constantPool[indice-1])->highBytes);
+	push ( ((struct CONSTANT_Double_info *) current_frame->constantPool[indice-1])->lowBytes);
 	break;
 	}
 
@@ -3403,9 +3403,9 @@ void funct_getstatic()
 	u1 index1, index2;
 	u2 index, name_type_index;
 	u4 class_index_tmp;
-	int32_t class_index, field_index;
+	int32_t classIndex, field_index;
 	u8 value;
-	char *class_name, *name, *type;
+	char *className, *name, *type;
 
 
 	index1 = (u1) current_frame->code[++(current_frame->pc)];
@@ -3413,28 +3413,28 @@ void funct_getstatic()
 
 	index = ((u2)index1 << 8) | (u2)index2;
 
-	class_index_tmp = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->class_index;
+	class_index_tmp = ((struct CONSTANT_Fieldref_info *)(current_frame->constantPool[index-1]))->classIndex;
 
-	class_name = getName(current_frame->class,
-			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
+	className = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constantPool[class_index_tmp-1]))->nameIndex);
 
-	name_type_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
+	name_type_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constantPool[index-1]))->nameTypeIndex;
 
 	name = getName(current_frame->class,
-			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->name_index);
+			((struct CONSTANT_NameAndType_info *)(current_frame->constantPool[name_type_index-1]))->nameIndex);
 	type = getName(current_frame->class,
-			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->descriptor_index);
+			((struct CONSTANT_NameAndType_info *)(current_frame->constantPool[name_type_index-1]))->descriptorIndex);
 
 
 	/* -1 informa que nao encontrou o field na casse corrente */
-	while ((field_index = getFieldIndexByNameAndDesc(class_name, name, strlen(name), type, strlen(type))) == -1) {
-		class_name = getParentName(getClassByName(class_name));
+	while ((field_index = getFieldIndexByNameAndDesc(className, name, strlen(name), type, strlen(type))) == -1) {
+		className = getParentName(getClassByName(className));
 	}
 
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
 #ifdef DEBUG
-		printf("getstatic Classe nao reconhecida (%s)\n", class_name);
+		printf("getstatic Classe nao reconhecida (%s)\n", className);
 #endif
 
 		if (type[0] == 'J' || type[0] == 'D') {
@@ -3448,9 +3448,9 @@ void funct_getstatic()
 	}
 
 
-	class_index = carregarClass( class_name );
+	classIndex = carregarClass( className );
 
-	value = getStaticFieldValue( class_index , field_index );
+	value = getStaticFieldValue( classIndex , field_index );
 
 	/* Verifica se eh Double ou Long para saber quantos bits colocar na pilha */
 	if (type[0] == 'J' || type[0] == 'D') {
@@ -3467,10 +3467,10 @@ void funct_putstatic()
 	u1 index1, index2;
 	u2 index, name_type_index;
 	u4 class_index_tmp;
-	int32_t class_index, field_index;
+	int32_t classIndex, field_index;
 	u4 value1, value2;
 	u8 value;
-	char *class_name, *name, *type;
+	char *className, *name, *type;
 
 
 	index1 = (u1) current_frame->code[++(current_frame->pc)];
@@ -3478,28 +3478,28 @@ void funct_putstatic()
 
 	index = ((u2)index1 << 8) | (u2)index2;
 
-	class_index_tmp = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->class_index;
+	class_index_tmp = ((struct CONSTANT_Fieldref_info *)(current_frame->constantPool[index-1]))->classIndex;
 
-	class_name = getName(current_frame->class,
-			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
+	className = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constantPool[class_index_tmp-1]))->nameIndex);
 
-	name_type_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
+	name_type_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constantPool[index-1]))->nameTypeIndex;
 
 	name = getName(current_frame->class,
-			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->name_index);
+			((struct CONSTANT_NameAndType_info *)(current_frame->constantPool[name_type_index-1]))->nameIndex);
 	type = getName(current_frame->class,
-			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->descriptor_index);
+			((struct CONSTANT_NameAndType_info *)(current_frame->constantPool[name_type_index-1]))->descriptorIndex);
 
 	/* -1 informa que nao encontrou o field na casse corrente */
-	while ((field_index = getFieldIndexByNameAndDesc(class_name, name, strlen(name), type, strlen(type))) == -1) {
-		class_name = getParentName(getClassByName(class_name));
+	while ((field_index = getFieldIndexByNameAndDesc(className, name, strlen(name), type, strlen(type))) == -1) {
+		className = getParentName(getClassByName(className));
 	}
 
 
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
 #ifdef DEBUG
-		printf("putstatic Classe nao reconhecida (%s)\n", class_name);
+		printf("putstatic Classe nao reconhecida (%s)\n", className);
 #endif
 
 		if (type[0] == 'J' || type[0] == 'D') {
@@ -3524,9 +3524,9 @@ void funct_putstatic()
 		value = (u8) pop();
 	}
 
-	class_index = carregarClass( class_name );
+	classIndex = carregarClass( className );
 
-	setStaticFieldValue( class_index , field_index , value );
+	setStaticFieldValue( classIndex , field_index , value );
 
 	current_frame->pc++;
 }
@@ -3535,9 +3535,9 @@ void funct_getfield()
 {
 	u1 low, high;
 	u4 index;
-	int32_t class_index, field_index, name_index;
+	int32_t classIndex, field_index, nameIndex;
 	u2 name_type_index;
-	char *class_name, *name, *type;
+	char *className, *name, *type;
 
 	struct Object *objeto;
 	u4 value_aux;
@@ -3549,18 +3549,18 @@ void funct_getfield()
 	index = convert_2x8_to_32_bits(low, high);
 
 
-	class_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->class_index;
+	classIndex = ((struct CONSTANT_Fieldref_info *)(current_frame->constantPool[index-1]))->classIndex;
 
-	class_name = getName(current_frame->class,
-			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index-1]))->name_index);
+	className = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constantPool[classIndex-1]))->nameIndex);
 
 
-	name_type_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
+	name_type_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constantPool[index-1]))->nameTypeIndex;
 
 	name = getName(current_frame->class,
-			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->name_index);
+			((struct CONSTANT_NameAndType_info *)(current_frame->constantPool[name_type_index-1]))->nameIndex);
 	type = getName(current_frame->class,
-			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->descriptor_index);
+			((struct CONSTANT_NameAndType_info *)(current_frame->constantPool[name_type_index-1]))->descriptorIndex);
 
 
 	/* Pega a referencia do objeto que tera o field alterado de valor */
@@ -3568,14 +3568,14 @@ void funct_getfield()
 
 
 	/* -1 informa que nao encontrou o field na casse corrente */
-	while ((field_index = getFieldIndexByNameAndDesc(class_name, name, strlen(name), type, strlen(type))) == -1) {
-		class_name = getParentName(getClassByName(class_name));
+	while ((field_index = getFieldIndexByNameAndDesc(className, name, strlen(name), type, strlen(type))) == -1) {
+		className = getParentName(getClassByName(className));
 	}
 
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
 #ifdef DEBUG
-		printf("getfield Classe nao reconhecida (%s)\n", class_name);
+		printf("getfield Classe nao reconhecida (%s)\n", className);
 #endif
 
 		if (type[0] == 'J' || type[0] == 'D') {
@@ -3589,15 +3589,15 @@ void funct_getfield()
 	}
 
 
-	name_index = current_frame->class->fields[field_index].name_index;
+	nameIndex = current_frame->class->fields[field_index].nameIndex;
 
 	/* Pega o valor do field */
 	if (type[0] == 'J' || type[0] == 'D') {
-		value = getObjectFieldWide(objeto, name_index);
+		value = getObjectFieldWide(objeto, nameIndex);
 		pushU8( value );
 
 	} else {
-		value_aux = getObjectField(objeto, name_index);
+		value_aux = getObjectField(objeto, nameIndex);
 		push( value_aux );
 	}
 
@@ -3608,9 +3608,9 @@ void funct_putfield()
 {
 	u1 low, high;
 	u4 index;
-	int32_t class_index, field_index, name_index;
+	int32_t classIndex, field_index, nameIndex;
 	u2 name_type_index;
-	char *class_name, *name, *type;
+	char *className, *name, *type;
 
 	struct Object *objeto;
 	u4 value1, value2;
@@ -3623,30 +3623,30 @@ void funct_putfield()
 	index = convert_2x8_to_32_bits(low, high);
 
 
-	class_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->class_index;
+	classIndex = ((struct CONSTANT_Fieldref_info *)(current_frame->constantPool[index-1]))->classIndex;
 
-	class_name = getName(current_frame->class,
-			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index-1]))->name_index);
+	className = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constantPool[classIndex-1]))->nameIndex);
 
 
-	name_type_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
+	name_type_index = ((struct CONSTANT_Fieldref_info *)(current_frame->constantPool[index-1]))->nameTypeIndex;
 
 	name = getName(current_frame->class,
-			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->name_index);
+			((struct CONSTANT_NameAndType_info *)(current_frame->constantPool[name_type_index-1]))->nameIndex);
 	type = getName(current_frame->class,
-			((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->descriptor_index);
+			((struct CONSTANT_NameAndType_info *)(current_frame->constantPool[name_type_index-1]))->descriptorIndex);
 
 
 	/* -1 informa que nao encontrou o field na casse corrente */
-	while ((field_index = getFieldIndexByNameAndDesc(class_name, name, strlen(name), type, strlen(type))) == -1) {
-		class_name = getParentName(getClassByName(class_name));
+	while ((field_index = getFieldIndexByNameAndDesc(className, name, strlen(name), type, strlen(type))) == -1) {
+		className = getParentName(getClassByName(className));
 	}
 
 
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
 #ifdef DEBUG
-		printf("putfield Classe nao reconhecida (%s)\n", class_name);
+		printf("putfield Classe nao reconhecida (%s)\n", className);
 #endif
 
 		if (type[0] == 'J' || type[0] == 'D') {
@@ -3661,7 +3661,7 @@ void funct_putfield()
 	}
 
 
-	name_index = current_frame->class->fields[field_index].name_index;
+	nameIndex = current_frame->class->fields[field_index].nameIndex;
 
 	/* Pega o valor a ser colocado no field */
 	if (type[0] == 'J' || type[0] == 'D') {
@@ -3672,7 +3672,7 @@ void funct_putfield()
 		objeto = (struct Object *) pop();
 
 		value = convert_2x32_to_64_bits(value1, value2);
-		setObjectFieldWide(objeto, name_index, value);
+		setObjectFieldWide(objeto, nameIndex, value);
 
 	} else {
 		value1 = pop();
@@ -3680,7 +3680,7 @@ void funct_putfield()
 		/* Pega a referencia do objeto que tera o field alterado de valor */
 		objeto = (struct Object *) pop();
 
-		setObjectField(objeto, name_index, value1);
+		setObjectField(objeto, nameIndex, value1);
 	}
 
 	current_frame->pc++;
@@ -3692,17 +3692,17 @@ void funct_invokevirtual()
 	u8 value;
 	u1 low, high;
 	int32_t numParams, i, j;
-	int32_t class_index, class_index_tmp;
+	int32_t classIndex, class_index_tmp;
 	u2 name_type_index, method_name_index, method_desc_index;
-	char *class_name, *method_name, *method_desc;
+	char *className, *method_name, *method_desc;
 	u4 *fields_tmp;
 	float vfloat;
 
 	u1 *bytes;
 	u2 length;
 
-	struct ClassFile *class;
-	method_info *method;
+	classStructure *class;
+	methodInfo *method;
 
 
 	high = current_frame->code[++(current_frame->pc)];
@@ -3711,21 +3711,21 @@ void funct_invokevirtual()
 	index = convert_2x8_to_32_bits(low, high);
 
 
-	class_index_tmp = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->class_index;
+	class_index_tmp = ((struct CONSTANT_Methodref_info *)(current_frame->constantPool[index-1]))->classIndex;
 
-	class_name = getName(current_frame->class,
-			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
+	className = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constantPool[class_index_tmp-1]))->nameIndex);
 
-	name_type_index = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
+	name_type_index = ((struct CONSTANT_Methodref_info *)(current_frame->constantPool[index-1]))->nameTypeIndex;
 
-	method_name_index = ((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->name_index;
-	method_desc_index = ((struct CONSTANT_NameAndType_info *)(current_frame->constant_pool[name_type_index-1]))->descriptor_index;
+	method_name_index = ((struct CONSTANT_NameAndType_info *)(current_frame->constantPool[name_type_index-1]))->nameIndex;
+	method_desc_index = ((struct CONSTANT_NameAndType_info *)(current_frame->constantPool[name_type_index-1]))->descriptorIndex;
 
 	method_desc = getName(current_frame->class, method_desc_index);
 	method_name = getName(current_frame->class, method_name_index);
 
 	/* se for print ou println */
-	if ( (strcmp(class_name, "java/io/PrintStream") == 0)
+	if ( (strcmp(className, "java/io/PrintStream") == 0)
 			&& ((strcmp(method_name,"print") == 0) || (strcmp(method_name,"println") == 0) )
 	){
 
@@ -3799,15 +3799,15 @@ void funct_invokevirtual()
 
 	} else {
 
-		class_index = carregarClass( class_name );
-		class = getClassByIndex( class_index );
+		classIndex = carregarClass( className );
+		class = getClassByIndex( classIndex );
 
 
 		while (class != NULL && (method = getMethodByNameAndDescIndex(class, current_frame->class, name_type_index)) == NULL) {
-			class_name = getParentName(class);
+			className = getParentName(class);
 
-			class_index = carregarClass( class_name );
-			class = getClassByIndex( class_index );
+			classIndex = carregarClass( className );
+			class = getClassByIndex( classIndex );
 		}
 
 		if (class == NULL) {
@@ -3822,11 +3822,11 @@ void funct_invokevirtual()
 			fields_tmp[i] = pop();
 		}
 
-		if (method->access_flags & ACC_NATIVE ||
-				strcmp("println", getName(class, method->name_index)) == 0) {
+		if (method->accessFlags & ACC_NATIVE ||
+				strcmp("println", getName(class, method->nameIndex)) == 0) {
 
-			bytes = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->bytes;
-			length = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->length;
+			bytes = ((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->bytes;
+			length = ((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->length;
 
 			if (bytes[length-1] == 'D' || bytes[length-1] == 'J') {
 				pushU8( 0 );
@@ -3854,16 +3854,16 @@ void funct_invokespecial()
 	u4 index;
 	u1 low, high;
 	int32_t numParams, i;
-	int32_t class_index, class_index_tmp;
+	int32_t classIndex, class_index_tmp;
 	u2 name_type_index;
-	char *class_name;
+	char *className;
 	u4 *fields_tmp;
 
 	u1 *bytes;
 	u2 length;
 
-	struct ClassFile *class;
-	method_info *method;
+	classStructure *class;
+	methodInfo *method;
 
 	high = current_frame->code[++(current_frame->pc)];
 	low = current_frame->code[++(current_frame->pc)];
@@ -3871,22 +3871,22 @@ void funct_invokespecial()
 	index = convert_2x8_to_32_bits(low, high);
 
 
-	class_index_tmp = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->class_index;
+	class_index_tmp = ((struct CONSTANT_Methodref_info *)(current_frame->constantPool[index-1]))->classIndex;
 
-	class_name = getName(current_frame->class,
-			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
+	className = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constantPool[class_index_tmp-1]))->nameIndex);
 
 
-	class_index = carregarClass( class_name );
-	class = getClassByIndex( class_index );
+	classIndex = carregarClass( className );
+	class = getClassByIndex( classIndex );
 
-	name_type_index = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
+	name_type_index = ((struct CONSTANT_Methodref_info *)(current_frame->constantPool[index-1]))->nameTypeIndex;
 
 	while (class != NULL && (method = getMethodByNameAndDescIndex(class, current_frame->class, name_type_index)) == NULL) {
-		class_name = getParentName(class);
+		className = getParentName(class);
 
-		class_index = carregarClass( class_name );
-		class = getClassByIndex( class_index );
+		classIndex = carregarClass( className );
+		class = getClassByIndex( classIndex );
 	}
 
 	if (class == NULL) {
@@ -3900,10 +3900,10 @@ void funct_invokespecial()
 		fields_tmp[i] = pop();
 	}
 
-	if (method->access_flags & ACC_NATIVE) {
+	if (method->accessFlags & ACC_NATIVE) {
 
-		bytes = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->bytes;
-		length = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->length;
+		bytes = ((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->bytes;
+		length = ((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->length;
 
 		if (bytes[length-1] == 'D' || bytes[length-1] == 'J') {
 			pushU8( 0 );
@@ -3929,16 +3929,16 @@ void funct_invokestatic(){
 	u4 index;
 	u1 low, high;
 	int32_t numParams, i;
-	int32_t class_index, class_index_tmp;
+	int32_t classIndex, class_index_tmp;
 	u2 name_type_index;
-	char *class_name;
+	char *className;
 	u4 *fields_tmp;
 
 	u1 *bytes;
 	u2 length;
 
-	struct ClassFile *class;
-	method_info *method;
+	classStructure *class;
+	methodInfo *method;
 
 	high = current_frame->code[++(current_frame->pc)];
 	low = current_frame->code[++(current_frame->pc)];
@@ -3946,17 +3946,17 @@ void funct_invokestatic(){
 	index = convert_2x8_to_32_bits(low, high);
 
 
-	class_index_tmp = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->class_index;
+	class_index_tmp = ((struct CONSTANT_Methodref_info *)(current_frame->constantPool[index-1]))->classIndex;
 
-	class_name = getName(current_frame->class,
-			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
-
-
-	name_type_index = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
+	className = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constantPool[class_index_tmp-1]))->nameIndex);
 
 
-	class_index = carregarClass( class_name );
-	class = getClassByIndex( class_index );
+	name_type_index = ((struct CONSTANT_Methodref_info *)(current_frame->constantPool[index-1]))->nameTypeIndex;
+
+
+	classIndex = carregarClass( className );
+	class = getClassByIndex( classIndex );
 
 
 	method = getMethodByNameAndDescIndex(class, current_frame->class, name_type_index);
@@ -3964,7 +3964,7 @@ void funct_invokestatic(){
 	numParams = getNumParameters( class , method );
 
 #ifdef DEBUG
-	printf("invokestatic %s -> %s (%d)\n", class_name, getName(class, method->name_index), numParams);
+	printf("invokestatic %s -> %s (%d)\n", className, getName(class, method->nameIndex), numParams);
 #endif
 
 	fields_tmp = calloc(sizeof(u4),numParams+1);
@@ -3973,13 +3973,13 @@ void funct_invokestatic(){
 		fields_tmp[i] = index;
 	}
 
-	if (method->access_flags & ACC_NATIVE) {
+	if (method->accessFlags & ACC_NATIVE) {
 #ifdef DEBUG
 		printf("invokestatic Metodo nativo\n");
 #endif
 
-		bytes = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->bytes;
-		length = ((struct CONSTANT_Utf8_info *)(class->constant_pool[(method->descriptor_index-1)]))->length;
+		bytes = ((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->bytes;
+		length = ((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->length;
 
 		if (bytes[length-1] == 'D' || bytes[length-1] == 'J') {
 			pushU8( 0 );
@@ -4005,13 +4005,13 @@ void funct_invokeinterface()
 {
 	u4 index;
 	u1 low, high, args_count, zero;
-	int32_t class_index, class_index_tmp, i;
+	int32_t classIndex, class_index_tmp, i;
 	u2 name_type_index;
-	char *class_name;
+	char *className;
 	u4 *fields_tmp;
 
-	struct ClassFile *class;
-	method_info *method;
+	classStructure *class;
+	methodInfo *method;
 
 	high = current_frame->code[++(current_frame->pc)];
 	low = current_frame->code[++(current_frame->pc)];
@@ -4026,21 +4026,21 @@ void funct_invokeinterface()
 		fields_tmp[i] = pop();
 	}
 
-	class_index_tmp = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->class_index;
+	class_index_tmp = ((struct CONSTANT_Methodref_info *)(current_frame->constantPool[index-1]))->classIndex;
 
-	class_name = getName(current_frame->class,
-			((struct CONSTANT_Class_info *)(current_frame->constant_pool[class_index_tmp-1]))->name_index);
+	className = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constantPool[class_index_tmp-1]))->nameIndex);
 
-	class_index = carregarClass( class_name );
-	class = getClassByIndex( class_index );
+	classIndex = carregarClass( className );
+	class = getClassByIndex( classIndex );
 
-	name_type_index = ((struct CONSTANT_Methodref_info *)(current_frame->constant_pool[index-1]))->name_and_type_index;
+	name_type_index = ((struct CONSTANT_Methodref_info *)(current_frame->constantPool[index-1]))->nameTypeIndex;
 
 	while (class != NULL && (method = getMethodByNameAndDescIndex(class, current_frame->class, name_type_index)) == NULL) {
-		class_name = getParentName(class);
+		className = getParentName(class);
 
-		class_index = carregarClass( class_name );
-		class = getClassByIndex( class_index );
+		classIndex = carregarClass( className );
+		class = getClassByIndex( classIndex );
 	}
 
 	if (class == NULL) {
@@ -4063,9 +4063,9 @@ void funct_new()
 {
 	u1 low, high;
 	u4 index;
-	char *class_name;
-	int32_t class_index;
-	struct ClassFile *class;
+	char *className;
+	int32_t classIndex;
+	classStructure *class;
 	struct Object *objeto;
 
 	high = current_frame->code[++(current_frame->pc)];
@@ -4073,16 +4073,16 @@ void funct_new()
 
 	index = convert_2x8_to_32_bits(low, high);
 
-	class_name = getName(current_frame->class,
-			((struct CONSTANT_Class_info *)(current_frame->constant_pool[index-1]))->name_index);
+	className = getName(current_frame->class,
+			((struct CONSTANT_Class_info *)(current_frame->constantPool[index-1]))->nameIndex);
 
-	class_index = carregarClass(class_name);
-	class = getClassByIndex(class_index);
+	classIndex = carregarClass(className);
+	class = getClassByIndex(classIndex);
 
 	objeto = newObject(class);
 
 #ifdef DEBUG
-	printf("new %s (%p)\n", class_name, objeto);
+	printf("new %s (%p)\n", className, objeto);
 #endif
 
 	push( (u4)objeto );
@@ -4252,7 +4252,7 @@ void funct_multianewarray()
 
 	dimension = pop();
 	arrayref = newArray(dimension, TYPE_reference);
-	array_type = getName(current_frame->class, ((struct CONSTANT_Class_info*)current_frame->constant_pool[index -1])->name_index);
+	array_type = getName(current_frame->class, ((struct CONSTANT_Class_info*)current_frame->constantPool[index -1])->nameIndex);
 
 	i = 0;
 	while (array_type[i] == '[')

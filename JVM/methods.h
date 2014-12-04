@@ -8,13 +8,13 @@
 u1 returnType;
 u8 returnValue;
 
-method_info * getMainMethod();
-method_info * getInitStaticMethod();
-method_info * getMethodByNameAndDescIndex(struct ClassFile *main_class, struct ClassFile *name_type_class, u2 name_type_index);
-int getNumParameters(struct ClassFile *class, method_info *method);
-method_info * getInitMethod(u1 *desc, u2 desc_len);
+methodInfo * getMainMethod();
+methodInfo * getInitStaticMethod();
+methodInfo * getMethodByNameAndDescIndex(classStructure *main_class, classStructure *name_type_class, u2 name_type_index);
+int getNumParameters(classStructure *class, methodInfo *method);
+methodInfo * getInitMethod(u1 *desc, u2 desc_len);
 void runMethod();
-void prepararMetodo(struct ClassFile *class, method_info *method);
+void prepararMetodo(classStructure *class, methodInfo *method);
 void finishMethod();
 
 #endif

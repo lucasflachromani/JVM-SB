@@ -10,45 +10,45 @@
 
 char *caminho = ".\\";
 
-struct ClassFile **classArray = NULL;
-static_struct *classStaticArray = NULL;
+classStructure **classArray = NULL;
+staticStruct *classStaticArray = NULL;
 int32_t numClasses = 0;
 
 void replace(char * o_string, char * s_string, char * r_string);
 
 /*!
- * Carrega uma classe pelo seu nome \a class_name.
+ * Carrega uma classe pelo seu nome \a className.
  * Será carregada para o vetor classArray no novo índice (numClasses -1).
  * \return Class Index
  */
-int32_t carregarClass(char *class_name) {
+int32_t carregarClass(char *className) {
 	int32_t i, classIndex;
 	char *path;
-	method_info *staticMethod;
+	methodInfo *staticMethod;
 
-	if (class_name == NULL) {
+	if (className == NULL) {
 		return -1;
 	}
 
 	/* procura em classArray se a classe já foi carregada */
 	for (i = 0; i < numClasses; i++) {
-		if (strcmp(class_name, getClassName(classArray[i])) == 0)
+		if (strcmp(className, getClassName(classArray[i])) == 0)
 			return i;
 	}
 
 	/* aumenta o vetor classArray */
 	numClasses++;
 	classIndex = numClasses;
-	classArray = realloc(classArray, (classIndex*sizeof(struct ClassFile *)));
-	classStaticArray = realloc(classStaticArray, (classIndex*sizeof(static_struct)));
+	classArray = realloc(classArray, (classIndex*sizeof(classStructure *)));
+	classStaticArray = realloc(classStaticArray, (classIndex*sizeof(staticStruct)));
 
-	/* cria o path completo para o arquivo da classe base_path + class_name + .class */
-	path = malloc(strlen(caminho) + strlen(class_name) + 7);
+	/* cria o path completo para o arquivo da classe base_path + className + .class */
+	path = malloc(strlen(caminho) + strlen(className) + 7);
 
-	if (strstr(class_name,".class") != NULL) {
-		sprintf(path, "%s%s", caminho, class_name);
+	if (strstr(className,".class") != NULL) {
+		sprintf(path, "%s%s", caminho, className);
 	} else {
-		sprintf(path, "%s%s.class", caminho, class_name);
+		sprintf(path, "%s%s.class", caminho, className);
 	}
 
 	/* lê a nova classe */
@@ -57,10 +57,10 @@ int32_t carregarClass(char *class_name) {
 		exit(1);
 	}
 
-	classStaticArray[classIndex-1].class_name = malloc(strlen(class_name)+1);
-	memcpy(classStaticArray[classIndex-1].class_name, class_name, strlen(class_name));
-	classStaticArray[classIndex-1].fields_count = classArray[classIndex-1]->fields_count;
-	classStaticArray[classIndex-1].value = malloc(classArray[classIndex-1]->fields_count * sizeof(u8));
+	classStaticArray[classIndex-1].className = malloc(strlen(className)+1);
+	memcpy(classStaticArray[classIndex-1].className, className, strlen(className));
+	classStaticArray[classIndex-1].fieldCount = classArray[classIndex-1]->fieldCount;
+	classStaticArray[classIndex-1].value = malloc(classArray[classIndex-1]->fieldCount * sizeof(u8));
 
 	/* Executa o método de Init Static caso tenha */
 	if ((staticMethod = getInitStaticMethod(classArray[classIndex-1])) != NULL) {
@@ -90,51 +90,51 @@ int32_t carregarClass(char *class_name) {
 /*!
  * Retorna string com nome da classe a partir de ponteiro para ClassFile
  */
-char *getClassName(struct ClassFile *class) {
-	u2 this_class = class->this_class;
-	u2 name_index = ((struct CONSTANT_Class_info*)class->constant_pool[this_class-1])->name_index;
-	return getName( class , name_index );
+char *getClassName(classStructure *class) {
+	u2 thisClass = class->thisClass;
+	u2 nameIndex = ((struct CONSTANT_Class_info*)class->constantPool[thisClass-1])->nameIndex;
+	return getName( class , nameIndex );
 }
 
 /*!
  * Retorna string com nome da super classe a partir de ponteiro para ClassFile
  */
-char *getParentName(struct ClassFile *class) {
-	u2 super_class, name_index, length;
+char *getParentName(classStructure *class) {
+	u2 superClass, nameIndex, length;
 	u1 *name;
-	char *class_name;
+	char *className;
 
-	super_class = class->super_class;
+	superClass = class->superClass;
 
-	if (super_class == 0) {
+	if (superClass == 0) {
 		return NULL;
 	}
 
-	name_index = ((struct CONSTANT_Class_info*)(class->constant_pool[super_class-1]))->name_index;
+	nameIndex = ((struct CONSTANT_Class_info*)(class->constantPool[superClass-1]))->nameIndex;
 
-	length = ((struct CONSTANT_Utf8_info*) (class->constant_pool[name_index-1]))->length;
-	name = ((struct CONSTANT_Utf8_info*) (class->constant_pool[name_index-1]))->bytes;
+	length = ((struct CONSTANT_Utf8_info*) (class->constantPool[nameIndex-1]))->length;
+	name = ((struct CONSTANT_Utf8_info*) (class->constantPool[nameIndex-1]))->bytes;
 
-	class_name = malloc(sizeof(u2) * length+1);
+	className = malloc(sizeof(u2) * length+1);
 
-	strncpy(class_name, (char *)name, length);
-	class_name[length] = '\0';
+	strncpy(className, (char *)name, length);
+	className[length] = '\0';
 
-	return class_name;
+	return className;
 }
 
 
 /*!
- * Retorna ponteiro pra ClassFile a partir de string \a class_name.
+ * Retorna ponteiro pra ClassFile a partir de string \a className.
  */
-struct ClassFile * getClassByName(char *class_name) {
+classStructure * getClassByName(char *className) {
 	int i;
-	if (!class_name) {
+	if (!className) {
 		return NULL;
 	}
 
 	for (i = 0; i < numClasses; i++) {
-		if (strcmp(class_name, getClassName(classArray[i])) == 0)
+		if (strcmp(className, getClassName(classArray[i])) == 0)
 			return classArray[i];
 	}
 
@@ -145,7 +145,7 @@ struct ClassFile * getClassByName(char *class_name) {
  * Não consegui colocar essas definicoes no .h, nao sei o motivo.
  * Entao tive q fazer esses dois getters.
  */
-struct ClassFile * getClassByIndex(int index) {
+classStructure * getClassByIndex(int index) {
 	if (index >= numClasses) {
 		return NULL;
 	}
@@ -156,25 +156,25 @@ int getNumClasses() {
 	return numClasses;
 }
 
-int32_t getFieldIndexByNameAndDesc(char *class_name, char *name, u2 name_len, char *desc, u2 desc_len) {
+int32_t getFieldIndexByNameAndDesc(char *className, char *name, u2 name_len, char *desc, u2 desc_len) {
 	int32_t i;
-	struct ClassFile *main_class;
+	classStructure *main_class;
 	u1 *m_name, *m_desc;
 	u2 m_name_len, m_desc_len;
 
-	main_class = getClassByName(class_name);
+	main_class = getClassByName(className);
 
 	if (!main_class) {
 		return -2;
 	}
 
 	/* Procura pelo Field de acordo com o nome e o desc */
-	for (i = 0; main_class && i < main_class->fields_count; i++) {
-		m_name = ((struct CONSTANT_Utf8_info *)(main_class->constant_pool[(main_class->fields[i].name_index-1)]))->bytes;
-		m_name_len = ((struct CONSTANT_Utf8_info *)(main_class->constant_pool[(main_class->fields[i].name_index-1)]))->length;
+	for (i = 0; main_class && i < main_class->fieldCount; i++) {
+		m_name = ((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->fields[i].nameIndex-1)]))->bytes;
+		m_name_len = ((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->fields[i].nameIndex-1)]))->length;
 
-		m_desc = ((struct CONSTANT_Utf8_info *)(main_class->constant_pool[(main_class->fields[i].descriptor_index-1)]))->bytes;
-		m_desc_len = ((struct CONSTANT_Utf8_info *)(main_class->constant_pool[(main_class->fields[i].descriptor_index-1)]))->length;
+		m_desc = ((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->fields[i].descriptorIndex-1)]))->bytes;
+		m_desc_len = ((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->fields[i].descriptorIndex-1)]))->length;
 
 		if (name_len != m_name_len)
 			continue;
@@ -190,7 +190,7 @@ int32_t getFieldIndexByNameAndDesc(char *class_name, char *name, u2 name_len, ch
 	return -1;
 }
 
-int32_t getClassIndex(struct ClassFile *class_file) {
+int32_t getClassIndex(classStructure *class_file) {
 	int i;
 
 	for (i = 0; i < numClasses; i++) {
@@ -202,12 +202,12 @@ int32_t getClassIndex(struct ClassFile *class_file) {
 	return -1;
 }
 
-u8 getStaticFieldValue(int32_t class_index, int32_t field_index) {
-	return classStaticArray[class_index].value[field_index];
+u8 getStaticFieldValue(int32_t classIndex, int32_t field_index) {
+	return classStaticArray[classIndex].value[field_index];
 }
 
-void setStaticFieldValue(int32_t class_index, int32_t field_index, u8 value) {
-	classStaticArray[class_index].value[field_index] = value;
+void setStaticFieldValue(int32_t classIndex, int32_t field_index, u8 value) {
+	classStaticArray[classIndex].value[field_index] = value;
 }
 
 /**

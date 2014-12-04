@@ -16,7 +16,7 @@ void newHeap() {
 	heap_max = HEAP_INIT;
 }
 
-struct Object* newObject(struct ClassFile *this) {
+struct Object* newObject(classStructure *this) {
 	struct Object *object;
 	u4 i, j, counter;
 	u2 index;
@@ -43,10 +43,10 @@ struct Object* newObject(struct ClassFile *this) {
 	object->super = newObject(getClassByName(getParentName(this)));
 
 	counter = 0;
-	for (i = 0; i < this->fields_count; i++) {
+	for (i = 0; i < this->fieldCount; i++) {
 		counter++;
-		index = this->fields[i].descriptor_index;
-		desc_struct = (struct CONSTANT_Utf8_info*)this->constant_pool[index - 1];
+		index = this->fields[i].descriptorIndex;
+		desc_struct = (struct CONSTANT_Utf8_info*)this->constantPool[index - 1];
 		memcpy(descriptor, desc_struct->bytes, desc_struct->length);
 
 		if (descriptor[0] == 'D' || descriptor[0] == 'J') {
@@ -57,11 +57,11 @@ struct Object* newObject(struct ClassFile *this) {
 	object->fields = calloc(sizeof(u4), counter);
 	object->fields_index = calloc(sizeof(u4), counter);
 
-	for (i = 0, j = 0; i < this->fields_count; i++, j++) {
-		object->fields_index[j] = this->fields[i].name_index;
+	for (i = 0, j = 0; i < this->fieldCount; i++, j++) {
+		object->fields_index[j] = this->fields[i].nameIndex;
 
-		index = this->fields[i].descriptor_index;
-		desc_struct = (struct CONSTANT_Utf8_info*)this->constant_pool[index - 1];
+		index = this->fields[i].descriptorIndex;
+		desc_struct = (struct CONSTANT_Utf8_info*)this->constantPool[index - 1];
 		memcpy(descriptor, desc_struct->bytes, desc_struct->length);
 
 		if (descriptor[0] == 'D' || descriptor[0] == 'J') {
@@ -75,35 +75,35 @@ struct Object* newObject(struct ClassFile *this) {
 	return object;
 }
 
-u4 getObjectField(struct Object* object, u4 name_index) {
+u4 getObjectField(struct Object* object, u4 nameIndex) {
 	int32_t i = 0;
-	while (object->fields_index[i] != name_index) {
+	while (object->fields_index[i] != nameIndex) {
 		i++;
 	}
 	return object->fields[i];
 }
 
-u8 getObjectFieldWide(struct Object* object, u4 name_index) {
+u8 getObjectFieldWide(struct Object* object, u4 nameIndex) {
 	int32_t i = 0;
-	while (object->fields_index[i] != name_index) {
+	while (object->fields_index[i] != nameIndex) {
 		i++;
 	}
 	return convert_2x32_to_64_bits(object->fields[i],object->fields[i+1]);
 }
 
-void setObjectField(struct Object* object, u4 name_index, u4 value) {
+void setObjectField(struct Object* object, u4 nameIndex, u4 value) {
 	int32_t i = 0;
-	while (object->fields_index[i] != name_index) {
+	while (object->fields_index[i] != nameIndex) {
 		i++;
 	}
 	object->fields[i] = value;
 }
 
-void setObjectFieldWide(struct Object* object, u4 name_index, u8 value) {
+void setObjectFieldWide(struct Object* object, u4 nameIndex, u8 value) {
 	int32_t i = 0;
 	u4 low, high;
 
-	while (object->fields_index[i] != name_index) {
+	while (object->fields_index[i] != nameIndex) {
 		i++;
 	}
 

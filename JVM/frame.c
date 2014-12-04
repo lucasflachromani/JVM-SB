@@ -4,7 +4,7 @@
 //	Frame atual e' o topo da pilha
 static struct frame_stack *stack = NULL;
 
-void newFrame(struct ClassFile *class, void **constant_pool, Code_attribute *code_attribute) {
+void newFrame(classStructure *class, void **constantPool, Code_attribute *code_attribute) {
 	struct frame_stack *new;
 	new = calloc(sizeof(struct frame_stack), 1);
 	new->value = calloc(sizeof(struct frame), 1);
@@ -12,12 +12,12 @@ void newFrame(struct ClassFile *class, void **constant_pool, Code_attribute *cod
 
 	stack = new;
 	stack->value->class = class;
-	stack->value->constant_pool = constant_pool; 
-	stack->value->max_stack = code_attribute->max_stack;
-	stack->value->max_locals = code_attribute->max_locals;
-	stack->value->code_length = code_attribute->code_length;		
+	stack->value->constantPool = constantPool; 
+	stack->value->maxStack = code_attribute->maxStack;
+	stack->value->maxLocals = code_attribute->maxLocals;
+	stack->value->codeLength = code_attribute->codeLength;		
 	stack->value->code = code_attribute->code;
-	stack->value->fields = calloc(sizeof(u4), stack->value->max_locals);
+	stack->value->fields = calloc(sizeof(u4), stack->value->maxLocals);
 	stack->value->pc = 0;
 	current_frame = stack->value;
 	newStackFrame();
