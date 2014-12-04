@@ -80,4 +80,24 @@
 #define RETURN_32bits 	1
 #define RETURN_64bits 	2
 
+/*
+*
+* New
+*
+*/
+#define CContinued          0
+#define CUtf8               1
+#define CInteger            3
+#define CFloat              4
+#define CLong               5
+#define CDouble             6
+#define CClass              7
+#define CString             8
+#define CFieldRef           9
+#define CMethodRef          10
+#define CInterfaceMethodRef 11
+#define CNameType           12
+
+#define isBitActivated(variable, index) ((variable) & (1<<(index - 1)))
+
 #endif

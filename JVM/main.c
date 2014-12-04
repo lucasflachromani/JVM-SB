@@ -48,29 +48,25 @@ void inicializar() {
 }
 
 int main(int argc, char **argv) {
-
 	method_info *metodoMain;
 	FILE *arquivo;
 
-	if(argc > 4) {
-		printf(" Erro: Argumentos demais.\n");
+	inicializar ();
+	iniciarFlags (argc, argv);
+	iniciarInstrucoes ();			// Popula array de instrucoes
+	populate_opcode_info ();
+
+	carregarClass(fileSrcName);
+
+	if((metodoMain = getMainMethod()) == NULL) {
+		printf(" Erro: Não foi possível localizar método main.");
 		exit(1);
-	} else {
-		inicializar();
-		iniciarFlags(argc, argv);
-		iniciarInstrucoes();			// Popula array de instrucoes
-		populate_opcode_info();
-
-		carregarClass(fileSrcName);
-
-		if((metodoMain = getMainMethod()) == NULL) {
-			printf(" Erro: Não foi possível localizar método main.");
-			exit(1);
-		}
-
-		prepararMetodo(getClassByIndex(0), metodoMain);
-		runMethod();
 	}
+
+	prepararMetodo(getClassByIndex(0), metodoMain);
+	runMethod();
+	
+	//exibir bytecodes pro arquivo txt, se informado
 
 	return 0;
 

@@ -8,9 +8,9 @@ struct ClassFile *class;
 
 int open_file(char* file_name);
 void close_file();
-u1 read_u1();
-u2 read_u2();
-u4 read_u4();
+u1 u1Read ();
+u2 u2Read ();
+u4 u4Read ();
 void read_constant_pool();
 char * getName(struct ClassFile *class_file, u2 name_index);
 int read_s();
