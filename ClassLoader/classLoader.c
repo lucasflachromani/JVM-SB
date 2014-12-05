@@ -944,6 +944,14 @@ void carregar_opcode_informacao() {
 	strcpy(op_info[0x54].descricao, "bastore");
 	strcpy(op_info[0x55].descricao, "castore");
 	strcpy(op_info[0x56].descricao, "sastore");
+	strcpy(op_info[0x57].descricao, "pop");
+	strcpy(op_info[0x58].descricao, "pop2");
+	strcpy(op_info[0x59].descricao, "dup");
+	strcpy(op_info[0x5a].descricao, "dup_x1");
+	strcpy(op_info[0x5b].descricao, "dup_x2");
+	strcpy(op_info[0x5c].descricao, "dup2");
+	strcpy(op_info[0x5d].descricao, "dup2_x1");
+	strcpy(op_info[0x5e].descricao, "dup2_x2");
 	strcpy(op_info[0x60].descricao, "iadd");
 	strcpy(op_info[0x61].descricao, "ladd");
 	strcpy(op_info[0x62].descricao, "fadd");
