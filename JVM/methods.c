@@ -8,7 +8,7 @@
 #include "instructions.h"
 #include "frame.h"
 
-extern struct frame *current_frame;
+extern struct frame *frameAtual;
 
 methodInfo * getMainMethod() {
 	int i;
@@ -97,8 +97,8 @@ methodInfo * getMethodByNameAndDescIndex(classStructure *main_class, classStruct
 
 void runMethod() {
 	/* loop principal do método - executa o código */
-	while(current_frame != NULL &&(current_frame->pc) < current_frame->codeLength) {
-		execute_instruction(current_frame->code[current_frame->pc]);
+	while(frameAtual != NULL &&(frameAtual->pc) < frameAtual->codeLength) {
+		execute_instruction(frameAtual->code[frameAtual->pc]);
 	}
 
 	/* Finaliza o método chamado */

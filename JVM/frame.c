@@ -19,7 +19,7 @@ void newFrame(classStructure *class, void **constantPool, Code_attribute *code_a
 	stack->value->code = code_attribute->code;
 	stack->value->fields = calloc(sizeof(u4), stack->value->maxLocals);
 	stack->value->pc = 0;
-	current_frame = stack->value;
+	frameAtual = stack->value;
 	newStackFrame();
 }
 
@@ -27,9 +27,9 @@ void freeFrame() {
 	struct frame_stack *next;
 
 	if (stack->next != NULL) {
-		current_frame = stack->next->value;
+		frameAtual = stack->next->value;
 	} else {
-		current_frame = NULL;
+		frameAtual = NULL;
 	}
 
 	next = stack->next;

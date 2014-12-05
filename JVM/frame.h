@@ -24,7 +24,7 @@ struct frame_stack {
 	struct frame_stack *next;
 };
 
-struct frame *current_frame;
+struct frame *frameAtual;
 
 void newFrame(classStructure *class, void **constantPool, Code_attribute *code_attribute);
 void freeFrame();
