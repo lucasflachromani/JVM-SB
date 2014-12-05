@@ -7,6 +7,7 @@
 #include "mnemonics.h"
 #include "instructions.h"
 #include "frame.h"
+#include "constantes.h"
 
 extern struct frame *frameAtual;
 
@@ -21,11 +22,11 @@ methodInfo * getMainMethod() {
 	/* procura por método main([LJava/lang/String;)V */
 	for(i = 0; i < main_class->methodCount; i++) {
 
-		name =((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->methods[i].nameIndex-1)]))->bytes;
-		name_length =((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->methods[i].nameIndex-1)]))->length;
+		name = main_class->constantPool[(main_class->methods[i].nameIndex-1)].type.Utf8.bytes;
+		name_length = main_class->constantPool[(main_class->methods[i].nameIndex-1)].type.Utf8.length;
 
-		desc =((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->methods[i].descriptorIndex-1)]))->bytes;
-		desc_length =((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->methods[i].descriptorIndex-1)]))->length;
+		desc = main_class->constantPool[(main_class->methods[i].descriptorIndex-1)].type.Utf8.bytes;
+		desc_length = main_class->constantPool[(main_class->methods[i].descriptorIndex-1)].type.Utf8.length;
 
 		if((strncmp("main",(char *)name, name_length) == 0)
 				&&(strncmp("([Ljava/lang/String;)V",(char *)desc, desc_length) == 0))
@@ -44,11 +45,11 @@ methodInfo * getInitStaticMethod(classStructure *main_class) {
 	/* procura por método main <clinit>()V */
 	for(i = 0; i < main_class->methodCount; i++) {
 
-		name =((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->methods[i].nameIndex-1)]))->bytes;
-		name_length =((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->methods[i].nameIndex-1)]))->length;
+		name = main_class->constantPool[(main_class->methods[i].nameIndex-1)].type.Utf8.bytes;
+		name_length = main_class->constantPool[(main_class->methods[i].nameIndex-1)].type.Utf8.length;
 
-		desc =((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->methods[i].descriptorIndex-1)]))->bytes;
-		desc_length =((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->methods[i].descriptorIndex-1)]))->length;
+		desc = main_class->constantPool[(main_class->methods[i].descriptorIndex-1)].type.Utf8.bytes;
+		desc_length = main_class->constantPool[(main_class->methods[i].descriptorIndex-1)].type.Utf8.length;
 
 		if((strncmp("<clinit>",(char *)name, name_length) == 0)
 				&&(strncmp("()V",(char *)desc, desc_length) == 0))
@@ -66,21 +67,19 @@ methodInfo * getMethodByNameAndDescIndex(classStructure *main_class, classStruct
 	char *name, *desc;
 	u2 name_len, desc_len;
 
-	name = getName(name_type_class,
-			((struct CONSTANT_NameAndType_info *)(name_type_class->constantPool[name_type_index-1]))->nameIndex);
+	name = getName(name_type_class, name_type_class->constantPool[name_type_index-1].type.NameType.nameIndex);
 	name_len = strlen(name);
 
-	desc = getName(name_type_class,
-			((struct CONSTANT_NameAndType_info *)(name_type_class->constantPool[name_type_index-1]))->descriptorIndex);
+	desc = getName(name_type_class, name_type_class->constantPool[name_type_index-1].type.NameType.descriptorIndex);
 	desc_len = strlen(desc);
 
 	for(i = 0; i < main_class->methodCount; i++) {
 
-		m_name =((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->methods[i].nameIndex-1)]))->bytes;
-		m_name_len =((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->methods[i].nameIndex-1)]))->length;
+		m_name = main_class->constantPool[(main_class->methods[i].nameIndex-1)].type.Utf8.bytes;
+		m_name_len = main_class->constantPool[(main_class->methods[i].nameIndex-1)].type.Utf8.length;
 
-		m_desc =((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->methods[i].descriptorIndex-1)]))->bytes;
-		m_desc_len =((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->methods[i].descriptorIndex-1)]))->length;
+		m_desc = main_class->constantPool[(main_class->methods[i].descriptorIndex-1)].type.Utf8.bytes;
+		m_desc_len = main_class->constantPool[(main_class->methods[i].descriptorIndex-1)].type.Utf8.length;
 
 		if(name_len != m_name_len)
 			continue;
@@ -153,8 +152,8 @@ int32_t getNumParameters(classStructure *class, methodInfo *method) {
 	u2 length;
 	u1 *bytes;
 
-	bytes =((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->bytes;
-	length =((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->length;
+	bytes = class->constantPool[(method->descriptorIndex-1)].type.Utf8.bytes;
+	length = class->constantPool[(method->descriptorIndex-1)].type.Utf8.length;
 
 	for(i = 0; i < length && bytes[i] != ')'; i++) {
 

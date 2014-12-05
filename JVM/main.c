@@ -51,15 +51,15 @@ int main(int argc, char **argv) {
 	methodInfo *metodoMain;
 	FILE *arquivo;
 
-	inicializar ();
-	iniciarFlags (argc, argv);
-	iniciarInstrucoes ();			// Popula array de instrucoes
-	populate_opcode_info ();
+	inicializar();
+	iniciarFlags(argc, argv);
+	iniciarInstrucoes();			// Popula array de instrucoes
+	populate_opcode_info();
 
 	carregarClass(fileSrcName);
 
 	if((metodoMain = getMainMethod()) == NULL) {
-		printf(" Erro: Não foi possível localizar método main.");
+		printf(" Erro: Nao foi possivel localizar metodo main.");
 		exit(1);
 	}
 

@@ -23,7 +23,7 @@ extern u8 returnValue;
 
 int next_is_wide = 0;
 
-extern opcode_info *op_info;
+//extern opcode_informacao *op_info;
 
 
 void execute_instruction(u1 opcode) {
@@ -411,20 +411,20 @@ void i_ldc()
 	frameAtual->pc++;
 	indice = frameAtual->code[frameAtual->pc];
 
-	tag = ((struct CONSTANT_Integer_info *) frameAtual->constantPool[indice-1])->tag;
+	tag = frameAtual->constantPool[indice-1].tag;
 
 	switch(tag)
 	{
 	case (CONSTANT_Integer):
-							push ( ((struct CONSTANT_Integer_info *) frameAtual->constantPool[indice-1])->bytes);
-	break;
+		push(frameAtual->constantPool[indice-1].type.Integer.bytes);
+		break;
 	case (CONSTANT_Float):
-							push ( ((struct CONSTANT_Float_info *) frameAtual->constantPool[indice-1])->bytes);
-	break;
+		push(frameAtual->constantPool[indice-1].type.Float.bytes);
+		break;
 	case (CONSTANT_String):
-							stringIndex = ((struct CONSTANT_String_info *) frameAtual->constantPool[indice-1])->stringIndex;
-	push ( (u4)getName(frameAtual->class, stringIndex) );
-	break;
+		stringIndex = frameAtual->constantPool[indice-1].type.String.stringIndex;
+		push ((u4)getName(frameAtual->class, stringIndex) );
+		break;
 	}
 
 	frameAtual->pc++;
@@ -445,18 +445,18 @@ void i_ldc_w()
 
 	indice = convert_2x8_to_32_bits( low, high );
 
-	tag = ((struct CONSTANT_Integer_info *) frameAtual->constantPool[indice-1])->tag;
+	tag = frameAtual->constantPool[indice-1].tag;
 
 	switch(tag)
 	{
 	case (CONSTANT_Integer):
-							push ( ((struct CONSTANT_Integer_info *) frameAtual->constantPool[indice-1])->bytes);
+									push (frameAtual->constantPool[indice-1].type.Integer.bytes);
 	break;
 	case (CONSTANT_Float):
-							push ( ((struct CONSTANT_Float_info *) frameAtual->constantPool[indice-1])->bytes);
+									push (frameAtual->constantPool[indice-1].type.Float.bytes);
 	break;
 	case (CONSTANT_String):
-							stringIndex = ((struct CONSTANT_String_info *) frameAtual->constantPool[indice-1])->stringIndex;
+									stringIndex = frameAtual->constantPool[indice-1].type.String.stringIndex;
 	push ( (u4)getName(frameAtual->class, stringIndex) );
 	break;
 	}
@@ -478,18 +478,18 @@ void i_ldc2_w()
 
 	indice = convert_2x8_to_32_bits( low, high );
 
-	tag = ((struct CONSTANT_Long_info *) frameAtual->constantPool[indice-1])->tag;
+	tag = ( frameAtual->constantPool[indice-1]).tag;
 
 	switch(tag)
 	{
 	case (CONSTANT_Long):
-							push ( ((struct CONSTANT_Long_info *) frameAtual->constantPool[indice-1])->highBytes);
-	push ( ((struct CONSTANT_Long_info *) frameAtual->constantPool[indice-1])->lowBytes);
-	break;
+		push(frameAtual->constantPool[indice-1].type.Long.highBytes);
+		push(frameAtual->constantPool[indice-1].type.Long.lowBytes);
+		break;
 	case (CONSTANT_Double):
-							push ( ((struct CONSTANT_Double_info *) frameAtual->constantPool[indice-1])->highBytes);
-	push ( ((struct CONSTANT_Double_info *) frameAtual->constantPool[indice-1])->lowBytes);
-	break;
+		push(frameAtual->constantPool[indice-1].type.Double.highBytes);
+		push(frameAtual->constantPool[indice-1].type.Double.lowBytes);
+		break;
 	}
 
 	frameAtual->pc++;
@@ -1927,7 +1927,7 @@ void i_lshr()
 	high = pop();
 	aux3 = (signed) convert_2x32_to_64_bits( low , high );
 
-	/* Verifica qual Ã© o primeiro bit */
+	/* Verifica qual é o primeiro bit */
 	aux4 = aux3 & aux4;
 
 	aux3 >>= aux2;
@@ -2107,7 +2107,7 @@ void i_i2l()
 
 	aux1 = pop();
 
-	/* Verifica qual Ã© o primeiro bit */
+	/* Verifica qual é o primeiro bit */
 	aux3 = aux1 & mask;
 
 	aux2 = (int64_t) aux1;
@@ -3098,18 +3098,14 @@ void i_getstatic()
 
 	index = ((u2)index1 << 8) | (u2)index2;
 
-	class_index_tmp = ((struct CONSTANT_Fieldref_info *)(frameAtual->constantPool[index-1]))->classIndex;
+	class_index_tmp = frameAtual->constantPool[index-1].type.FieldRef.classIndex;
 
-	className = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constantPool[class_index_tmp-1]))->nameIndex);
+	className = getName(frameAtual->class, frameAtual->constantPool[class_index_tmp-1].type.Class.nameIndex);
 
-	name_type_index = ((struct CONSTANT_Fieldref_info *)(frameAtual->constantPool[index-1]))->nameTypeIndex;
+	name_type_index = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
 
-	name = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constantPool[name_type_index-1]))->nameIndex);
-	type = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constantPool[name_type_index-1]))->descriptorIndex);
-
+	name = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.nameIndex);
+	type = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.descriptorIndex);
 
 	/* -1 informa que nao encontrou o field na casse corrente */
 	while ((field_index = getFieldIndexByNameAndDesc(className, name, strlen(name), type, strlen(type))) == -1) {
@@ -3160,17 +3156,14 @@ void i_putstatic()
 
 	index = ((u2)index1 << 8) | (u2)index2;
 
-	class_index_tmp = ((struct CONSTANT_Fieldref_info *)(frameAtual->constantPool[index-1]))->classIndex;
+	class_index_tmp = frameAtual->constantPool[index-1].type.FieldRef.classIndex;
 
-	className = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constantPool[class_index_tmp-1]))->nameIndex);
+	className = getName(frameAtual->class, frameAtual->constantPool[class_index_tmp-1].type.Class.nameIndex);
 
-	name_type_index = ((struct CONSTANT_Fieldref_info *)(frameAtual->constantPool[index-1]))->nameTypeIndex;
+	name_type_index = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
 
-	name = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constantPool[name_type_index-1]))->nameIndex);
-	type = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constantPool[name_type_index-1]))->descriptorIndex);
+	name = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.nameIndex);
+	type = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.descriptorIndex);
 
 	/* -1 informa que nao encontrou o field na casse corrente */
 	while ((field_index = getFieldIndexByNameAndDesc(className, name, strlen(name), type, strlen(type))) == -1) {
@@ -3228,23 +3221,17 @@ void i_getfield()
 	index = convert_2x8_to_32_bits(low, high);
 
 
-	classIndex = ((struct CONSTANT_Fieldref_info *)(frameAtual->constantPool[index-1]))->classIndex;
+	classIndex = frameAtual->constantPool[index-1].type.FieldRef.classIndex;
 
-	className = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constantPool[classIndex-1]))->nameIndex);
+	className = getName(frameAtual->class, frameAtual->constantPool[classIndex-1].type.Class.nameIndex);
 
+	name_type_index = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
 
-	name_type_index = ((struct CONSTANT_Fieldref_info *)(frameAtual->constantPool[index-1]))->nameTypeIndex;
-
-	name = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constantPool[name_type_index-1]))->nameIndex);
-	type = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constantPool[name_type_index-1]))->descriptorIndex);
-
+	name = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.nameIndex);
+	type = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.descriptorIndex);
 
 	/* Pega a referencia do objeto que tera o field alterado de valor */
 	objeto = (struct Object *) pop();
-
 
 	/* -1 informa que nao encontrou o field na casse corrente */
 	while ((field_index = getFieldIndexByNameAndDesc(className, name, strlen(name), type, strlen(type))) == -1) {
@@ -3263,7 +3250,6 @@ void i_getfield()
 		frameAtual->pc++;
 		return;
 	}
-
 
 	nameIndex = frameAtual->class->fields[field_index].nameIndex;
 
@@ -3299,25 +3285,19 @@ void i_putfield()
 	index = convert_2x8_to_32_bits(low, high);
 
 
-	classIndex = ((struct CONSTANT_Fieldref_info *)(frameAtual->constantPool[index-1]))->classIndex;
+	classIndex = frameAtual->constantPool[index-1].type.FieldRef.classIndex;
 
-	className = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constantPool[classIndex-1]))->nameIndex);
+	className = getName(frameAtual->class, frameAtual->constantPool[classIndex-1].type.Class.nameIndex);
 
+	name_type_index = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
 
-	name_type_index = ((struct CONSTANT_Fieldref_info *)(frameAtual->constantPool[index-1]))->nameTypeIndex;
-
-	name = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constantPool[name_type_index-1]))->nameIndex);
-	type = getName(frameAtual->class,
-			((struct CONSTANT_NameAndType_info *)(frameAtual->constantPool[name_type_index-1]))->descriptorIndex);
-
+	name = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.nameIndex);
+	type = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.descriptorIndex);
 
 	/* -1 informa que nao encontrou o field na casse corrente */
 	while ((field_index = getFieldIndexByNameAndDesc(className, name, strlen(name), type, strlen(type))) == -1) {
 		className = getParentName(getClassByName(className));
 	}
-
 
 	/* Verifica se deu algum erro (ou classe nao aceita) ao buscar o field (-2) */
 	if (field_index == -2) {
@@ -3384,15 +3364,14 @@ void i_invokevirtual()
 	index = convert_2x8_to_32_bits(low, high);
 
 
-	class_index_tmp = ((struct CONSTANT_Methodref_info *)(frameAtual->constantPool[index-1]))->classIndex;
+	class_index_tmp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
 
-	className = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constantPool[class_index_tmp-1]))->nameIndex);
+	className = getName(frameAtual->class, frameAtual->constantPool[class_index_tmp-1].type.Class.nameIndex);
 
-	name_type_index = ((struct CONSTANT_Methodref_info *)(frameAtual->constantPool[index-1]))->nameTypeIndex;
+	name_type_index = frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex;
 
-	method_name_index = ((struct CONSTANT_NameAndType_info *)(frameAtual->constantPool[name_type_index-1]))->nameIndex;
-	method_desc_index = ((struct CONSTANT_NameAndType_info *)(frameAtual->constantPool[name_type_index-1]))->descriptorIndex;
+	method_name_index = frameAtual->constantPool[name_type_index-1].type.NameType.nameIndex;
+	method_desc_index = frameAtual->constantPool[name_type_index-1].type.NameType.descriptorIndex;
 
 	method_desc = getName(frameAtual->class, method_desc_index);
 	method_name = getName(frameAtual->class, method_name_index);
@@ -3464,7 +3443,7 @@ void i_invokevirtual()
 			/* OBJECT */
 		}else if(strstr(method_desc, "Ljava/lang/Object") != NULL) {
 			printf("%p", (void *)pop());
-			/* chamar mÃ©todo toString do object e depois toCharArray()*/
+			/* chamar método toString do object e depois toCharArray()*/
 		}
 
 		if (strcmp(method_name,"println") == 0)
@@ -3495,11 +3474,9 @@ void i_invokevirtual()
 			fields_tmp[i] = pop();
 		}
 
-		if (method->accessFlags & ACC_NATIVE ||
-				strcmp("println", getName(class, method->nameIndex)) == 0) {
-
-			bytes = ((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->bytes;
-			length = ((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->length;
+		if (((method->accessFlags) & ACC_NATIVE) || strcmp("println", getName(class, method->nameIndex)) == 0) {
+			bytes = class->constantPool[(method->descriptorIndex-1)].type.Utf8.bytes;
+			length = class->constantPool[(method->descriptorIndex-1)].type.Utf8.length;
 
 			if (bytes[length-1] == 'D' || bytes[length-1] == 'J') {
 				pushU8( 0 );
@@ -3544,16 +3521,14 @@ void i_invokespecial()
 	index = convert_2x8_to_32_bits(low, high);
 
 
-	class_index_tmp = ((struct CONSTANT_Methodref_info *)(frameAtual->constantPool[index-1]))->classIndex;
+	class_index_tmp = (frameAtual->constantPool[index-1]).type.MethodRef.classIndex;
 
-	className = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constantPool[class_index_tmp-1]))->nameIndex);
-
+	className = getName(frameAtual->class, (frameAtual->constantPool[class_index_tmp-1]).type.Class.nameIndex);
 
 	classIndex = carregarClass( className );
 	class = getClassByIndex( classIndex );
 
-	name_type_index = ((struct CONSTANT_Methodref_info *)(frameAtual->constantPool[index-1]))->nameTypeIndex;
+	name_type_index = ((frameAtual->constantPool[index-1])).type.MethodRef.nameTypeIndex;
 
 	while (class != NULL && (method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index)) == NULL) {
 		className = getParentName(class);
@@ -3575,8 +3550,8 @@ void i_invokespecial()
 
 	if (method->accessFlags & ACC_NATIVE) {
 
-		bytes = ((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->bytes;
-		length = ((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->length;
+		bytes = class->constantPool[(method->descriptorIndex-1)].type.Utf8.bytes;
+		length = class->constantPool[(method->descriptorIndex-1)].type.Utf8.length;
 
 		if (bytes[length-1] == 'D' || bytes[length-1] == 'J') {
 			pushU8( 0 );
@@ -3619,33 +3594,29 @@ void i_invokestatic(){
 	index = convert_2x8_to_32_bits(low, high);
 
 
-	class_index_tmp = ((struct CONSTANT_Methodref_info *)(frameAtual->constantPool[index-1]))->classIndex;
+	class_index_tmp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
 
-	className = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constantPool[class_index_tmp-1]))->nameIndex);
+	className = getName(frameAtual->class, frameAtual->constantPool[class_index_tmp-1].type.Class.nameIndex);
 
-
-	name_type_index = ((struct CONSTANT_Methodref_info *)(frameAtual->constantPool[index-1]))->nameTypeIndex;
-
+	name_type_index = frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex;
 
 	classIndex = carregarClass( className );
 	class = getClassByIndex( classIndex );
-
 
 	method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index);
 
 	numParams = getNumParameters( class , method );
 
 	fields_tmp = calloc(sizeof(u4),numParams+1);
-	for (i = numParams-1; i >= 0; i--) { /* Ãºnica diferenÃ§a pra invokespecial */
+	for (i = numParams-1; i >= 0; i--) { /* única diferença pra invokespecial */
 		index = pop();
 		fields_tmp[i] = index;
 	}
 
 	if (method->accessFlags & ACC_NATIVE) {
 
-		bytes = ((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->bytes;
-		length = ((struct CONSTANT_Utf8_info *)(class->constantPool[(method->descriptorIndex-1)]))->length;
+		bytes = class->constantPool[(method->descriptorIndex-1)].type.Utf8.bytes;
+		length = class->constantPool[(method->descriptorIndex-1)].type.Utf8.length;
 
 		if (bytes[length-1] == 'D' || bytes[length-1] == 'J') {
 			pushU8( 0 );
@@ -3664,7 +3635,6 @@ void i_invokestatic(){
 	}
 
 	frameAtual->pc++;
-
 }
 
 void i_invokeinterface()
@@ -3692,15 +3662,14 @@ void i_invokeinterface()
 		fields_tmp[i] = pop();
 	}
 
-	class_index_tmp = ((struct CONSTANT_Methodref_info *)(frameAtual->constantPool[index-1]))->classIndex;
+	class_index_tmp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
 
-	className = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constantPool[class_index_tmp-1]))->nameIndex);
+	className = getName(frameAtual->class, frameAtual->constantPool[class_index_tmp-1].type.Class.nameIndex);
 
 	classIndex = carregarClass( className );
 	class = getClassByIndex( classIndex );
 
-	name_type_index = ((struct CONSTANT_Methodref_info *)(frameAtual->constantPool[index-1]))->nameTypeIndex;
+	name_type_index = (frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex);
 
 	while (class != NULL && (method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index)) == NULL) {
 		className = getParentName(class);
@@ -3739,8 +3708,7 @@ void i_new()
 
 	index = convert_2x8_to_32_bits(low, high);
 
-	className = getName(frameAtual->class,
-			((struct CONSTANT_Class_info *)(frameAtual->constantPool[index-1]))->nameIndex);
+	className = getName(frameAtual->class, frameAtual->constantPool[index-1].type.Class.nameIndex);
 
 	classIndex = carregarClass(className);
 	class = getClassByIndex(classIndex);
@@ -3772,8 +3740,8 @@ void i_newarray(){
 
 void i_anewarray(){
 
-	/* algumas coisas estÃ£o comentadas pq provavelmente
-	 * nÃ£o sÃ£o necessÃ¡rias  */
+	/* algumas coisas estão comentadas pq provavelmente
+	 * não são necessárias  */
 
 	u4 count;
 	/*u2 index;
@@ -3823,7 +3791,7 @@ void i_arraylength()
 	frameAtual->pc++;
 }
 
-void i_athrow(){ frameAtual->pc++;  } /* NÃ¤o precisa fazer nada alÃ©m disso */
+void i_athrow(){ frameAtual->pc++;  } /* Näo precisa fazer nada além disso */
 
 void i_checkcast()
 {
@@ -3880,9 +3848,9 @@ void i_instanceof(){
 	frameAtual->pc++;
 }
 
-void i_monitorenter(){ pop(); frameAtual->pc++;  } /* sÃ³ precisa disso */
+void i_monitorenter(){ pop(); frameAtual->pc++;  } /* só precisa disso */
 
-void i_monitorexit(){ pop(); frameAtual->pc++;  } /* sÃ³ precisa disso */
+void i_monitorexit(){ pop(); frameAtual->pc++;  } /* só precisa disso */
 
 void i_wide(){
 
@@ -3914,7 +3882,7 @@ void i_multianewarray()
 
 	dimension = pop();
 	arrayref = newArray(dimension, TYPE_reference);
-	array_type = getName(frameAtual->class, ((struct CONSTANT_Class_info*)frameAtual->constantPool[index -1])->nameIndex);
+	array_type = getName(frameAtual->class, frameAtual->constantPool[index -1].type.Class.nameIndex);
 
 	i = 0;
 	while (array_type[i] == '[')

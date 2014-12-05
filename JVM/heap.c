@@ -21,7 +21,8 @@ struct Object* newObject(classStructure *this) {
 	u4 i, j, counter;
 	u2 index;
 	char descriptor[200];
-	struct CONSTANT_Utf8_info *desc_struct;
+	cpInfo *desc_struct;
+
 
 	if (!this) {
 		return NULL;
@@ -46,8 +47,8 @@ struct Object* newObject(classStructure *this) {
 	for (i = 0; i < this->fieldCount; i++) {
 		counter++;
 		index = this->fields[i].descriptorIndex;
-		desc_struct = (struct CONSTANT_Utf8_info*)this->constantPool[index - 1];
-		memcpy(descriptor, desc_struct->bytes, desc_struct->length);
+		desc_struct = &(this->constantPool[index - 1]);
+		memcpy(descriptor, desc_struct->type.Utf8.bytes, desc_struct->type.Utf8.length);
 
 		if (descriptor[0] == 'D' || descriptor[0] == 'J') {
 			counter++;
@@ -61,8 +62,8 @@ struct Object* newObject(classStructure *this) {
 		object->fields_index[j] = this->fields[i].nameIndex;
 
 		index = this->fields[i].descriptorIndex;
-		desc_struct = (struct CONSTANT_Utf8_info*)this->constantPool[index - 1];
-		memcpy(descriptor, desc_struct->bytes, desc_struct->length);
+		desc_struct = &(this->constantPool[index - 1]);
+		memcpy(descriptor, desc_struct->type.Utf8.bytes, desc_struct->type.Utf8.length);
 
 		if (descriptor[0] == 'D' || descriptor[0] == 'J') {
 			j++;

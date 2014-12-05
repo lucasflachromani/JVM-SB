@@ -5,13 +5,13 @@
 #include <string.h>
 
 typedef struct OPCODE_info {
-	char desc[20];
-	unsigned short operands_count;
-	unsigned int *operands_index;
-} opcode_info;
+	char descricao[20];
+	unsigned short operandos_count;
+	unsigned int *operandos_index;
+} opcode_informacao;
 
 void populate_opcode_info();
 
-opcode_info *op_info;
+opcode_informacao *op_info;
 
 #endif

@@ -10,134 +10,22 @@ typedef uint16_t u2;
 typedef uint32_t u4;
 typedef uint64_t u8;
 
-/*
- * FIELDS
- */
-typedef struct {
-	u2 	accessFlags;
-	u2 	nameIndex;
-	u2 	descriptorIndex;
-	u2 	attributeCount;
-	void 	** attributes;
-} fieldInfo;
+/************************
+ * TYPES FOR CONVERSION
+ ************************/
+union fltConv {
+    float f;
+    uint32_t i;
+} u;
 
+union dblConv {
+    double d;
+    long l;
+} du;
 
-/*
- * METHODS
- */
-typedef struct {
-	u2 	accessFlags;
-	u2 	nameIndex;
-	u2 	descriptorIndex;
-	u2 	attributeCount;
-	void 	** attributes;
-} methodInfo;
-
-/*
- * CLASSFILE
- */
-typedef struct {
-	u4      	magicNumber;
-	u2 			minorVersion;
-	u2 			majorVersion;
-	u2 			constantPoolCount;
-	void 		** constantPool;
-	u2 			accessFlags;
-	u2 			thisClass;
-	u2 			superClass;
-	u2 			interfaceCount;
-	u2 			* interfaces;
-	u2 			fieldCount;
-	fieldInfo 	* fields;
-	u2 			methodCount;
-	methodInfo * methods;
-	u2 			attributeCount;
-	void 		** attributes;
-} classStructure;
-
-
-/*
- * CLASS STATIC
- */
-typedef struct {
-	u1 * className;
-	u2 fieldCount;
-	u8 * value;
-} staticStruct;
-
-/*
- * CONSTANT POOL
- */
-typedef struct {
-	u1 tag;
-	u1 * info;
-} cpInfo;
-
-struct CONSTANT_Class_info {
-	u1 tag;
-	u2 nameIndex;
-};
-
-struct CONSTANT_Fieldref_info {
-	u1 tag;  				/* valor 9 */
-	u2 classIndex;
-	u2 nameTypeIndex;
-};
-
-struct CONSTANT_NameAndType_info {
-	u1 tag;  				/* valor 12*/
-	u2 nameIndex;
-	u2 descriptorIndex;
-};
-
-struct CONSTANT_Utf8_info {
-	u1 tag;  				/* valor 1*/
-	u2 length;
-	u1 * bytes;
-};
-
-struct CONSTANT_Methodref_info {
-	u1 tag;  				/* valor 10*/
-	u2 classIndex;
-	u2 nameTypeIndex; /*if starts with <, should be <init>*/
-};
-
-struct CONSTANT_InterfaceMethodref_info {
-	u1 tag;  				/* valor 11*/
-	u2 classIndex;
-	u2 nameTypeIndex;
-};
-
-struct CONSTANT_String_info {
-	u1 tag;				/* valor 8*/
-	u2 stringIndex;
-};
-
-struct CONSTANT_Integer_info {
-	u1 tag;				/* valor 3*/
-	u4 bytes;
-};
-
-struct CONSTANT_Float_info {
-	u1 tag;				/* valor 4*/
-	u4 bytes;
-};
-
-struct CONSTANT_Long_info {
-	u1 tag;				/* valor 5*/
-	u4 highBytes;		/* unsigned*/
-	u4 lowBytes;			/* unsigned*/
-};
-
-struct CONSTANT_Double_info {
-	u1 tag;				/* valor 6*/
-	u4 highBytes;		/* unsigned*/
-	u4 lowBytes;			/* unsigned*/
-};
-
-/*
- * ATTRIBUTES TABS
- */
+/*************************
+ * TABLES FOR ATTRIBUTES
+ *************************/
 typedef struct {
 	u2 startPc;
 	u2 endPc;
@@ -157,15 +45,119 @@ typedef struct {
 	u2 lineNumber;
 } lineNumberTableType;
 
-/*
- * ATTRIBUTES
- */
+/*************************
+ * STATIC STRUCT
+ *************************/
+typedef struct {
+	u1 * className;
+	u2 fieldCount;
+	u8 * value;
+} staticStruct;
+
+//NEW ---------------------------------------------------
+/*************************
+ * 	ATTRIBUTE INFO
+ *************************/
 typedef struct {
 	u2 attributeNameIndex;
 	u4 attributeLength;
 	u2 tag;
 	u1 * info;
 } attributeInfo;
+
+/*************************
+ * FIELD AND METHOD INFO
+ *************************/
+typedef struct {
+	u2 	accessFlags;
+	u2 	nameIndex;
+	u2 	descriptorIndex;
+	u2 	attributeCount;
+	void 	** attributes;
+} fieldInfo, methodInfo;
+
+//NEW ---------------------------------------------------
+/*************************
+ * CONSTANT POOL INFO
+ *************************/
+typedef struct {
+    u1 tag;
+    union {
+        struct {
+            char bytes[26]; /*"(large numeric continued)"*/
+        } Continued;
+        struct {
+            u2 length;
+            u1 * bytes;
+        } Utf8;
+        struct {
+            u4 bytes;
+        } Integer, Float;
+        struct {
+            u4 lowBytes;
+            u4 highBytes;
+        } Long, Double;
+        struct {
+            u2 nameIndex;
+        } Class;
+        struct {
+            u2 stringIndex;
+        } String;
+        struct {
+            u2 classIndex;
+            u2 nameTypeIndex;
+        } FieldRef, MethodRef, InterfaceMethodRef;
+        struct {
+            u2 nameIndex;
+            u2 descriptorIndex;
+        } NameType;
+    } type;
+} cpInfo;
+
+//PARTIALLY NEW -----------------------------------------
+/*************************
+ * CLASS STRUCTURE
+ *************************/
+typedef struct {
+    u4 magicNumber;
+
+    u2 minorVersion;
+    u2 majorVersion;
+
+    u2 constantPoolCount;
+    cpInfo * constantPool /*[constantPoolCount - 1]*/;
+
+    u2 accessFlags;
+
+    u2 thisClass;
+    u2 superClass;
+
+    u2 interfaceCount;
+    u2 * interfaces /*[interfaceCount]*/;
+
+    u2 fieldCount;
+    fieldInfo * fields /*[fieldCount]*/;
+
+    u2 methodCount;
+    methodInfo * methods /*[methodCount]*/;
+
+    u2 attributeCount;
+    void ** attributes /*[attributeCount]*/; //modificar depois
+} classStructure;
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * ATTRIBUTES
+ */
 
 typedef struct ConstantValue_attribute {
 	u2 attributeNameIndex;
@@ -247,19 +239,20 @@ typedef struct Synthetic_attribute {
 } Synthetic_attribute;
 
 
-/********
-***NEW***
-********/
 
 
 
-/********
-***NEW***
-********/
 
-/*
- * FUNÇÕES
- */
+
+
+
+
+
+
+
+/*************************
+ * FUNCTIONS
+ *************************/
 u8 convert_2x32_to_64_bits(u4 low, u4 high);
 u4 convert_2x8_to_32_bits(u4 low, u4 high);
 void convert_64_bits_to_2x32(u8 value, u4 *low, u4 *high);

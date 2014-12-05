@@ -18,7 +18,7 @@ void replace(char * o_string, char * s_string, char * r_string);
 
 /*!
  * Carrega uma classe pelo seu nome \a className.
- * Ser√° carregada para o vetor classArray no novo √≠ndice (numClasses -1).
+ * Ser· carregada para o vetor classArray no novo Ìndice (numClasses -1).
  * \return Class Index
  */
 int32_t carregarClass(char *className) {
@@ -30,7 +30,7 @@ int32_t carregarClass(char *className) {
 		return -1;
 	}
 
-	/* procura em classArray se a classe j√° foi carregada */
+	/* procura em classArray se a classe j· foi carregada */
 	for (i = 0; i < numClasses; i++) {
 		if (strcmp(className, getClassName(classArray[i])) == 0)
 			return i;
@@ -51,9 +51,9 @@ int32_t carregarClass(char *className) {
 		sprintf(path, "%s%s.class", caminho, className);
 	}
 
-	/* l√™ a nova classe */
+	/* lÍ a nova classe */
 	if ((classArray[classIndex-1] = read_class_file(path)) == NULL) {
-		printf(" Erro: N√£o foi poss√≠vel abrir arquivo informado.\n");
+		printf(" Erro: N„o foi possÌvel abrir arquivo informado.\n");
 		exit(1);
 	}
 
@@ -62,7 +62,7 @@ int32_t carregarClass(char *className) {
 	classStaticArray[classIndex-1].fieldCount = classArray[classIndex-1]->fieldCount;
 	classStaticArray[classIndex-1].value = malloc(classArray[classIndex-1]->fieldCount * sizeof(u8));
 
-	/* Executa o m√©todo de Init Static caso tenha */
+	/* Executa o mÈtodo de Init Static caso tenha */
 	if ((staticMethod = getInitStaticMethod(classArray[classIndex-1])) != NULL) {
 		prepararMetodo(classArray[classIndex-1], staticMethod);
 		runMethod();
@@ -92,7 +92,7 @@ int32_t carregarClass(char *className) {
  */
 char *getClassName(classStructure *class) {
 	u2 thisClass = class->thisClass;
-	u2 nameIndex = ((struct CONSTANT_Class_info*)class->constantPool[thisClass-1])->nameIndex;
+	u2 nameIndex = (class->constantPool[thisClass-1]).type.Class.nameIndex;
 	return getName( class , nameIndex );
 }
 
@@ -110,10 +110,10 @@ char *getParentName(classStructure *class) {
 		return NULL;
 	}
 
-	nameIndex = ((struct CONSTANT_Class_info*)(class->constantPool[superClass-1]))->nameIndex;
+	nameIndex = class->constantPool[superClass-1].type.Class.nameIndex;
 
-	length = ((struct CONSTANT_Utf8_info*) (class->constantPool[nameIndex-1]))->length;
-	name = ((struct CONSTANT_Utf8_info*) (class->constantPool[nameIndex-1]))->bytes;
+	length = class->constantPool[nameIndex-1].type.Utf8.length;
+	name = class->constantPool[nameIndex-1].type.Utf8.bytes;
 
 	className = malloc(sizeof(u2) * length+1);
 
@@ -142,7 +142,7 @@ classStructure * getClassByName(char *className) {
 }
 
 /*
- * N√£o consegui colocar essas definicoes no .h, nao sei o motivo.
+ * N„o consegui colocar essas definicoes no .h, nao sei o motivo.
  * Entao tive q fazer esses dois getters.
  */
 classStructure * getClassByIndex(int index) {
@@ -170,11 +170,11 @@ int32_t getFieldIndexByNameAndDesc(char *className, char *name, u2 name_len, cha
 
 	/* Procura pelo Field de acordo com o nome e o desc */
 	for (i = 0; main_class && i < main_class->fieldCount; i++) {
-		m_name = ((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->fields[i].nameIndex-1)]))->bytes;
-		m_name_len = ((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->fields[i].nameIndex-1)]))->length;
+		m_name = main_class->constantPool[(main_class->fields[i].nameIndex-1)].type.Utf8.bytes;
+		m_name_len = main_class->constantPool[(main_class->fields[i].nameIndex-1)].type.Utf8.length;
 
-		m_desc = ((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->fields[i].descriptorIndex-1)]))->bytes;
-		m_desc_len = ((struct CONSTANT_Utf8_info *)(main_class->constantPool[(main_class->fields[i].descriptorIndex-1)]))->length;
+		m_desc = main_class->constantPool[(main_class->fields[i].descriptorIndex-1)].type.Utf8.bytes;
+		m_desc_len = main_class->constantPool[(main_class->fields[i].descriptorIndex-1)].type.Utf8.length;
 
 		if (name_len != m_name_len)
 			continue;
