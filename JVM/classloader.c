@@ -315,6 +315,8 @@ attributeInfo * read_attribute_info() {
     else if (strcmp (attType, "Synthetic") == 0) {
         storeSyntheticAttr(attribute);
     }
+    
+    /*
     else if (strcmp (attType, "Deprecated") == 0) {
         //storeSyntheticAttr(attribute);
     }
@@ -325,8 +327,9 @@ attributeInfo * read_attribute_info() {
         //storeSyntheticAttr(attribute);
     }
     else if (strcmp (attType, "SourceFile") == 0) {
-        storeSyntheticAttr(attribute);
+        //storeSyntheticAttr(attribute);
     }
+    */
     else {
         storeDefaultAttr(attribute);
     }
