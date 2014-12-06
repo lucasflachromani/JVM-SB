@@ -15,7 +15,7 @@ int32_t numClasses = 0;
 
 /*!
  * Carrega uma classe pelo seu nome \a className.
- * Será carregada para o vetor classArray no novo índice (numClasses -1).
+ * Serï¿½ carregada para o vetor classArray no novo ï¿½ndice (numClasses -1).
  * \return Class Index
  */
 int32_t carregarClass(char *className) {
@@ -27,7 +27,7 @@ int32_t carregarClass(char *className) {
 		return -1;
 	}
 
-	/* procura em classArray se a classe já foi carregada */
+	/* procura em classArray se a classe jï¿½ foi carregada */
 	for (i = 0; i < numClasses; i++) {
 		if (strcmp(className, getClassName(classArray[i])) == 0)
 			return i;
@@ -48,9 +48,9 @@ int32_t carregarClass(char *className) {
 		sprintf(path, "%s%s.class", caminho, className);
 	}
 
-	/* lê a nova classe */
+	/* lï¿½ a nova classe */
 	if ((classArray[classIndex-1] = read_class_file(path)) == NULL) {
-		printf(" Erro: Não foi possível abrir arquivo informado.\n");
+		printf(" Erro: Nï¿½o foi possï¿½vel abrir arquivo informado.\n");
 		exit(1);
 	}
 
@@ -59,10 +59,10 @@ int32_t carregarClass(char *className) {
 	classStaticArray[classIndex-1].fieldCount = classArray[classIndex-1]->fieldCount;
 	classStaticArray[classIndex-1].value = malloc(classArray[classIndex-1]->fieldCount * sizeof(u8));
 
-	/* Executa o método de Init Static caso tenha */
+	/* Executa o mï¿½todo de Init Static caso tenha */
 	if ((staticMethod = getInitStaticMethod(classArray[classIndex-1])) != NULL) {
 		prepararMetodo(classArray[classIndex-1], staticMethod);
-		runMethod();
+		executarMetodo();
 	}
 
 	//Modificado do original
@@ -139,7 +139,7 @@ classStructure * getClassByName(char *className) {
 }
 
 /*
- * Não consegui colocar essas definicoes no .h, nao sei o motivo.
+ * Nï¿½o consegui colocar essas definicoes no .h, nao sei o motivo.
  * Entao tive q fazer esses dois getters.
  */
 classStructure * getClassByIndex(int index) {

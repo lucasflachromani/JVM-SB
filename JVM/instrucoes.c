@@ -15,14 +15,9 @@
 extern struct frame *frameAtual;
 extern struct array *arrayLength;
 extern u4 numArrays;
-
-/* Variaveis usadas para saber qual o retorno da funcao */
 extern u1 returnType;
 extern u8 returnValue;
-
 int nextIsWide = 0;
-
-//extern opcode_informacao *op_info;
 
 void executarInstrucoes(u1 opcode) {
 	instrucao[opcode]();
@@ -2225,7 +2220,7 @@ void i_areturn() {
 }
 
 void i_return() {
-	returnType = RETURN_none;
+	returnType = RETURN_NONE;
 	returnValue = 0;
 	frameAtual->pc++;
 }
@@ -2533,7 +2528,7 @@ void i_invokevirtual() {
 			for(i = numParams; i >= 0; i--) {
 				frameAtual->fields[i] = fieldsTemp[i];
 			}
-			runMethod();
+			executarMetodo();
 		}
 	}
 
@@ -2591,7 +2586,7 @@ void i_invokespecial() {
 		for(i = numParams; i >= 0; i--) {
 			frameAtual->fields[i] = fieldsTemp[i];
 		}
-		runMethod();
+		executarMetodo();
 	}
 	frameAtual->pc++;
 }
@@ -2638,7 +2633,7 @@ void i_invokestatic() {
 		for(i = numParams-1; i >= 0; i--) {
 			frameAtual->fields[i] = fieldsTemp[i];
 		}
-		runMethod();
+		executarMetodo();
 	}
 	frameAtual->pc++;
 }
@@ -2681,7 +2676,7 @@ void i_invokeinterface() {
 	for(i = args_count; i >= 0; i--) {
 		frameAtual->fields[i] = fieldsTemp[i];
 	}
-	runMethod();
+	executarMetodo();
 	frameAtual->pc++;
 }
 
@@ -2824,7 +2819,7 @@ void i_multianewarray() {
 	dimensions = frameAtual->code[frameAtual->pc];
 	index = ((indexbyte1 & 0xFF) << 8) |(indexbyte2 & 0xFF);
 	dimension = pop();
-	arrayref = newArray(dimension, TYPE_reference);
+	arrayref = newArray(dimension, TYPE_REFERENCE);
 	array_type = getName(frameAtual->class, frameAtual->constantPool[index -1].type.Class.nameIndex);
 	i = 0;
 	while(array_type[i] == '[') {
@@ -2832,44 +2827,44 @@ void i_multianewarray() {
 	}
 	switch(array_type[i]) {
 		case 'L':
-			type = TYPE_reference;
-			atype = TYPE_reference;
+			type = TYPE_REFERENCE;
+			atype = TYPE_REFERENCE;
 			break;
 		case 'Z':
-			type = TYPE_boolean;
-			atype = TYPE_boolean_size;
+			type = TYPE_BOOLEAN;
+			atype = TYPE_BOOLEAN_SIZE;
 			break;
 		case 'C':
-			type = TYPE_char;
-			atype = TYPE_char_size;
+			type = TYPE_CHAR;
+			atype = TYPE_CHAR_SIZE;
 			break;
 		case 'F':
-			type = TYPE_float;
-			atype = TYPE_float_size;
+			type = TYPE_FLOAT;
+			atype = TYPE_FLOAT_SIZE;
 			break;
 		case 'D':
-			type = TYPE_double;
-			atype = TYPE_double_size;
+			type = TYPE_DOUBLE;
+			atype = TYPE_DOUBLE_SIZE;
 			break;
 		case 'B':
-			type = TYPE_byte;
-			atype = TYPE_byte_size;
+			type = TYPE_BYTE;
+			atype = TYPE_BYTE_SIZE;
 			break;
 		case 'S':
-			type = TYPE_short;
-			atype = TYPE_short_size;
+			type = TYPE_SHORT;
+			atype = TYPE_SHORT_SIZE;
 			break;
 		case 'I':
-			type = TYPE_int;
-			atype = TYPE_int_size;
+			type = TYPE_INT;
+			atype = TYPE_INT_SIZE;
 			break;
 		case 'J':
-			type = TYPE_long;
-			atype = TYPE_long_size;
+			type = TYPE_LONG;
+			atype = TYPE_LONG_SIZE;
 			break;
 		default:
-			type = TYPE_reference;
-			atype = TYPE_reference_size;
+			type = TYPE_REFERENCE;
+			atype = TYPE_REFERENCE_SIZE;
 	}
 	for(i = 0; i < dimensions; i++)	{
 		size = pop();

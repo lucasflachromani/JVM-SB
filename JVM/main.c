@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
 	}
 
 	prepararMetodo(getClassByIndex(0), metodoMain);
-	runMethod();
+	executarMetodo();
 	
 	//exibir bytecodes pro arquivo txt, se informado
 

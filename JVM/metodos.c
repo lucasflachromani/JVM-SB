@@ -96,7 +96,7 @@ methodInfo * getMethodByNameAndDescIndex(classStructure *main_class, classStruct
 	return NULL;
 }
 
-void runMethod() {
+void executarMetodo() {
 	/* loop principal do método - executa o código */
 	while(frameAtual != NULL &&(frameAtual->pc) < frameAtual->codeLength) {
 		executarInstrucoes(frameAtual->code[frameAtual->pc]);
@@ -113,7 +113,7 @@ void runMethod() {
 	}
 
 	/* Reseta as variaveis de retorno */
-	returnType = RETURN_none;
+	returnType = RETURN_NONE;
 	returnValue = 0;
 }
 
@@ -123,12 +123,12 @@ void prepararMetodo(classStructure *class, methodInfo *method) {
 
 	/* procura por atributo Code */
 	for(i = 0; i < method->attributeCount; i++) {
-		if(method->attributes[i].tag == ATTR_Code)
+		if(method->attributes[i].tag == ATTR_CODE)
 			break;
 	}
 
 	if(method->attributeCount != 0) {
-		if(method->attributes[i].tag != ATTR_Code) {
+		if(method->attributes[i].tag != ATTR_CODE) {
 			printf(" Erro: Nao encontrou atributo code no método.");
 			exit(1);
 		}

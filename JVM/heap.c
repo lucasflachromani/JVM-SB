@@ -90,15 +90,15 @@ u8 getObjectFieldWide(struct Object* object, u4 nameIndex) {
 	return convert_2x32_to_64_bits(object->fields[i],object->fields[i+1]);
 }
 
-void setObjectField(struct Object* object, u4 nameIndex, u4 value) {
+void setObjectField(struct Object* object, u4 nameIndex, u4 valor) {
 	int32_t i = 0;
 	while (object->fields_index[i] != nameIndex) {
 		i++;
 	}
-	object->fields[i] = value;
+	object->fields[i] = valor;
 }
 
-void setObjectFieldWide(struct Object* object, u4 nameIndex, u8 value) {
+void setObjectFieldWide(struct Object* object, u4 nameIndex, u8 valor) {
 	int32_t i = 0;
 	u4 low, high;
 
@@ -106,7 +106,7 @@ void setObjectFieldWide(struct Object* object, u4 nameIndex, u8 value) {
 		i++;
 	}
 
-	convert_64_bits_to_2x32(value, &low, &high);
+	convert_64_bits_to_2x32(valor, &low, &high);
 	object->fields[i] = low;
 	object->fields[i+1] = high;
 }
@@ -116,31 +116,31 @@ void* newArray(u4 count, u1 type) {
 	void *array;
 
 	switch (type) {
-		case TYPE_reference:
+		case TYPE_REFERENCE:
 			size = 4; /*reference*/
 			break;
-		case TYPE_boolean:
+		case TYPE_BOOLEAN:
 			size = 1;/*boolean*/
 			break;
-		case TYPE_char:
+		case TYPE_CHAR:
 			size = 2;/*char*/
 			break;
-		case TYPE_float:
+		case TYPE_FLOAT:
 			size= 4;/*float*/
 			break;
-		case TYPE_double:
+		case TYPE_DOUBLE:
 			size = 8;/*double*/
 			break;
-		case TYPE_byte:
+		case TYPE_BYTE:
 			size = 1;/*byte*/
 			break;
-		case TYPE_short:
+		case TYPE_SHORT:
 			size = 2;/*short*/
 			break;
-		case TYPE_int:
+		case TYPE_INT:
 			size = 4;/*int*/
 			break;
-		case TYPE_long:
+		case TYPE_LONG:
 			size = 8;/*long*/
 			break;
 	}

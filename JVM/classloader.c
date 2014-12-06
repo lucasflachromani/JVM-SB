@@ -305,14 +305,14 @@ void read_attribute_info (attributeInfo * att) {
 	if (strcmp("ConstantValue", nome) == 0) {
 		att->attributeNameIndex = nameIndex;
 		att->attributeLength = length;
-		att->tag = ATTR_ConstantValue;
+		att->tag = ATTR_CONSTANT_VALUE;
 		att->type.ConstantValue.constantValueIndex = u2Read();
 	}
 
 	else if (strcmp("Code", nome) == 0) {
 		att->attributeNameIndex = nameIndex;
 		att->attributeLength = length;
-		att->tag = ATTR_Code;
+		att->tag = ATTR_CODE;
 		att->type.Code.maxStack = u2Read();
 		att->type.Code.maxLocals = u2Read();
 
@@ -341,13 +341,13 @@ void read_attribute_info (attributeInfo * att) {
 	else if (strcmp("Deprecated", nome) == 0) {
 		att->attributeNameIndex = nameIndex;
 		att->attributeLength = length;
-		att->tag = ATTR_Deprecated;
+		att->tag = ATTR_DEPRECATED;
 	}
 
 	else if (strcmp("Exceptions", nome) == 0) {
 		att->attributeNameIndex = nameIndex;
 		att->attributeLength = length;
-		att->tag = ATTR_Exceptions;
+		att->tag = ATTR_EXCEPTIONS;
 
 		att->type.Exceptions.numberOfExceptions = u2Read();
 		att->type.Exceptions.exceptionIndexTable = calloc(sizeof (u2), att->type.Exceptions.numberOfExceptions);
@@ -359,7 +359,7 @@ void read_attribute_info (attributeInfo * att) {
 	else if (strcmp("InnerClasses", nome) == 0) {
 		att->attributeNameIndex = nameIndex;
 		att->attributeLength = length;
-		att->tag = ATTR_InnerClasses;
+		att->tag = ATTR_INNER_CLASSES;
 
 		att->type.InnerClasses.numberOfClasses = u2Read();
 		att->type.InnerClasses.classes = calloc(sizeof (classType), att->type.InnerClasses.numberOfClasses);
@@ -374,7 +374,7 @@ void read_attribute_info (attributeInfo * att) {
 	else if (strcmp("LineNumberTable", nome) == 0) {
 		att->attributeNameIndex = nameIndex;
 		att->attributeLength = length;
-		att->tag = ATTR_LineNumberTable;
+		att->tag = ATTR_LINE_NUMBER_TABLE;
 
 		att->type.LineNumberTable.lineNumberTableLength = u2Read();
 		att->type.LineNumberTable.lineNumberTable = calloc(sizeof (LineNumberTableType), att->type.LineNumberTable.lineNumberTableLength);
@@ -387,7 +387,7 @@ void read_attribute_info (attributeInfo * att) {
 	else if (strcmp("LocalVariableTable", nome) == 0) {
 		att->attributeNameIndex = nameIndex;
 		att->attributeLength = length;
-		att->tag = ATTR_LocalVariableTable;
+		att->tag = ATTR_LOCAL_VARIABLE_TABLE;
 
 		att->type.LocalVariableTable.localVariableTableLength = u2Read();
 		att->type.LocalVariableTable.localVariableTable = calloc(sizeof (LocalVariableTableType), att->type.LocalVariableTable.localVariableTableLength);
@@ -403,7 +403,7 @@ void read_attribute_info (attributeInfo * att) {
 	else if (strcmp("SourceFile", nome) == 0) {
 		att->attributeNameIndex = nameIndex;
 		att->attributeLength = length;
-		att->tag = ATTR_SourceFile;
+		att->tag = ATTR_SOURCE_FILE;
 		att->type.SourceFile.sourceFileIndex = u2Read();
 	}
 
