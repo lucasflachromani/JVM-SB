@@ -369,7 +369,7 @@ void storeCodeAttr (attributeInfo * att) {
     att->type.Code.attributeCount = u2Read();
     att->type.Code.attributes = malloc (att->type.Code.attributeCount * sizeof(attributeInfo));
     for (a = 0; a < att->type.Code.attributeCount; a++) {
-        storeSingleAttribute(file, cs, &(att->type.Code.attributes[a]));
+        att->type.Code.attributes[a] = read_attribute_info();
     }
 }
 
