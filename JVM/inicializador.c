@@ -1,12 +1,11 @@
 
+#include "inicializador.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "carregador.h"
-#include "methods.h"
-#include "mnemonics.h"
-#include "instructions.h"
+#include "instrucoes.h"
+#include "metodos.h"
 
 char *caminho = ".\\";
 

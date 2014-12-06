@@ -4,10 +4,9 @@
 #include <stdlib.h>
 
 #include "classloader.h"
-#include "carregador.h"
-#include "instructions.h"
-#include "methods.h"
-#include "mnemonics.h"
+#include "inicializador.h"
+#include "instrucoes.h"
+#include "metodos.h"
 
 // vetor com o tamanho dos arrays
 struct array *arrayLength;
@@ -53,7 +52,7 @@ int main(int argc, char **argv) {
 	inicializar();
 	iniciarFlags(argc, argv);
 	iniciarInstrucoes();			// Popula array de instrucoes
-	populate_opcode_info();
+	carregarOpcodeInformacao();
 
 	carregarClass(fileSrcName);
 

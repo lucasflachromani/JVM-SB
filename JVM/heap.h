@@ -1,7 +1,7 @@
 #ifndef HEAP_H
 #define HEAP_H
 
-#include "types.h"
+#include "tipos.h"
 
 #define HEAP_INIT 32
 

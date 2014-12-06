@@ -1,6 +1,7 @@
+#include "pilha.h"
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "stack.h"
 
 static u4 stack[MAX_STACK];
 static u4 stack_top;

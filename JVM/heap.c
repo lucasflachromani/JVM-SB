@@ -2,10 +2,11 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "types.h"
 #include "heap.h"
-#include "carregador.h"
-#include "constantes.h"
+
+#include "const.h"
+#include "inicializador.h"
+#include "tipos.h"
 
 static u4 heap_index;
 static u4 heap_max;

@@ -1,6 +1,6 @@
 
-#ifndef CARREGADOR_H_
-#define CARREGADOR_H_
+#ifndef INICIALIZADOR_H_
+#define INICIALIZADOR_H_
 
 #include "classloader.h"
 

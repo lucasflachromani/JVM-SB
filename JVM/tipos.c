@@ -1,5 +1,5 @@
 
-#include "types.h"
+#include "tipos.h"
 
 u8 convert_2x32_to_64_bits(u4 low, u4 high) {
 	u8 value;

@@ -1,7 +1,7 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include "types.h"
+#include "tipos.h"
 
 #define MAX_STACK 100
 

@@ -1,7 +1,7 @@
-#ifndef INSTRUCTIONS_H_
-#define INSTRUCTIONS_H_
+#ifndef INSTRUCOES_H_
+#define INSTRUCOES_H_
 
-#include "types.h"
+#include "tipos.h"
 
 /* TODO criei essa funcao para testes, pode deletar depois se quiserem*/
 void execute_instruction(u1 opcode);

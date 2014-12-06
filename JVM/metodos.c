@@ -1,13 +1,13 @@
 
+#include "metodos.h"
+
 #include <stdio.h>
 
-#include "methods.h"
-#include "carregador.h"
 #include "classloader.h"
-#include "mnemonics.h"
-#include "instructions.h"
+#include "const.h"
 #include "frame.h"
-#include "constantes.h"
+#include "inicializador.h"
+#include "instrucoes.h"
 
 extern struct frame *frameAtual;
 

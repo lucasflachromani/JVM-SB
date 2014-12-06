@@ -1,9 +1,9 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include "stack.h"
-#include "types.h"
-#include "carregador.h"
+#include "inicializador.h"
+#include "pilha.h"
+#include "tipos.h"
 
 struct frame {
 	u4				*fields;

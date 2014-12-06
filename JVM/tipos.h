@@ -1,6 +1,6 @@
 
-#ifndef TYPES_H_
-#define TYPES_H_
+#ifndef TIPOS_H_
+#define TIPOS_H_
 
 #include <stdint.h>
 #include <inttypes.h>
@@ -9,6 +9,12 @@ typedef uint8_t  u1;
 typedef uint16_t u2;
 typedef uint32_t u4;
 typedef uint64_t u8;
+
+typedef struct OPCODE_info {
+	char descricao[30];
+	unsigned short operandos_count;
+	unsigned int *operandos_index;
+} opcode_informacao;
 
 /************************
  * TYPES FOR CONVERSION

@@ -1,17 +1,16 @@
+#include "instrucoes.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
 
-#include "instructions.h"
-
-#include "constantes.h"
-#include "mnemonics.h"
-#include "stack.h"
+#include "const.h"
 #include "frame.h"
-#include "types.h"
-#include "methods.h"
 #include "heap.h"
+#include "metodos.h"
+#include "pilha.h"
+#include "tipos.h"
 
 extern struct frame *frameAtual;
 extern struct array *arrayLength;

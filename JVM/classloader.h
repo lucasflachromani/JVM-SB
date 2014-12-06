@@ -1,8 +1,8 @@
 #ifndef CLOAD_H
 #define CLOAD_H
 
-#include "constantes.h"
-#include "types.h"
+#include "const.h"
+#include "tipos.h"
 
 classStructure *class;
 
@@ -21,5 +21,7 @@ int read_methods();
 int read_attributes();
 classStructure * read_class_file(char *nome_arq);
 void free_class_file(classStructure* classStructure);
+void carregarOpcodeInformacao();
+opcode_informacao *op_info;
 
 #endif

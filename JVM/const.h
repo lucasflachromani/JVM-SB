@@ -1,6 +1,6 @@
 
-#ifndef CONSTANTES_H_
-#define CONSTANTES_H_
+#ifndef CONST_H_
+#define CONST_H_
 
 /*
  * Access flags
