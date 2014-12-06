@@ -334,7 +334,7 @@ void i_sipush() {
 	high = frameAtual->code[frameAtual->pc];
 	frameAtual->pc++;
 	low = frameAtual->code[frameAtual->pc];
-	auxiliar = (int16_t)convert_2x8_to_32_bits(low, high);
+	auxiliar = (int16_t)converter2x8To32bits(low, high);
 	push((u4)auxiliar);
 	frameAtual->pc++;
 }
@@ -370,7 +370,7 @@ void i_ldc_w() {
 	high = frameAtual->code[frameAtual->pc];
 	frameAtual->pc++;
 	low = frameAtual->code[frameAtual->pc];
-	indice = convert_2x8_to_32_bits(low, high);
+	indice = converter2x8To32bits(low, high);
 	tag = frameAtual->constantPool[indice-1].tag;
 
 	switch(tag) {
@@ -397,7 +397,7 @@ void i_ldc2_w() {
 	high = frameAtual->code[frameAtual->pc];
 	frameAtual->pc++;
 	low = frameAtual->code[frameAtual->pc];
-	indice = convert_2x8_to_32_bits(low, high);
+	indice = converter2x8To32bits(low, high);
 	tag = (frameAtual->constantPool[indice-1]).tag;
 
 	switch(tag) {
@@ -897,7 +897,7 @@ void i_lastore() {
 	void *ref;
 	low = pop();
 	high = pop();
-	valor = convert_2x32_to_64_bits(low, high);
+	valor = converter2x32To64bits(low, high);
 	index = pop();
 	ref = (void *)pop();
 	((u8 *)ref)[index] = valor;
@@ -920,7 +920,7 @@ void i_dastore() {
 	void *ref;
 	low = pop();
 	high = pop();
-	valor = convert_2x32_to_64_bits(low, high);
+	valor = converter2x32To64bits(low, high);
 	index = pop();
 	ref = (void *)pop();
 	((u8 *)ref)[index] = valor;
@@ -1069,10 +1069,10 @@ void i_ladd() {
 	u4 low, high;
 	low = pop();
 	high = pop();
-	auxiliar1 = convert_2x32_to_64_bits(low, high);
+	auxiliar1 = converter2x32To64bits(low, high);
 	low = pop();
 	high = pop();
-	auxiliar2 = convert_2x32_to_64_bits(low, high);
+	auxiliar2 = converter2x32To64bits(low, high);
 	pushU8(auxiliar1 + auxiliar2);
 	frameAtual->pc++;
 }
@@ -1096,15 +1096,15 @@ void i_dadd() {
 	u8 auxiliar;
 	low = pop();
 	high = pop();
-	auxiliar = convert_2x32_to_64_bits(low, high);
+	auxiliar = converter2x32To64bits(low, high);
 	memcpy(&auxiliar1, &auxiliar, sizeof(u8));
 	low = pop();
 	high = pop();
-	auxiliar = convert_2x32_to_64_bits(low, high);
+	auxiliar = converter2x32To64bits(low, high);
 	memcpy(&auxiliar2, &auxiliar, sizeof(u8));
 	auxiliar1 += auxiliar2;
 	memcpy(&auxiliar, &auxiliar1, sizeof(u8));
-	convert_64_bits_to_2x32(auxiliar, &low, &high);
+	converter64bitsTo2x32(auxiliar, &low, &high);
 	push(high);
 	push(low);
 	frameAtual->pc++;
@@ -1123,10 +1123,10 @@ void i_lsub() {
 	u4 low, high;
 	low = pop();
 	high = pop();
-	auxiliar1 = (signed)convert_2x32_to_64_bits(low, high);
+	auxiliar1 = (signed)converter2x32To64bits(low, high);
 	low = pop();
 	high = pop();
-	auxiliar2 = (signed)convert_2x32_to_64_bits(low, high);
+	auxiliar2 = (signed)converter2x32To64bits(low, high);
 	pushU8(auxiliar2 - auxiliar1);
 	frameAtual->pc++;
 }
@@ -1152,8 +1152,8 @@ void i_dsub() {
 	high2 = pop();
 	low1 = pop();
 	high1 = pop();
-	valor1 = convert_cast_2x32_bits_to_double(low1, high1);
-	valor2 = convert_cast_2x32_bits_to_double(low2, high2);
+	valor1 = convertCast2x32bitsToDouble(low1, high1);
+	valor2 = convertCast2x32bitsToDouble(low2, high2);
 	valor1 -= valor2;
 	memcpy(&resulto, &valor1, sizeof(u8));
 	pushU8(resulto);
@@ -1175,8 +1175,8 @@ void i_lmul() {
 	high1 = pop();
 	low2 = pop();
 	high2 = pop();
-	valor1 = (int64_t)convert_2x32_to_64_bits(low1, high1);
-	valor2 = (int64_t)convert_2x32_to_64_bits(low2, high2);
+	valor1 = (int64_t)converter2x32To64bits(low1, high1);
+	valor2 = (int64_t)converter2x32To64bits(low2, high2);
 	resulto = valor1 * valor2;
 	pushU8(((u8)resulto));
 	frameAtual->pc++;
@@ -1203,8 +1203,8 @@ void i_dmul() {
 	high1 = pop();
 	low2 = pop();
 	high2 = pop();
-	valor1 = convert_cast_2x32_bits_to_double(low1, high1);
-	valor2 = convert_cast_2x32_bits_to_double(low2, high2);
+	valor1 = convertCast2x32bitsToDouble(low1, high1);
+	valor2 = convertCast2x32bitsToDouble(low2, high2);
 	valor1 *= valor2;
 	memcpy(&valor, &valor1, sizeof(u8));
 	pushU8(valor);
@@ -1226,8 +1226,8 @@ void i_ldiv() {
 	high2 = pop();
 	low1 = pop();
 	high1 = pop();
-	valor1 = (int64_t)convert_2x32_to_64_bits(low1, high1);
-	valor2 = (int64_t)convert_2x32_to_64_bits(low2, high2);
+	valor1 = (int64_t)converter2x32To64bits(low1, high1);
+	valor2 = (int64_t)converter2x32To64bits(low2, high2);
 	resulto = valor1 / valor2;
 	pushU8(resulto);
 	frameAtual->pc++;
@@ -1254,8 +1254,8 @@ void i_ddiv() {
 	high2 = pop();
 	low1 = pop();
 	high1 = pop();
-	valor1 = convert_cast_2x32_bits_to_double(low1, high1);
-	valor2 = convert_cast_2x32_bits_to_double(low2, high2);
+	valor1 = convertCast2x32bitsToDouble(low1, high1);
+	valor2 = convertCast2x32bitsToDouble(low2, high2);
 	valor1 /= valor2;
 	memcpy(&auxiliar, &valor1, sizeof(u8));
 	pushU8(auxiliar);
@@ -1275,10 +1275,10 @@ void i_lrem() {
 	u4 low, high;
 	low = pop();
 	high = pop();
-	auxiliar2 = (signed) convert_2x32_to_64_bits(low , high);
+	auxiliar2 = (signed) converter2x32To64bits(low , high);
 	low = pop();
 	high = pop();
-	auxiliar1 = (signed) convert_2x32_to_64_bits(low , high);
+	auxiliar1 = (signed) converter2x32To64bits(low , high);
 	auxiliar1 = auxiliar1 % auxiliar2;
 	push((u8)auxiliar1);
 	frameAtual->pc++;
@@ -1303,11 +1303,11 @@ void i_drem() {
 	u8 auxiliar;
 	low = pop();
 	high = pop();
-	auxiliar = convert_2x32_to_64_bits(low , high);
+	auxiliar = converter2x32To64bits(low , high);
 	memcpy(&d2, &auxiliar, sizeof(u8));
 	low = pop();
 	high = pop();
-	auxiliar = convert_2x32_to_64_bits(low , high);
+	auxiliar = converter2x32To64bits(low , high);
 	memcpy(&d1, &auxiliar, sizeof(u8));
 	d1 = fmod(d1 , d2);
 	memcpy(&auxiliar, &d1, sizeof(u8));
@@ -1328,7 +1328,7 @@ void i_lneg() {
 	u4 low, high;
 	low = pop();
 	high = pop();
-	auxiliar = (int64_t) convert_2x32_to_64_bits(low , high);
+	auxiliar = (int64_t) converter2x32To64bits(low , high);
 	auxiliar = -auxiliar;
 	pushU8((u8)auxiliar);
 	frameAtual->pc++;
@@ -1351,7 +1351,7 @@ void i_dneg() {
 	u8 auxiliar;
 	low = pop();
 	high = pop();
-	auxiliar = convert_2x32_to_64_bits(low , high);
+	auxiliar = converter2x32To64bits(low , high);
 	memcpy(&d, &auxiliar, sizeof(u8));
 	d = -d;
 	memcpy(&auxiliar, &d, sizeof(u8));
@@ -1378,7 +1378,7 @@ void i_lshl() {
 	auxiliar2 &= mask;
 	low = pop();
 	high = pop();
-	auxiliar1 = (signed) convert_2x32_to_64_bits(low , high);
+	auxiliar1 = (signed) converter2x32To64bits(low , high);
 	auxiliar1 <<= auxiliar2;
 	push((u8)auxiliar1);
 	frameAtual->pc++;
@@ -1412,7 +1412,7 @@ void i_lshr() {
 	auxiliar1 <<= (64-auxiliar2);
 	low = pop();
 	high = pop();
-	auxiliar3 = (signed) convert_2x32_to_64_bits(low , high);
+	auxiliar3 = (signed) converter2x32To64bits(low , high);
 
 	//Verificar qual e o primeiro bit
 	auxiliar4 = auxiliar3 & auxiliar4;
@@ -1444,7 +1444,7 @@ void i_lushr() {
 	auxiliar2 &= mask;
 	low = pop();
 	high = pop();
-	auxiliar1 = (signed) convert_2x32_to_64_bits(low , high);
+	auxiliar1 = (signed) converter2x32To64bits(low , high);
 	auxiliar1 >>= auxiliar2;
 	pushU8((u8)auxiliar1);
 	frameAtual->pc++;
@@ -1464,10 +1464,10 @@ void i_land() {
 	u4 low, high;
 	low = pop();
 	high = pop();
-	auxiliar1 = convert_2x32_to_64_bits(low , high);
+	auxiliar1 = converter2x32To64bits(low , high);
 	low = pop();
 	high = pop();
-	auxiliar2 = convert_2x32_to_64_bits(low , high);
+	auxiliar2 = converter2x32To64bits(low , high);
 	auxiliar1 &= auxiliar2;
 	pushU8(auxiliar1);
 	frameAtual->pc++;
@@ -1487,10 +1487,10 @@ void i_lor() {
 	u4 low, high;
 	low = pop();
 	high = pop();
-	auxiliar1 = convert_2x32_to_64_bits(low , high);
+	auxiliar1 = converter2x32To64bits(low , high);
 	low = pop();
 	high = pop();
-	auxiliar2 = convert_2x32_to_64_bits(low , high);
+	auxiliar2 = converter2x32To64bits(low , high);
 	auxiliar1 |= auxiliar2;
 	pushU8(auxiliar1);
 	frameAtual->pc++;
@@ -1510,10 +1510,10 @@ void i_lxor() {
 	u4 low, high;
 	low = pop();
 	high = pop();
-	auxiliar1 = convert_2x32_to_64_bits(low , high);
+	auxiliar1 = converter2x32To64bits(low , high);
 	low = pop();
 	high = pop();
-	auxiliar2 = convert_2x32_to_64_bits(low , high);
+	auxiliar2 = converter2x32To64bits(low , high);
 	auxiliar1 ^= auxiliar2;
 	pushU8(auxiliar1);
 	frameAtual->pc++;
@@ -1580,7 +1580,7 @@ void i_l2f() {
 	float floatNUm;
 	low = pop();
 	high = pop();
-	floatNUm = (float) convert_cast_2x32_bits_to_double(low, high);
+	floatNUm = (float) convertCast2x32bitsToDouble(low, high);
 	auxiliar = (u4*) malloc(sizeof(u4));
 	memcpy(auxiliar, &floatNUm, sizeof(u4));
 	push(*auxiliar); /* Para recuperar o valor, deve-se fazer outro memcpy para um float */
@@ -1593,7 +1593,7 @@ void i_l2d() {
 	double doubleNum;
 	low = pop();
 	high = pop();
-	doubleNum =  convert_cast_2x32_bits_to_double(low, high);
+	doubleNum =  convertCast2x32bitsToDouble(low, high);
 	auxiliar8 = (u8*) malloc(sizeof(u8));
 	memcpy(auxiliar8, &doubleNum, 2*sizeof(u4));
 	auxiliar4 = *auxiliar8 >> 32;
@@ -1644,7 +1644,7 @@ void i_d2i() {
 	double doubleNum;
 	low = pop();
 	high = pop();
-	auxiliar = convert_2x32_to_64_bits(low, high);
+	auxiliar = converter2x32To64bits(low, high);
 	memcpy(&doubleNum, &auxiliar, 2*sizeof(u4));
 	resp = (int32_t) doubleNum;
 	push((u4)resp);
@@ -1657,7 +1657,7 @@ void i_d2l() {
 	double doubleNum;
 	low = pop();
 	high = pop();
-	auxiliar = convert_2x32_to_64_bits(low, high);
+	auxiliar = converter2x32To64bits(low, high);
 	memcpy(&doubleNum, &auxiliar, 2*sizeof(u4));
 	auxiliar = (u8) doubleNum;
 	push(auxiliar);
@@ -1671,7 +1671,7 @@ void i_d2f() {
 	float f;
 	low = pop();
 	high = pop();
-	auxiliar = convert_2x32_to_64_bits(low, high);
+	auxiliar = converter2x32To64bits(low, high);
 	memcpy(&d, &auxiliar, 2*sizeof(u4));
 	f = (float) d;
 	memcpy(&resp, &f, sizeof(u4));
@@ -1712,10 +1712,10 @@ void i_lcmp() {
 	u8 auxiliar1, auxiliar2;
 	low = pop();
 	high = pop();
-	auxiliar2 = convert_2x32_to_64_bits(low, high);
+	auxiliar2 = converter2x32To64bits(low, high);
 	low = pop();
 	high = pop();
-	auxiliar1 = convert_2x32_to_64_bits(low, high);
+	auxiliar1 = converter2x32To64bits(low, high);
 	if(auxiliar1 == auxiliar2) {
 		resp = 0;
 	} else if(auxiliar1 > auxiliar2) {
@@ -1772,11 +1772,11 @@ void i_dcmpl() {
 	int32_t resultado;
 	low = pop();
 	high = pop();
-	auxiliar = convert_2x32_to_64_bits(low, high);
+	auxiliar = converter2x32To64bits(low, high);
 	memcpy(&doubleNum2, &auxiliar, 2*sizeof(u4));
 	low = pop();
 	high = pop();
-	auxiliar = convert_2x32_to_64_bits(low, high);
+	auxiliar = converter2x32To64bits(low, high);
 	memcpy(&doubleNum1, &auxiliar, 2*sizeof(u4));
 	if(doubleNum1 == doubleNum2) {
 		resultado = 0;
@@ -1796,11 +1796,11 @@ void i_dcmpg() {
 	int32_t resultado;
 	low = pop();
 	high = pop();
-	auxiliar = convert_2x32_to_64_bits(low, high);
+	auxiliar = converter2x32To64bits(low, high);
 	memcpy(&doubleNum2, &auxiliar, 2*sizeof(u4));
 	low = pop();
 	high = pop();
-	auxiliar = convert_2x32_to_64_bits(low, high);
+	auxiliar = converter2x32To64bits(low, high);
 	memcpy(&doubleNum1, &auxiliar, 2*sizeof(u4));
 	if(doubleNum1 == doubleNum2) {
 		resultado = 0;
@@ -1821,7 +1821,7 @@ void i_ifeq() {
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
 	auxiliar = (signed) pop();
 	if(auxiliar == 0) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -1836,7 +1836,7 @@ void i_ifne() {
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
 	auxiliar = (signed) pop();
 	if(auxiliar != 0) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -1851,7 +1851,7 @@ void i_iflt() {
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
 	auxiliar = (signed) pop();
 	if(auxiliar < 0) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -1866,7 +1866,7 @@ void i_ifge() {
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
 	auxiliar = (signed) pop();
  	if(auxiliar >= 0) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -1881,7 +1881,7 @@ void i_ifgt() {
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
 	auxiliar = (signed) pop();
 	if(auxiliar > 0) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -1896,7 +1896,7 @@ void i_ifle() {
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
 	auxiliar = (signed) pop();
 	if(auxiliar <= 0) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -1912,7 +1912,7 @@ void i_if_icmpeq() {
 	auxiliar1 = (signed) pop();
 	auxiliar2 = (signed) pop();
 	if(auxiliar1 == auxiliar2) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -1928,7 +1928,7 @@ void i_if_icmpne() {
 	auxiliar1 = (signed) pop();
 	auxiliar2 = (signed) pop();
 	if(auxiliar1 != auxiliar2) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -1944,7 +1944,7 @@ void i_if_icmplt() {
 	auxiliar2 = (signed) pop();
 	auxiliar1 = (signed) pop();
  	if(auxiliar1 < auxiliar2) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -1960,7 +1960,7 @@ void i_if_icmpge() {
 	auxiliar2 = (signed) pop();
 	auxiliar1 = (signed) pop();
 	if(auxiliar1 >= auxiliar2) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -1976,7 +1976,7 @@ void i_if_icmpgt() {
 	auxiliar2 = (signed) pop();
 	auxiliar1 = (signed) pop();
 	if(auxiliar1 > auxiliar2) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -1992,7 +1992,7 @@ void i_if_icmple() {
 	auxiliar2 = (signed) pop();
 	auxiliar1 = (signed) pop();
 	if(auxiliar1 <= auxiliar2) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -2008,7 +2008,7 @@ void i_if_acmpeq() {
 	auxiliar2 = (signed) pop();
 	auxiliar1 = (signed) pop();
 	if(auxiliar1 == auxiliar2) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -2024,7 +2024,7 @@ void i_if_acmpne() {
 	auxiliar2 = (signed) pop();
 	auxiliar1 = (signed) pop();
 	if(auxiliar1 != auxiliar2) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -2036,7 +2036,7 @@ void i_goto() {
 	int16_t offset;
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-	offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+	offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 	frameAtual->pc += offset;
 }
 
@@ -2046,7 +2046,7 @@ void i_jsr() {
 	push((frameAtual->pc) + 3);
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-	offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+	offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 	frameAtual->pc += offset;
 }
 
@@ -2190,7 +2190,7 @@ void i_lreturn() {
 	low = pop();
 	high = pop();
 	returnType = RETURN_64bits;
-	returnValue = convert_2x32_to_64_bits(low, high);
+	returnValue = converter2x32To64bits(low, high);
 	frameAtual->pc++;
 }
 
@@ -2207,7 +2207,7 @@ void i_dreturn() {
 	low = pop();
 	high = pop();
 	returnType = RETURN_64bits;
-	returnValue = convert_2x32_to_64_bits(low, high);
+	returnValue = converter2x32To64bits(low, high);
 	frameAtual->pc++;
 }
 
@@ -2301,7 +2301,7 @@ void i_putstatic() {
 	if(type[0] == 'J' || type[0] == 'D') {
 		valor1 = pop();
 		valor2 = pop();
-		valor = convert_2x32_to_64_bits(valor1 , valor2);
+		valor = converter2x32To64bits(valor1 , valor2);
 	} else {
 		valor = (u8) pop();
 	}
@@ -2322,7 +2322,7 @@ void i_getfield() {
 
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
-	index = convert_2x8_to_32_bits(low, high);
+	index = converter2x8To32bits(low, high);
 	classIndex = frameAtual->constantPool[index-1].type.FieldRef.classIndex;
 	className = getName(frameAtual->class, frameAtual->constantPool[classIndex-1].type.Class.nameIndex);
 	nameTypeIndex = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
@@ -2368,7 +2368,7 @@ void i_putfield() {
 
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
-	index = convert_2x8_to_32_bits(low, high);
+	index = converter2x8To32bits(low, high);
 	classIndex = frameAtual->constantPool[index-1].type.FieldRef.classIndex;
 	className = getName(frameAtual->class, frameAtual->constantPool[classIndex-1].type.Class.nameIndex);
 	nameTypeIndex = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
@@ -2395,7 +2395,7 @@ void i_putfield() {
 		valor1 = pop();
 		valor2 = pop();
 		objeto = (struct Object *) pop();
-		valor = convert_2x32_to_64_bits(valor1, valor2);
+		valor = converter2x32To64bits(valor1, valor2);
 		setObjectFieldWide(objeto, nameIndex, valor);
 
 	} else {
@@ -2423,7 +2423,7 @@ void i_invokevirtual() {
 
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
-	index = convert_2x8_to_32_bits(low, high);
+	index = converter2x8To32bits(low, high);
 	classIndexTemp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
 	className = getName(frameAtual->class, frameAtual->constantPool[classIndexTemp-1].type.Class.nameIndex);
 	nameTypeIndex = frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex;
@@ -2438,14 +2438,14 @@ void i_invokevirtual() {
 		if(strstr(methodDesc, "J") != NULL){
 			valorLow = pop();
 			valorHigh = pop();
-			valor = convert_2x32_to_64_bits(valorLow, valorHigh);
+			valor = converter2x32To64bits(valorLow, valorHigh);
 			printf("%"PRIi64,(int64_t)valor);
 
 		//DOUBLE
 		} else if(strstr(methodDesc, "D") != NULL) {
 			valorLow = pop();
 			valorHigh = pop();
-			valor = convert_2x32_to_64_bits(valorLow, valorHigh);
+			valor = converter2x32To64bits(valorLow, valorHigh);
 			printf("%.15f", valor);
 
 		//BOOLEAN
@@ -2550,7 +2550,7 @@ void i_invokespecial() {
 
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
-	index = convert_2x8_to_32_bits(low, high);
+	index = converter2x8To32bits(low, high);
 	classIndexTemp = (frameAtual->constantPool[index-1]).type.MethodRef.classIndex;
 	className = getName(frameAtual->class,(frameAtual->constantPool[classIndexTemp-1]).type.Class.nameIndex);
 	classIndex = carregarClass(className);
@@ -2606,7 +2606,7 @@ void i_invokestatic() {
 
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
-	index = convert_2x8_to_32_bits(low, high);
+	index = converter2x8To32bits(low, high);
 	classIndexTemp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
 	className = getName(frameAtual->class, frameAtual->constantPool[classIndexTemp-1].type.Class.nameIndex);
 	nameTypeIndex = frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex;
@@ -2650,7 +2650,7 @@ void i_invokeinterface() {
 
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
-	index = convert_2x8_to_32_bits(low, high);
+	index = converter2x8To32bits(low, high);
 	args_count = frameAtual->code[++(frameAtual->pc)];
 	zero = frameAtual->code[++(frameAtual->pc)];
 	fieldsTemp = calloc(sizeof(u4),args_count+1);
@@ -2691,7 +2691,7 @@ void i_new() {
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
 
-	index = convert_2x8_to_32_bits(low, high);
+	index = converter2x8To32bits(low, high);
 	className = getName(frameAtual->class, frameAtual->constantPool[index-1].type.Class.nameIndex);
 	classIndex = carregarClass(className);
 	class = getClassByIndex(classIndex);
@@ -2893,7 +2893,7 @@ void i_ifnull() {
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
 	auxiliar = (signed) pop();
 	if(auxiliar == CONSTANT_Null) {
-		offset = convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;
@@ -2908,7 +2908,7 @@ void i_ifnonnull() {
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
 	auxiliar = (signed) pop();
 	if(auxiliar != CONSTANT_Null) {
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		offset = (int16_t)converter2x8To32bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
 	} else {
 		frameAtual->pc += 3;

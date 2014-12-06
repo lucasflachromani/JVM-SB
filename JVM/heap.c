@@ -87,7 +87,7 @@ u8 getObjectFieldWide(struct Object* object, u4 nameIndex) {
 	while (object->fields_index[i] != nameIndex) {
 		i++;
 	}
-	return convert_2x32_to_64_bits(object->fields[i],object->fields[i+1]);
+	return converter2x32To64bits(object->fields[i],object->fields[i+1]);
 }
 
 void setObjectField(struct Object* object, u4 nameIndex, u4 valor) {
@@ -106,7 +106,7 @@ void setObjectFieldWide(struct Object* object, u4 nameIndex, u8 valor) {
 		i++;
 	}
 
-	convert_64_bits_to_2x32(valor, &low, &high);
+	converter64bitsTo2x32(valor, &low, &high);
 	object->fields[i] = low;
 	object->fields[i+1] = high;
 }

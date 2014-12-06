@@ -22,7 +22,7 @@ void newFrame(classStructure *class, cpInfo *constantPool, attributeInfo *attrib
 	pilha->valor->fields = calloc(sizeof(u4), pilha->valor->maxLocals);
 	pilha->valor->pc = 0;
 	frameAtual = pilha->valor;
-	newStackFrame();
+	newFramePilha();
 }
 
 void freeFrame() {
@@ -39,5 +39,5 @@ void freeFrame() {
 	free(pilha->valor);
 	free(pilha);
 	pilha = proximo;
-	freeStackFrame();
+	freeFramePilha();
 }

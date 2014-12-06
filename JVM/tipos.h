@@ -198,10 +198,10 @@ typedef struct {
 /*************************
  * FUNCOES
  *************************/
-u8 convert_2x32_to_64_bits(u4 low, u4 high);
-u4 convert_2x8_to_32_bits(u4 low, u4 high);
-void convert_64_bits_to_2x32(u8 value, u4 *low, u4 *high);
-float convert_cast_32_bits_to_float(u4 bits);
-double convert_cast_2x32_bits_to_double(u4 low, u4 high);
+u8 converter2x32To64bits(u4 low, u4 high);
+u4 converter2x8To32bits(u4 low, u4 high);
+void converter64bitsTo2x32(u8 value, u4 *low, u4 *high);
+float converterCast32bitsToFloat(u4 bits);
+double convertCast2x32bitsToDouble(u4 low, u4 high);
 
 #endif
