@@ -4,7 +4,7 @@
 #include "const.h"
 #include "tipos.h"
 
-classStructure *class;
+classStructure * class;
 
 int open_file(char* file_name);
 void close_file();
@@ -16,7 +16,9 @@ char * getName(classStructure *class_file, u2 nameIndex);
 int read_s();
 int read_interfaces();
 int read_fields();
-attributeInfo * read_attribute_info();
+
+void read_attribute_info(attributeInfo * att);
+
 int read_methods();
 int read_attributes();
 classStructure * read_class_file(char *nome_arq);

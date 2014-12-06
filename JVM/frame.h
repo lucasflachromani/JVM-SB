@@ -6,13 +6,13 @@
 #include "tipos.h"
 
 struct frame {
-	u4				*fields;
-	cpInfo			*constantPool;
-	classStructure 	*class;
+	u4				* fields;
+	cpInfo			* constantPool;
+	classStructure 	* class;
 	u2 				maxStack;
 	u2 				maxLocals;
 	u4 				codeLength;
-	u1 				*code;
+	u1 				* code;
 	u4 				pc;
 };
 
@@ -26,7 +26,7 @@ struct frame_stack {
 
 struct frame *frameAtual;
 
-void newFrame(classStructure *class, cpInfo *constantPool, Code_attribute *code_attribute);
+void newFrame(classStructure *class, cpInfo *constantPool, attributeInfo *attribute);
 void freeFrame();
 
 #endif

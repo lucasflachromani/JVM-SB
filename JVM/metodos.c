@@ -2,6 +2,8 @@
 #include "metodos.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "classloader.h"
 #include "const.h"
@@ -121,23 +123,22 @@ void prepararMetodo(classStructure *class, methodInfo *method) {
 
 	/* procura por atributo Code */
 	for(i = 0; i < method->attributeCount; i++) {
-		if(((attributeInfo *)method->attributes[i])->tag == ATTR_Code)
+		if(method->attributes[i].tag == ATTR_Code)
 			break;
 	}
 
 	if(method->attributeCount != 0) {
-		if(((attributeInfo *)method->attributes[i])->tag != ATTR_Code) {
+		if(method->attributes[i].tag != ATTR_Code) {
 			printf(" Erro: Nao encontrou atributo code no método.");
 			exit(1);
 		}
-		newFrame(class, class->constantPool,((Code_attribute *)method->attributes[i]));
+		newFrame(class, class->constantPool, &(method->attributes[i]));
 	}
 	else {
 		(method->attributeCount)++;
-		method->attributes = malloc(sizeof(void*));
-		method->attributes[0] = calloc(sizeof(Code_attribute),1);
-		((Code_attribute *)(method->attributes[0]))->codeLength = 0;
-		newFrame(class, class->constantPool,((Code_attribute *)method->attributes[0]));
+		method->attributes = malloc(1 * sizeof(attributeInfo));
+		method->attributes[0].type.Code.codeLength = 0;
+		newFrame(class, class->constantPool, &(method->attributes[0]));
 	}
 
 }

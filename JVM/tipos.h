@@ -17,7 +17,7 @@ typedef struct OPCODE_info {
 } opcode_informacao;
 
 /************************
- * TYPES FOR CONVERSION
+ * TIPOS PARA CONVERSAO
  ************************/
 union fltConv {
     float f;
@@ -30,7 +30,7 @@ union dblConv {
 } du;
 
 /*************************
- * TABLES FOR ATTRIBUTES
+ * TABELAS PARA ATTRIBUTES
  *************************/
 typedef struct {
 	u2 startPc;
@@ -68,7 +68,6 @@ typedef struct {
 	u8 * value;
 } staticStruct;
 
-//NEW ---------------------------------------------------
 /*************************
  * 	ATTRIBUTE INFO
  *************************/
@@ -126,10 +125,9 @@ typedef struct {
 	u2 	nameIndex;
 	u2 	descriptorIndex;
 	u2 	attributeCount;
-	void 	** attributes;
+	attributeInfo * attributes;
 } fieldInfo, methodInfo;
 
-//NEW ---------------------------------------------------
 /*************************
  * CONSTANT POOL INFO
  *************************/
@@ -167,7 +165,6 @@ typedef struct {
     } type;
 } cpInfo;
 
-//PARTIALLY NEW -----------------------------------------
 /*************************
  * CLASS STRUCTURE
  *************************/
@@ -195,11 +192,11 @@ typedef struct {
     methodInfo * methods /*[methodCount]*/;
 
     u2 attributeCount;
-    void ** attributes /*[attributeCount]*/; //modificar depois
+    attributeInfo * attributes /*[attributeCount]*/; //modificar depois
 } classStructure;
 
 /*************************
- * FUNCTIONS
+ * FUNCOES
  *************************/
 u8 convert_2x32_to_64_bits(u4 low, u4 high);
 u4 convert_2x8_to_32_bits(u4 low, u4 high);

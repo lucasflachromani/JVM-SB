@@ -414,13 +414,13 @@ void i_ldc()
 
 	switch(tag)
 	{
-	case (CONSTANT_Integer):
+	case (CInteger):
 		push(frameAtual->constantPool[indice-1].type.Integer.bytes);
 		break;
-	case (CONSTANT_Float):
+	case (CFloat):
 		push(frameAtual->constantPool[indice-1].type.Float.bytes);
 		break;
-	case (CONSTANT_String):
+	case (CString):
 		stringIndex = frameAtual->constantPool[indice-1].type.String.stringIndex;
 		push ((u4)getName(frameAtual->class, stringIndex) );
 		break;
@@ -448,13 +448,13 @@ void i_ldc_w()
 
 	switch(tag)
 	{
-	case (CONSTANT_Integer):
+	case (CInteger):
 									push (frameAtual->constantPool[indice-1].type.Integer.bytes);
 	break;
-	case (CONSTANT_Float):
+	case (CFloat):
 									push (frameAtual->constantPool[indice-1].type.Float.bytes);
 	break;
-	case (CONSTANT_String):
+	case (CString):
 									stringIndex = frameAtual->constantPool[indice-1].type.String.stringIndex;
 	push ( (u4)getName(frameAtual->class, stringIndex) );
 	break;
@@ -481,11 +481,11 @@ void i_ldc2_w()
 
 	switch(tag)
 	{
-	case (CONSTANT_Long):
+	case (CLong):
 		push(frameAtual->constantPool[indice-1].type.Long.highBytes);
 		push(frameAtual->constantPool[indice-1].type.Long.lowBytes);
 		break;
-	case (CONSTANT_Double):
+	case (CDouble):
 		push(frameAtual->constantPool[indice-1].type.Double.highBytes);
 		push(frameAtual->constantPool[indice-1].type.Double.lowBytes);
 		break;
@@ -3473,7 +3473,7 @@ void i_invokevirtual()
 			fields_tmp[i] = pop();
 		}
 
-		if (((method->accessFlags) & ACC_NATIVE) || strcmp("println", getName(class, method->nameIndex)) == 0) {
+		if (((method->accessFlags) & AFNative) || strcmp("println", getName(class, method->nameIndex)) == 0) {
 			bytes = class->constantPool[(method->descriptorIndex-1)].type.Utf8.bytes;
 			length = class->constantPool[(method->descriptorIndex-1)].type.Utf8.length;
 
@@ -3547,7 +3547,7 @@ void i_invokespecial()
 		fields_tmp[i] = pop();
 	}
 
-	if (method->accessFlags & ACC_NATIVE) {
+	if (method->accessFlags & AFNative) {
 
 		bytes = class->constantPool[(method->descriptorIndex-1)].type.Utf8.bytes;
 		length = class->constantPool[(method->descriptorIndex-1)].type.Utf8.length;
@@ -3612,7 +3612,7 @@ void i_invokestatic(){
 		fields_tmp[i] = index;
 	}
 
-	if (method->accessFlags & ACC_NATIVE) {
+	if (method->accessFlags & AFNative) {
 
 		bytes = class->constantPool[(method->descriptorIndex-1)].type.Utf8.bytes;
 		length = class->constantPool[(method->descriptorIndex-1)].type.Utf8.length;

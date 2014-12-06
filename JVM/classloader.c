@@ -253,13 +253,13 @@ int read_fields() {
 		class->fields[i].descriptorIndex = u2Read();
 		class->fields[i].attributeCount = u2Read();
 
-		if ((class->fields[i].attributes = calloc(sizeof (void *), class->fields[i].attributeCount)) == NULL) {
+		if ((class->fields[i].attributes = calloc(sizeof (attributeInfo), class->fields[i].attributeCount)) == NULL) {
 			perror("Attributes");
 			return -1;
 		}
 
 		for (j = 0; j < class->fields[i].attributeCount; j++){
-			class->fields[i].attributes[j] = read_attribute_info();
+			read_attribute_info(&(class->fields[i].attributes[j]));
 		}
 
 	}
@@ -290,308 +290,131 @@ char * getName(classStructure *class_file, u2 nameIndex) {
  \brief Le um atribute_info e retorna o ponteiro para tal
  \return Ponteiro para um atributo
  */
-void * read_attribute_info() {
+void read_attribute_info (attributeInfo * att) {
 	int i;
-<<<<<<< HEAD
-<<<<<<< HEAD
-	char * attType;
-
-	attributeInfo * attribute;
-
-    attribute->attributeNameIndex = u2Read(file);
-    attribute->attributeLength = u4Read(file);
-
-	attType = getName(class, nameIndex);
-    if (strcmp (attType, "ConstantValue") == 0) {
-        storeConstValueAttr(att);
-    }
-    else if (strcmp (attType, "Code") == 0) {
-        storeCodeAttr(attribute);
-    }
-    else if (strcmp (attType, "Exceptions") == 0) {
-        storeExceptionsAttr(attribute);
-    }
-    else if (strcmp (attType, "InnerClasses") == 0) {
-        storeInnerClassesAttr(attribute);
-    }
-    else if (strcmp (attType, "Synthetic") == 0) {
-        storeSyntheticAttr(attribute);
-    }
-    
-    /*
-    else if (strcmp (attType, "Deprecated") == 0) {
-        //storeSyntheticAttr(attribute);
-    }
-    else if (strcmp (attType, "LineNumberTable") == 0) {
-        //storeSyntheticAttr(attribute);
-    }
-    else if (strcmp (attType, "LocalVariableTable") == 0) {
-        //storeSyntheticAttr(attribute);
-    }
-    else if (strcmp (attType, "SourceFile") == 0) {
-        //storeSyntheticAttr(attribute);
-    }
-    */
-    else {
-        storeDefaultAttr(attribute);
-    }
-=======
 	char *nome;
->>>>>>> parent of ee7cf97... Mudança de cast pra estrutura nova attribute
-=======
-	char *nome;
->>>>>>> parent of ee7cf97... Mudança de cast pra estrutura nova attribute
-
-	void *attribute;
 
 	u2 nameIndex;
 	u4 length;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* @ brief Funcao que armazena atributo do tipo Code
- * @ param file : arquivo de entrada
- * @ param cs : estrutura de dados da classe java
- * @ param att : ponteiro para local a armazenar o atributo
- */
-void storeCodeAttr (attributeInfo * att) {
-    int a;
-    
-    att->type.Code.maxStack = u2Read();
-    att->type.Code.maxLocals = u2Read();
-    att->type.Code.codeLength = u4Read();
-    att->type.Code.code = malloc (att->type.Code.codeLength * sizeof(u1));
-    for (a = 0; a < att->type.Code.codeLength; a++) {
-        att->type.Code.code[a] = u1Read();
-    }
-    att->type.Code.exceptionTableLength = u2Read();
-    att->type.Code.exceptionTable = malloc (att->type.Code.exceptionTableLength * sizeof(exceptionTableType));
-    for (a = 0; a < att->type.Code.exceptionTableLength; a++) {
-        att->type.Code.exceptionTable[a].startPc = u2Read();
-        att->type.Code.exceptionTable[a].endPc = u2Read();
-        att->type.Code.exceptionTable[a].handlerPc = u2Read();
-        att->type.Code.exceptionTable[a].catchType = u2Read();
-    }
-    att->type.Code.attributeCount = u2Read();
-    att->type.Code.attributes = malloc (att->type.Code.attributeCount * sizeof(attributeInfo));
-    for (a = 0; a < att->type.Code.attributeCount; a++) {
-        att->type.Code.attributes[a] = read_attribute_info();
-    }
-}
-=======
-	nameIndex = u2Read();
-	length = u4Read();
->>>>>>> parent of ee7cf97... Mudança de cast pra estrutura nova attribute
-
-	nome = getName(class, nameIndex);
-
-	if (strcmp("ConstantValue", nome) == 0) {
-		attribute = (ConstantValue_attribute *) calloc(sizeof (ConstantValue_attribute), 1);
-		((ConstantValue_attribute *) attribute)->attributeNameIndex = nameIndex;
-		((ConstantValue_attribute *) attribute)->attributeLength = length;
-		((ConstantValue_attribute *) attribute)->tag = ATTR_ConstantValue;
-		((ConstantValue_attribute *) attribute)->constantValueIndex = u2Read();
-	}
-
-	else if (strcmp("Code", nome) == 0) {
-		attribute = (Code_attribute *) calloc(sizeof (Code_attribute), 1);
-		((Code_attribute *) attribute)->attributeNameIndex = nameIndex;
-		((Code_attribute *) attribute)->attributeLength = length;
-		((Code_attribute *) attribute)->tag = ATTR_Code;
-		((Code_attribute *) attribute)->maxStack = u2Read();
-		((Code_attribute *) attribute)->maxLocals = u2Read();
-
-		((Code_attribute *) attribute)->codeLength = u4Read();
-		((Code_attribute *) attribute)->code = (u1 *) calloc(sizeof (u1), ((Code_attribute *) attribute)->codeLength);
-		for (i = 0; i < ((Code_attribute *) attribute)->codeLength; i++) {
-			((Code_attribute *) attribute)->code[i] = u1Read();
-		}
-
-		((Code_attribute *) attribute)->exceptionTableLength = u2Read();
-		((Code_attribute *) attribute)->exceptionTable = (exceptionTableType *) calloc(sizeof (exceptionTableType),
-				((Code_attribute *) attribute)->exceptionTableLength);
-		for (i = 0; i < ((Code_attribute *) attribute)->exceptionTableLength; i++) {
-			((Code_attribute *) attribute)->exceptionTable[i].startPc = u2Read();
-			((Code_attribute *) attribute)->exceptionTable[i].endPc = u2Read();
-			((Code_attribute *) attribute)->exceptionTable[i].handlerPc = u2Read();
-			((Code_attribute *) attribute)->exceptionTable[i].catchType = u2Read();
-		}
-
-		((Code_attribute *) attribute)->attributeCount = u2Read();
-		((Code_attribute *) attribute)->attributes = (void *) calloc(sizeof (void *),
-				((Code_attribute *) attribute)->attributeCount);
-		for (i = 0; i < ((Code_attribute *) attribute)->attributeCount; i++) {
-			((Code_attribute *) attribute)->attributes[i] = read_attribute_info();
-		}
-	}
-
-=======
 	nameIndex = u2Read();
 	length = u4Read();
 
 	nome = getName(class, nameIndex);
 
 	if (strcmp("ConstantValue", nome) == 0) {
-		attribute = (ConstantValue_attribute *) calloc(sizeof (ConstantValue_attribute), 1);
-		((ConstantValue_attribute *) attribute)->attributeNameIndex = nameIndex;
-		((ConstantValue_attribute *) attribute)->attributeLength = length;
-		((ConstantValue_attribute *) attribute)->tag = ATTR_ConstantValue;
-		((ConstantValue_attribute *) attribute)->constantValueIndex = u2Read();
+		att->attributeNameIndex = nameIndex;
+		att->attributeLength = length;
+		att->tag = ATTR_ConstantValue;
+		att->type.ConstantValue.constantValueIndex = u2Read();
 	}
 
 	else if (strcmp("Code", nome) == 0) {
-		attribute = (Code_attribute *) calloc(sizeof (Code_attribute), 1);
-		((Code_attribute *) attribute)->attributeNameIndex = nameIndex;
-		((Code_attribute *) attribute)->attributeLength = length;
-		((Code_attribute *) attribute)->tag = ATTR_Code;
-		((Code_attribute *) attribute)->maxStack = u2Read();
-		((Code_attribute *) attribute)->maxLocals = u2Read();
+		att->attributeNameIndex = nameIndex;
+		att->attributeLength = length;
+		att->tag = ATTR_Code;
+		att->type.Code.maxStack = u2Read();
+		att->type.Code.maxLocals = u2Read();
 
-		((Code_attribute *) attribute)->codeLength = u4Read();
-		((Code_attribute *) attribute)->code = (u1 *) calloc(sizeof (u1), ((Code_attribute *) attribute)->codeLength);
-		for (i = 0; i < ((Code_attribute *) attribute)->codeLength; i++) {
-			((Code_attribute *) attribute)->code[i] = u1Read();
+		att->type.Code.codeLength = u4Read();
+		att->type.Code.code = calloc(sizeof (u1), att->type.Code.codeLength);
+		for (i = 0; i < att->type.Code.codeLength; i++) {
+			att->type.Code.code[i] = u1Read();
 		}
 
-		((Code_attribute *) attribute)->exceptionTableLength = u2Read();
-		((Code_attribute *) attribute)->exceptionTable = (exceptionTableType *) calloc(sizeof (exceptionTableType),
-				((Code_attribute *) attribute)->exceptionTableLength);
-		for (i = 0; i < ((Code_attribute *) attribute)->exceptionTableLength; i++) {
-			((Code_attribute *) attribute)->exceptionTable[i].startPc = u2Read();
-			((Code_attribute *) attribute)->exceptionTable[i].endPc = u2Read();
-			((Code_attribute *) attribute)->exceptionTable[i].handlerPc = u2Read();
-			((Code_attribute *) attribute)->exceptionTable[i].catchType = u2Read();
+		att->type.Code.exceptionTableLength = u2Read();
+		att->type.Code.exceptionTable = calloc(sizeof (exceptionTableType), att->type.Code.exceptionTableLength);
+		for (i = 0; i < att->type.Code.exceptionTableLength; i++) {
+			att->type.Code.exceptionTable[i].startPc = u2Read();
+			att->type.Code.exceptionTable[i].endPc = u2Read();
+			att->type.Code.exceptionTable[i].handlerPc = u2Read();
+			att->type.Code.exceptionTable[i].catchType = u2Read();
 		}
 
-		((Code_attribute *) attribute)->attributeCount = u2Read();
-		((Code_attribute *) attribute)->attributes = (void *) calloc(sizeof (void *),
-				((Code_attribute *) attribute)->attributeCount);
-		for (i = 0; i < ((Code_attribute *) attribute)->attributeCount; i++) {
-			((Code_attribute *) attribute)->attributes[i] = read_attribute_info();
+		att->type.Code.attributeCount = u2Read();
+		att->type.Code.attributes = calloc(sizeof (attributeInfo), att->type.Code.attributeCount);
+		for (i = 0; i < att->type.Code.attributeCount; i++) {
+			read_attribute_info(&(att->type.Code.attributes[i]));
 		}
 	}
 
->>>>>>> parent of ee7cf97... Mudança de cast pra estrutura nova attribute
 	else if (strcmp("Deprecated", nome) == 0) {
-		attribute = (Deprecated_attribute *) calloc(sizeof (Deprecated_attribute), 1);
-		((Deprecated_attribute *) attribute)->attributeNameIndex = nameIndex;
-		((Deprecated_attribute *) attribute)->attributeLength = length;
-		((Deprecated_attribute *) attribute)->tag = ATTR_Deprecated;
+		att->attributeNameIndex = nameIndex;
+		att->attributeLength = length;
+		att->tag = ATTR_Deprecated;
 	}
 
 	else if (strcmp("Exceptions", nome) == 0) {
-		attribute = (Exceptions_attribute *) calloc(sizeof (Exceptions_attribute), 1);
-		((Exceptions_attribute *) attribute)->attributeNameIndex = nameIndex;
-		((Exceptions_attribute *) attribute)->attributeLength = length;
-		((Exceptions_attribute *) attribute)->tag = ATTR_Exceptions;
+		att->attributeNameIndex = nameIndex;
+		att->attributeLength = length;
+		att->tag = ATTR_Exceptions;
 
-		((Exceptions_attribute *) attribute)->numberOfExceptions = u2Read();
-		((Exceptions_attribute *) attribute)->exceptionIndexTable = (u2 *) calloc(sizeof (u2),
-				((Exceptions_attribute *) attribute)->numberOfExceptions);
-		for (i = 0; i < ((Exceptions_attribute *) attribute)->numberOfExceptions; i++) {
-			((Exceptions_attribute *) attribute)->exceptionIndexTable[i] = u2Read();
+		att->type.Exceptions.numberOfExceptions = u2Read();
+		att->type.Exceptions.exceptionIndexTable = calloc(sizeof (u2), att->type.Exceptions.numberOfExceptions);
+		for (i = 0; i < att->type.Exceptions.numberOfExceptions; i++) {
+			att->type.Exceptions.exceptionIndexTable[i] = u2Read();
 		}
 	}
 
 	else if (strcmp("InnerClasses", nome) == 0) {
-		attribute = (InnerClasses_attribute *) calloc(sizeof (InnerClasses_attribute), 1);
-		((InnerClasses_attribute *) attribute)->attributeNameIndex = nameIndex;
-		((InnerClasses_attribute *) attribute)->attributeLength = length;
-		((InnerClasses_attribute *) attribute)->tag = ATTR_InnerClasses;
+		att->attributeNameIndex = nameIndex;
+		att->attributeLength = length;
+		att->tag = ATTR_InnerClasses;
 
-		((InnerClasses_attribute *) attribute)->numberOfClasses = u2Read();
-		((InnerClasses_attribute *) attribute)->classes = (classType *) calloc(sizeof (classType),
-				((InnerClasses_attribute *) attribute)->numberOfClasses);
-		for (i = 0; i < ((InnerClasses_attribute *) attribute)->numberOfClasses; i++) {
-			((InnerClasses_attribute *) attribute)->classes[i].innerClassInfoIndex = u2Read();
-			((InnerClasses_attribute *) attribute)->classes[i].outerClassInfoIndex = u2Read();
-			((InnerClasses_attribute *) attribute)->classes[i].innerNameIndex = u2Read();
-			((InnerClasses_attribute *) attribute)->classes[i].innerClassAccessFlags = u2Read();
+		att->type.InnerClasses.numberOfClasses = u2Read();
+		att->type.InnerClasses.classes = calloc(sizeof (classType), att->type.InnerClasses.numberOfClasses);
+		for (i = 0; i < att->type.InnerClasses.numberOfClasses; i++) {
+			att->type.InnerClasses.classes[i].innerClassInfoIndex = u2Read();
+			att->type.InnerClasses.classes[i].outerClassInfoIndex = u2Read();
+			att->type.InnerClasses.classes[i].innerNameIndex = u2Read();
+			att->type.InnerClasses.classes[i].innerClassAccessFlags = u2Read();
 		}
 	}
 
 	else if (strcmp("LineNumberTable", nome) == 0) {
-		attribute = (LineNumberTable_attribute *) calloc(sizeof (LineNumberTable_attribute), 1);
-		((LineNumberTable_attribute *) attribute)->attributeNameIndex = nameIndex;
-		((LineNumberTable_attribute *) attribute)->attributeLength = length;
-		((LineNumberTable_attribute *) attribute)->tag = ATTR_LineNumberTable;
+		att->attributeNameIndex = nameIndex;
+		att->attributeLength = length;
+		att->tag = ATTR_LineNumberTable;
 
-		((LineNumberTable_attribute *) attribute)->lineNumberTableLength = u2Read();
-		((LineNumberTable_attribute *) attribute)->lineNumberTable = (lineNumberTableType *) calloc(sizeof (lineNumberTableType),
-				((LineNumberTable_attribute *) attribute)->lineNumberTableLength);
-		for (i = 0; i < ((LineNumberTable_attribute *) attribute)->lineNumberTableLength; i++) {
-			((LineNumberTable_attribute *) attribute)->lineNumberTable[i].startPc = u2Read();
-			((LineNumberTable_attribute *) attribute)->lineNumberTable[i].lineNumber = u2Read();
+		att->type.LineNumberTable.lineNumberTableLength = u2Read();
+		att->type.LineNumberTable.lineNumberTable = calloc(sizeof (LineNumberTableType), att->type.LineNumberTable.lineNumberTableLength);
+		for (i = 0; i < att->type.LineNumberTable.lineNumberTableLength; i++) {
+			att->type.LineNumberTable.lineNumberTable[i].startPc = u2Read();
+			att->type.LineNumberTable.lineNumberTable[i].lineNumber = u2Read();
 		}
 	}
-<<<<<<< HEAD
 
 	else if (strcmp("LocalVariableTable", nome) == 0) {
-		attribute = (LocalVariableTable_attribute *) calloc(sizeof (LocalVariableTable_attribute), 1);
-		((LocalVariableTable_attribute *) attribute)->attributeNameIndex = nameIndex;
-		((LocalVariableTable_attribute *) attribute)->attributeLength = length;
-		((LocalVariableTable_attribute *) attribute)->tag = ATTR_LocalVariableTable;
+		att->attributeNameIndex = nameIndex;
+		att->attributeLength = length;
+		att->tag = ATTR_LocalVariableTable;
 
-		((LocalVariableTable_attribute *) attribute)->localVariableTableLength = u2Read();
-		((LocalVariableTable_attribute *) attribute)->localVariableTable = (LocalVariableTableType *) calloc(sizeof (LocalVariableTableType),
-				((LocalVariableTable_attribute *) attribute)->localVariableTableLength);
-		for (i = 0; i < ((LocalVariableTable_attribute *) attribute)->localVariableTableLength; i++) {
-			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].startPc = u2Read();
-			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].length = u2Read();
-			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].nameIndex = u2Read();
-			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].descriptorIndex = u2Read();
-			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].index = u2Read();
+		att->type.LocalVariableTable.localVariableTableLength = u2Read();
+		att->type.LocalVariableTable.localVariableTable = calloc(sizeof (LocalVariableTableType), att->type.LocalVariableTable.localVariableTableLength);
+		for (i = 0; i < att->type.LocalVariableTable.localVariableTableLength; i++) {
+			att->type.LocalVariableTable.localVariableTable[i].startPc = u2Read();
+			att->type.LocalVariableTable.localVariableTable[i].length = u2Read();
+			att->type.LocalVariableTable.localVariableTable[i].nameIndex = u2Read();
+			att->type.LocalVariableTable.localVariableTable[i].descriptorIndex = u2Read();
+			att->type.LocalVariableTable.localVariableTable[i].index = u2Read();
 		}
 	}
 
 	else if (strcmp("SourceFile", nome) == 0) {
-		attribute = (SourceFile_attribute *) calloc(sizeof (SourceFile_attribute), 1);
-		((SourceFile_attribute *) attribute)->attributeNameIndex = nameIndex;
-		((SourceFile_attribute *) attribute)->attributeLength = length;
-		((SourceFile_attribute *) attribute)->tag = ATTR_SourceFile;
-		((SourceFile_attribute *) attribute)->sourceFileIndex = u2Read();
+		att->attributeNameIndex = nameIndex;
+		att->attributeLength = length;
+		att->tag = ATTR_SourceFile;
+		att->type.SourceFile.sourceFileIndex = u2Read();
 	}
 
-=======
-
-	else if (strcmp("LocalVariableTable", nome) == 0) {
-		attribute = (LocalVariableTable_attribute *) calloc(sizeof (LocalVariableTable_attribute), 1);
-		((LocalVariableTable_attribute *) attribute)->attributeNameIndex = nameIndex;
-		((LocalVariableTable_attribute *) attribute)->attributeLength = length;
-		((LocalVariableTable_attribute *) attribute)->tag = ATTR_LocalVariableTable;
-
-		((LocalVariableTable_attribute *) attribute)->localVariableTableLength = u2Read();
-		((LocalVariableTable_attribute *) attribute)->localVariableTable = (LocalVariableTableType *) calloc(sizeof (LocalVariableTableType),
-				((LocalVariableTable_attribute *) attribute)->localVariableTableLength);
-		for (i = 0; i < ((LocalVariableTable_attribute *) attribute)->localVariableTableLength; i++) {
-			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].startPc = u2Read();
-			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].length = u2Read();
-			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].nameIndex = u2Read();
-			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].descriptorIndex = u2Read();
-			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].index = u2Read();
-		}
-	}
-
-	else if (strcmp("SourceFile", nome) == 0) {
-		attribute = (SourceFile_attribute *) calloc(sizeof (SourceFile_attribute), 1);
-		((SourceFile_attribute *) attribute)->attributeNameIndex = nameIndex;
-		((SourceFile_attribute *) attribute)->attributeLength = length;
-		((SourceFile_attribute *) attribute)->tag = ATTR_SourceFile;
-		((SourceFile_attribute *) attribute)->sourceFileIndex = u2Read();
-	}
-
->>>>>>> parent of ee7cf97... Mudança de cast pra estrutura nova attribute
 	else if (strcmp("Synthetic", nome) == 0) {
-		attribute = (Synthetic_attribute *) calloc(sizeof (Synthetic_attribute), 1);
-		((Synthetic_attribute *) attribute)->attributeNameIndex = nameIndex;
-		((Synthetic_attribute *) attribute)->attributeLength = length;
+		att->attributeNameIndex = nameIndex;
+		att->attributeLength = length;
 	}
 
 	else {
 		printf(" Erro: Attributo nao reconhecido.");
 	}
-
-	return attribute;
 }
 
 /*
@@ -620,7 +443,7 @@ int read_methods() {
 		}
 
 		for (j = 0; j < class->methods[i].attributeCount; j++) {
-			class->methods[i].attributes[j] = read_attribute_info();
+			read_attribute_info(&(class->methods[i].attributes[j]));
 		}
 	}
 
@@ -642,7 +465,7 @@ int read_attributes() {
 	}
 
 	for (i = 0; i < class->attributeCount; i++) {
-		class->attributes[i] = read_attribute_info();
+		read_attribute_info(&(class->attributes[i]));
 	}
 
 	return 0;
