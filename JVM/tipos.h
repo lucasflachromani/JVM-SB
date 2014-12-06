@@ -126,7 +126,7 @@ typedef struct {
 	u2 	nameIndex;
 	u2 	descriptorIndex;
 	u2 	attributeCount;
-	void 	** attributes;
+	attributeInfo * attributes;
 } fieldInfo, methodInfo;
 
 //NEW ---------------------------------------------------
@@ -195,7 +195,7 @@ typedef struct {
     methodInfo * methods /*[methodCount]*/;
 
     u2 attributeCount;
-    void ** attributes /*[attributeCount]*/; //modificar depois
+    attributeInfo * attributes /*[attributeCount]*/; //modificar depois
 } classStructure;
 
 /*************************

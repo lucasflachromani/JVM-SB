@@ -24,4 +24,11 @@ void free_class_file(classStructure* classStructure);
 void carregarOpcodeInformacao();
 opcode_informacao *op_info;
 
+void storeConstValueAttr (attributeInfo * att);
+void storeCodeAttr (attributeInfo * att);
+void storeExceptionsAttr (attributeInfo * att);
+void storeInnerClassesAttr (attributeInfo * att);
+void storeSyntheticAttr (attributeInfo * att);
+void storeDefaultAttr (attributeInfo * att);
+
 #endif
