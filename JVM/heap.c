@@ -1,3 +1,4 @@
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -8,72 +9,69 @@
 #include "inicializador.h"
 #include "tipos.h"
 
-static u4 heap_index;
-static u4 heap_max;
+static u4 indexHeap;
+static u4 maxHeap;
 
 void newHeap() {
-	heap = calloc(sizeof(struct Object*), HEAP_INIT);
-	heap_index = 0;
-	heap_max = HEAP_INIT;
+	heap = calloc(sizeof(struct Object*), INI_HEAP);
+	indexHeap = 0;
+	maxHeap = INI_HEAP;
 }
 
 struct Object* newObject(classStructure *this) {
 	struct Object *object;
-	u4 i, j, counter;
+	u4 i, j, contador;
 	u2 index;
-	char descriptor[200];
-	cpInfo *desc_struct;
-
+	char descritor[200];
+	cpInfo *descritorStruct;
 
 	if (!this) {
 		return NULL;
 	}
 
-	/*TODO  Verificar se precisa de vetor
-	Talvez nao precise guardar a referencia*/
-	if (heap_index == heap_max) {
-		heap = realloc(heap, heap_max + HEAP_INIT);
+	if (indexHeap == maxHeap) {
+		heap = realloc(heap, maxHeap + INI_HEAP);
 		if (heap == NULL) {
 			printf(" Erro: Sem memoria\n");
 			exit(1);
 		}
-		heap_max += HEAP_INIT;
+		maxHeap += INI_HEAP;
 	}
 
 	object = calloc(sizeof(struct Object),1);
 	object->this = this;
 	object->super = newObject(getClassByName(getParentName(this)));
 
-	counter = 0;
+	contador = 0;
 	for (i = 0; i < this->fieldCount; i++) {
-		counter++;
+		contador++;
 		index = this->fields[i].descriptorIndex;
-		desc_struct = &(this->constantPool[index - 1]);
-		memcpy(descriptor, desc_struct->type.Utf8.bytes, desc_struct->type.Utf8.length);
+		descritorStruct = &(this->constantPool[index - 1]);
+		memcpy(descritor, descritorStruct->type.Utf8.bytes, descritorStruct->type.Utf8.length);
 
-		if (descriptor[0] == 'D' || descriptor[0] == 'J') {
-			counter++;
+		if (descritor[0] == 'D' || descritor[0] == 'J') {
+			contador++;
 		}
 	}
 
-	object->fields = calloc(sizeof(u4), counter);
-	object->fields_index = calloc(sizeof(u4), counter);
+	object->fields = calloc(sizeof(u4), contador);
+	object->fields_index = calloc(sizeof(u4), contador);
 
 	for (i = 0, j = 0; i < this->fieldCount; i++, j++) {
 		object->fields_index[j] = this->fields[i].nameIndex;
 
 		index = this->fields[i].descriptorIndex;
-		desc_struct = &(this->constantPool[index - 1]);
-		memcpy(descriptor, desc_struct->type.Utf8.bytes, desc_struct->type.Utf8.length);
+		descritorStruct = &(this->constantPool[index - 1]);
+		memcpy(descritor, descritorStruct->type.Utf8.bytes, descritorStruct->type.Utf8.length);
 
-		if (descriptor[0] == 'D' || descriptor[0] == 'J') {
+		if (descritor[0] == 'D' || descritor[0] == 'J') {
 			j++;
 			object->fields_index[j] = -1;
 		}
 	}
 
-	heap[heap_index] = object;
-	heap_index++;
+	heap[indexHeap] = object;
+	indexHeap++;
 	return object;
 }
 
