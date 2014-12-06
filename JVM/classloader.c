@@ -293,6 +293,7 @@ char * getName(classStructure *class_file, u2 nameIndex) {
 void * read_attribute_info() {
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char * attType;
 
 	attributeInfo * attribute;
@@ -337,12 +338,16 @@ void * read_attribute_info() {
 =======
 	char *nome;
 >>>>>>> parent of ee7cf97... Mudança de cast pra estrutura nova attribute
+=======
+	char *nome;
+>>>>>>> parent of ee7cf97... Mudança de cast pra estrutura nova attribute
 
 	void *attribute;
 
 	u2 nameIndex;
 	u4 length;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* @ brief Funcao que armazena atributo do tipo Code
  * @ param file : arquivo de entrada
@@ -420,6 +425,53 @@ void storeCodeAttr (attributeInfo * att) {
 		}
 	}
 
+=======
+	nameIndex = u2Read();
+	length = u4Read();
+
+	nome = getName(class, nameIndex);
+
+	if (strcmp("ConstantValue", nome) == 0) {
+		attribute = (ConstantValue_attribute *) calloc(sizeof (ConstantValue_attribute), 1);
+		((ConstantValue_attribute *) attribute)->attributeNameIndex = nameIndex;
+		((ConstantValue_attribute *) attribute)->attributeLength = length;
+		((ConstantValue_attribute *) attribute)->tag = ATTR_ConstantValue;
+		((ConstantValue_attribute *) attribute)->constantValueIndex = u2Read();
+	}
+
+	else if (strcmp("Code", nome) == 0) {
+		attribute = (Code_attribute *) calloc(sizeof (Code_attribute), 1);
+		((Code_attribute *) attribute)->attributeNameIndex = nameIndex;
+		((Code_attribute *) attribute)->attributeLength = length;
+		((Code_attribute *) attribute)->tag = ATTR_Code;
+		((Code_attribute *) attribute)->maxStack = u2Read();
+		((Code_attribute *) attribute)->maxLocals = u2Read();
+
+		((Code_attribute *) attribute)->codeLength = u4Read();
+		((Code_attribute *) attribute)->code = (u1 *) calloc(sizeof (u1), ((Code_attribute *) attribute)->codeLength);
+		for (i = 0; i < ((Code_attribute *) attribute)->codeLength; i++) {
+			((Code_attribute *) attribute)->code[i] = u1Read();
+		}
+
+		((Code_attribute *) attribute)->exceptionTableLength = u2Read();
+		((Code_attribute *) attribute)->exceptionTable = (exceptionTableType *) calloc(sizeof (exceptionTableType),
+				((Code_attribute *) attribute)->exceptionTableLength);
+		for (i = 0; i < ((Code_attribute *) attribute)->exceptionTableLength; i++) {
+			((Code_attribute *) attribute)->exceptionTable[i].startPc = u2Read();
+			((Code_attribute *) attribute)->exceptionTable[i].endPc = u2Read();
+			((Code_attribute *) attribute)->exceptionTable[i].handlerPc = u2Read();
+			((Code_attribute *) attribute)->exceptionTable[i].catchType = u2Read();
+		}
+
+		((Code_attribute *) attribute)->attributeCount = u2Read();
+		((Code_attribute *) attribute)->attributes = (void *) calloc(sizeof (void *),
+				((Code_attribute *) attribute)->attributeCount);
+		for (i = 0; i < ((Code_attribute *) attribute)->attributeCount; i++) {
+			((Code_attribute *) attribute)->attributes[i] = read_attribute_info();
+		}
+	}
+
+>>>>>>> parent of ee7cf97... Mudança de cast pra estrutura nova attribute
 	else if (strcmp("Deprecated", nome) == 0) {
 		attribute = (Deprecated_attribute *) calloc(sizeof (Deprecated_attribute), 1);
 		((Deprecated_attribute *) attribute)->attributeNameIndex = nameIndex;
@@ -472,6 +524,7 @@ void storeCodeAttr (attributeInfo * att) {
 			((LineNumberTable_attribute *) attribute)->lineNumberTable[i].lineNumber = u2Read();
 		}
 	}
+<<<<<<< HEAD
 
 	else if (strcmp("LocalVariableTable", nome) == 0) {
 		attribute = (LocalVariableTable_attribute *) calloc(sizeof (LocalVariableTable_attribute), 1);
@@ -499,6 +552,35 @@ void storeCodeAttr (attributeInfo * att) {
 		((SourceFile_attribute *) attribute)->sourceFileIndex = u2Read();
 	}
 
+=======
+
+	else if (strcmp("LocalVariableTable", nome) == 0) {
+		attribute = (LocalVariableTable_attribute *) calloc(sizeof (LocalVariableTable_attribute), 1);
+		((LocalVariableTable_attribute *) attribute)->attributeNameIndex = nameIndex;
+		((LocalVariableTable_attribute *) attribute)->attributeLength = length;
+		((LocalVariableTable_attribute *) attribute)->tag = ATTR_LocalVariableTable;
+
+		((LocalVariableTable_attribute *) attribute)->localVariableTableLength = u2Read();
+		((LocalVariableTable_attribute *) attribute)->localVariableTable = (LocalVariableTableType *) calloc(sizeof (LocalVariableTableType),
+				((LocalVariableTable_attribute *) attribute)->localVariableTableLength);
+		for (i = 0; i < ((LocalVariableTable_attribute *) attribute)->localVariableTableLength; i++) {
+			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].startPc = u2Read();
+			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].length = u2Read();
+			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].nameIndex = u2Read();
+			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].descriptorIndex = u2Read();
+			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].index = u2Read();
+		}
+	}
+
+	else if (strcmp("SourceFile", nome) == 0) {
+		attribute = (SourceFile_attribute *) calloc(sizeof (SourceFile_attribute), 1);
+		((SourceFile_attribute *) attribute)->attributeNameIndex = nameIndex;
+		((SourceFile_attribute *) attribute)->attributeLength = length;
+		((SourceFile_attribute *) attribute)->tag = ATTR_SourceFile;
+		((SourceFile_attribute *) attribute)->sourceFileIndex = u2Read();
+	}
+
+>>>>>>> parent of ee7cf97... Mudança de cast pra estrutura nova attribute
 	else if (strcmp("Synthetic", nome) == 0) {
 		attribute = (Synthetic_attribute *) calloc(sizeof (Synthetic_attribute), 1);
 		((Synthetic_attribute *) attribute)->attributeNameIndex = nameIndex;
