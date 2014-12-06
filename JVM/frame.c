@@ -1,41 +1,43 @@
 #include "frame.h"
 #include <stdlib.h>
 
-//	Frame atual e' o topo da pilha
-static struct frame_stack *stack = NULL;
+/*****************************
+ * Frame mais recente, topo da pilha
+ *****************************/
+static struct framePilha *pilha = NULL;
 
 void newFrame(classStructure *class, cpInfo *constantPool, attributeInfo *attribute) {
-	struct frame_stack *new;
-	new = calloc(sizeof(struct frame_stack), 1);
-	new->value = calloc(sizeof(struct frame), 1);
-	new->next = stack;
+	struct framePilha *new;
+	new = calloc(sizeof(struct framePilha), 1);
+	new->valor = calloc(sizeof(struct frame), 1);
+	new->next = pilha;
 
-	stack = new;
-	stack->value->class = class;
-	stack->value->constantPool = constantPool; 
-	stack->value->maxStack = attribute->type.Code.maxStack;
-	stack->value->maxLocals = attribute->type.Code.maxLocals;
-	stack->value->codeLength = attribute->type.Code.codeLength;		
-	stack->value->code = attribute->type.Code.code;
-	stack->value->fields = calloc(sizeof(u4), stack->value->maxLocals);
-	stack->value->pc = 0;
-	frameAtual = stack->value;
+	pilha = new;
+	pilha->valor->class = class;
+	pilha->valor->constantPool = constantPool; 
+	pilha->valor->maxStack = attribute->type.Code.maxStack;
+	pilha->valor->maxLocals = attribute->type.Code.maxLocals;
+	pilha->valor->codeLength = attribute->type.Code.codeLength;		
+	pilha->valor->code = attribute->type.Code.code;
+	pilha->valor->fields = calloc(sizeof(u4), pilha->valor->maxLocals);
+	pilha->valor->pc = 0;
+	frameAtual = pilha->valor;
 	newStackFrame();
 }
 
 void freeFrame() {
-	struct frame_stack *next;
+	struct framePilha *proximo;
 
-	if (stack->next != NULL) {
-		frameAtual = stack->next->value;
+	if (pilha->next != NULL) {
+		frameAtual = pilha->next->valor;
 	} else {
 		frameAtual = NULL;
 	}
 
-	next = stack->next;
-	free(stack->value->fields);
-	free(stack->value);
-	free(stack);
-	stack = next;
+	proximo = pilha->next;
+	free(pilha->valor->fields);
+	free(pilha->valor);
+	free(pilha);
+	pilha = proximo;
 	freeStackFrame();
 }

@@ -4,7 +4,7 @@
 #include "tipos.h"
 
 /* TODO criei essa funcao para testes, pode deletar depois se quiserem*/
-void execute_instruction(u1 opcode);
+void executarInstrucoes(u1 opcode);
 
 /* TO DO - Decidir onde o PC vai ficar (decidir o tipo também)*/
 u8 pc;

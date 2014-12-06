@@ -3,7 +3,6 @@
 #include <stdio.h>
 
 #include "heap.h"
-
 #include "const.h"
 #include "inicializador.h"
 #include "tipos.h"
@@ -29,8 +28,6 @@ struct Object* newObject(classStructure *this) {
 		return NULL;
 	}
 
-	/*TODO  Verificar se precisa de vetor
-	Talvez nao precise guardar a referencia*/
 	if (heap_index == heap_max) {
 		heap = realloc(heap, heap_max + HEAP_INIT);
 		if (heap == NULL) {

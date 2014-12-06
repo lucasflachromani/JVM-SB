@@ -16,12 +16,12 @@ struct frame {
 	u4 				pc;
 };
 
-/**
- Pilha de frame.
- */
-struct frame_stack {
-	struct frame *value;
-	struct frame_stack *next;
+/*****************************
+ * PILHA DO FRAME
+ *****************************/
+struct framePilha {
+	struct frame *valor;
+	struct framePilha *next;
 };
 
 struct frame *frameAtual;

@@ -17,13 +17,19 @@ struct array{
 	u4 size;
 };
 
-/**
- * Referencia para objeto (objectref na pilha) e' do tipo struct Object *
- */
+/*****************************
+ * REFERENCIA PARA UM OBJETO
+ *****************************/
 struct Object **heap;
 
-/* número de arrays alocados e vetor com o tamanho dos arrays */
+/*****************************
+ * Vetor com o tamanho dos arrays
+ *****************************/
 struct array *arrayLength;
+
+/*****************************
+ * Num de arrays alocados
+ *****************************/
 u4 numArrays;
 
 void newHeap();

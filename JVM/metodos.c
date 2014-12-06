@@ -99,7 +99,7 @@ methodInfo * getMethodByNameAndDescIndex(classStructure *main_class, classStruct
 void runMethod() {
 	/* loop principal do método - executa o código */
 	while(frameAtual != NULL &&(frameAtual->pc) < frameAtual->codeLength) {
-		execute_instruction(frameAtual->code[frameAtual->pc]);
+		executarInstrucoes(frameAtual->code[frameAtual->pc]);
 	}
 
 	/* Finaliza o método chamado */
