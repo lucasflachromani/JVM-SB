@@ -1,29 +1,53 @@
 #ifndef CLOAD_H
 #define CLOAD_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <errno.h>
+
 #include "const.h"
 #include "tipos.h"
+#include "inicializador.h"
 
-classStructure * class;
+classStructure * cs;
 
-int open_file(char* file_name);
-void close_file();
+classStructure * leArquivoClasse (char * fileSrc);
 u1 u1Read ();
 u2 u2Read ();
 u4 u4Read ();
-void read_constant_pool();
-char * getName(classStructure *class_file, u2 nameIndex);
-int read_s();
-int read_interfaces();
-int read_fields();
-
-void read_attribute_info(attributeInfo * att);
-
-int read_methods();
-int read_attributes();
-classStructure * read_class_file(char *nome_arq);
-void free_class_file(classStructure* classStructure);
+int verifyMagic ();
+void storeVersions ();
+void storeConstantPool ();
+void storeAccessFlags ();
+void storeClasses ();
+void storeInterfaces ();
+void storeFields ();
+void storeMethods ();
+void storeAttributes ();
+void storeSingleAttribute (attributeInfo * att);
+void storeConstValueAttr (attributeInfo * att);
+void storeCodeAttr (attributeInfo * att);
+void storeExceptionsAttr (attributeInfo * att);
+void storeInnerClassesAttr (attributeInfo * att);
+void storeSyntheticAttr (attributeInfo * att);
+void storeDefaultAttr (attributeInfo * att);
+void storeDeprecatedAttr (attributeInfo * att);
+void storeLineNumberTableAttr (attributeInfo * att);
+void storeLocalVariableTableAttr (attributeInfo * att);
+void storeSourceFileAttr (attributeInfo * att);
+void getAccessPerm (int intValue, char * target);
+void saveConstantPool (FILE * fileTrgt);
+void saveGeneral (FILE * fileTrgt, char * accessType);
+void saveInterfaces (FILE * fileTrgt);
+void saveFields (FILE * fileTrgt);
+void saveMethods (FILE * fileTrgt);
+void saveAttributes (FILE * fileTrgt);
+void saveSingleAttribute (FILE * fileTrgt, attributeInfo * att, int a);
 void carregarOpcodeInformacao();
-opcode_informacao *op_info;
+void imprimir_mnemonics(u1 * bytecode, u2 size, FILE * fileTrgt);
+opcode_informacao * op_info;
+char * getName (classStructure *class_file, u2 nameIndex);
 
 #endif

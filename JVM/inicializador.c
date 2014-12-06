@@ -40,7 +40,7 @@ int32_t carregarClass(char *className) {
 		sprintf(path, "%s%s.class", caminho, className);
 	}
 
-	if ((classArray[classIndex-1] = read_class_file(path)) == NULL) {
+	if ((classArray[classIndex-1] = leArquivoClasse(path)) == NULL) {
 		printf(" Erro: Nao foi possivel abrir o arquivo informado.\n");
 		exit(1);
 	}
