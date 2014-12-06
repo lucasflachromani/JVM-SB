@@ -29,9 +29,6 @@ classStructure * read_class_file (char *nome_arq) {
 		return NULL;
 	}
 
-	/*!
-	 * Inicio da leitura
-	 */
 	class = calloc(sizeof(classStructure), 1);
 
 	if (class == NULL) {
@@ -45,7 +42,6 @@ classStructure * read_class_file (char *nome_arq) {
 
 	class->constantPoolCount = u2Read();
 
-	/* Aloca memoria para o array de Constant Pool */
 	class->constantPool = calloc(sizeof(cpInfo), class->constantPoolCount);
 	read_constant_pool();
 
@@ -70,12 +66,6 @@ classStructure * read_class_file (char *nome_arq) {
 	return class;
 }
 
-/*
- \brief Abre um arquivo binario para leitura
- \param file_name Nome do arquivo
- \return 0 Nao houve erro na funcao
- \return -1 Ocorreu erro
- */
 int open_file(char *file_name) {
 	classfile = fopen(file_name, "rb");
 	if ((classfile) == NULL) {
@@ -89,9 +79,6 @@ void close_file() {
 	fclose(classfile);
 }
 
-/* @ brief Funcao que le um byte do arquivo e retorna o valor lido
- * @ param file : arquivo de entrada
- */
 u1 u1Read () {
 	u1 info;
 
@@ -103,9 +90,6 @@ u1 u1Read () {
     return info;
 }
 
-/* @ brief Funcao que le dois bytes do arquivo e retorna o valor lido
- * @ param file : arquivo de entrada
- */
 u2 u2Read () {
 	u1 b1, b2;
     u2 info;
@@ -121,9 +105,6 @@ u2 u2Read () {
     return info;
 }
 
-/* @ brief Funcao que le quatro bytes do arquivo e retorna o valor lido
- * @ param file : arquivo de entrada
- */
 u4 u4Read () {
 	u1 b1, b2, b3, b4;
     u4 info = 0;
@@ -141,9 +122,6 @@ u4 u4Read () {
     return info;
 }
 
-/*
- \brief Le a constant pool
- */
 void read_constant_pool() {
 	int i, j;
 	u1 cp_tag;
@@ -214,11 +192,6 @@ void read_constant_pool() {
 	}
 }
 
-/*
- \brief Le as interfaces para memoria
- \return 0 Nao houve erro na funcao
- \return -1 Ocorreu erro
- */
 int read_interfaces() {
 	int i;
 
@@ -234,11 +207,6 @@ int read_interfaces() {
 }
 
 
-/*
- \brief Le os fields para memoria
- \return 0 Nao houve erro na funcao
- \return -1 Ocorreu erro
- */
 int read_fields() {
 	int i, j;
 
@@ -268,11 +236,6 @@ int read_fields() {
 }
 
 
-/*
- \brief Escreve em dest o nome enderecado pelo index
- \param dest String de destino
- \param nameIndex indice no constant pool
- */
 char * getName(classStructure *class_file, u2 nameIndex) {
 	int i;
 
@@ -286,10 +249,6 @@ char * getName(classStructure *class_file, u2 nameIndex) {
 }
 
 
-/*
- \brief Le um atribute_info e retorna o ponteiro para tal
- \return Ponteiro para um atributo
- */
 void read_attribute_info (attributeInfo * att) {
 	int i;
 	char *nome;
@@ -417,11 +376,6 @@ void read_attribute_info (attributeInfo * att) {
 	}
 }
 
-/*
- \brief Le metodos para memoria
- \return 0 Nao houve erro na funcao
- \return -1 Ocorreu erro
- */
 int read_methods() {
 
 	int i, j;
@@ -450,12 +404,6 @@ int read_methods() {
 	return 0;
 }
 
-/*
- \brief Le atributos da class file
- \return 0 Nao houve erro na funcao
- \return -1 Ocorreu erro
- */
-
 int read_attributes() {
 	int i;
 
@@ -469,15 +417,6 @@ int read_attributes() {
 	}
 
 	return 0;
-}
-
-/*
- \brief Libera uma estrutura de classe e suas estruturas internas.
- \param class_file Ponteiro para a estrutura que sera' liberada
- */
-void free_class_file(classStructure* class_file)
-{
-
 }
 
 void carregarOpcodeInformacao() {
