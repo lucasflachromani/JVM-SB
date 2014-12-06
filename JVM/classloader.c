@@ -404,7 +404,7 @@ void * read_attribute_info() {
 		((LocalVariableTable_attribute *) attribute)->tag = ATTR_LocalVariableTable;
 
 		((LocalVariableTable_attribute *) attribute)->localVariableTableLength = u2Read();
-		((LocalVariableTable_attribute *) attribute)->localVariableTable = (localVariableTableType *) calloc(sizeof (localVariableTableType),
+		((LocalVariableTable_attribute *) attribute)->localVariableTable = (LocalVariableTableType *) calloc(sizeof (LocalVariableTableType),
 				((LocalVariableTable_attribute *) attribute)->localVariableTableLength);
 		for (i = 0; i < ((LocalVariableTable_attribute *) attribute)->localVariableTableLength; i++) {
 			((LocalVariableTable_attribute *) attribute)->localVariableTable[i].startPc = u2Read();

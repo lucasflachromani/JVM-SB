@@ -49,7 +49,15 @@ typedef struct {
 typedef struct {
 	u2 startPc;
 	u2 lineNumber;
-} lineNumberTableType;
+} LineNumberTableType;
+
+typedef struct {
+    u2 startPc;
+    u2 length;
+    u2 nameIndex;
+    u2 descriptorIndex;
+    u2 index;
+} LocalVariableTableType;
 
 /*************************
  * STATIC STRUCT
@@ -64,11 +72,50 @@ typedef struct {
 /*************************
  * 	ATTRIBUTE INFO
  *************************/
-typedef struct {
-	u2 attributeNameIndex;
-	u4 attributeLength;
-	u2 tag;
-	u1 * info;
+typedef struct attrInfo {
+    u2 attributeNameIndex;
+    u4 attributeLength;
+    u2 tag;
+    union {
+        struct {
+            u2 constantValueIndex;
+        } ConstantValue;
+        struct {
+            u2 maxStack;
+            u2 maxLocals;
+            u4 codeLength;
+            u1 * code /*[codeLength]*/;
+            u2 exceptionTableLength;
+            exceptionTableType * exceptionTable /*[exceptionTableLength]*/;
+            u2 attributeCount;
+            struct attrInfo * attributes /*[attributeCount]*/;
+        } Code;
+        struct {
+            u2 numberOfExceptions;
+            u2 * exceptionIndexTable /*[numberOfExceptions]*/;
+        } Exceptions;
+        struct {
+            u2 numberOfClasses;
+            classType * classes /*[numberOfClasses]*/;
+        } InnerClasses;
+        struct {
+            u2 sourceFileIndex;
+        } SourceFile;
+        struct {
+            
+        } Synthetic, Deprecated;
+        struct {
+            u2 	lineNumberTableLength;
+            LineNumberTableType * lineNumberTable;
+        } LineNumberTable;
+        struct {
+            u2 	localVariableTableLength;
+            LocalVariableTableType 	* localVariableTable;
+        } LocalVariableTable;
+        struct {
+            u1 * info;
+        } Default;
+    } type;
 } attributeInfo;
 
 /*************************
@@ -150,111 +197,6 @@ typedef struct {
     u2 attributeCount;
     void ** attributes /*[attributeCount]*/; //modificar depois
 } classStructure;
-
-
-
-
-
-
-
-
-
-
-
-/*
- * ATTRIBUTES
- */
-
-typedef struct ConstantValue_attribute {
-	u2 attributeNameIndex;
-	u4 attributeLength;
-	u2 tag;
-	u2 constantValueIndex;
-} ConstantValue_attribute;
-
-typedef struct Code_attribute {
-	u2 			attributeNameIndex;
-	u4 			attributeLength;
-	u2 			tag;
-	u2 			maxStack;
-	u2 			maxLocals;
-	u4 			codeLength;
-	u1 			* code;
-	u2 			exceptionTableLength;
-	exceptionTableType * exceptionTable;
-	u2 			attributeCount;
-	void 		** attributes;
-} Code_attribute;
-
-typedef struct Deprecated_attribute {
-	u2 attributeNameIndex;
-	u4 attributeLength;
-	u2 tag;
-} Deprecated_attribute;
-
-typedef struct Exceptions_attribute {
-	u2 attributeNameIndex;
-	u4 attributeLength;
-	u2 tag;
-	u2 numberOfExceptions;
-	u2 * exceptionIndexTable;
-} Exceptions_attribute;
-
-typedef struct InnerClasses_attribute {
-	u2 		attributeNameIndex;
-	u4 		attributeLength;
-	u2 		tag;
-	u2 		numberOfClasses;
-	classType * classes;
-} InnerClasses_attribute;
-
-typedef struct LineNumberTable_attribute {
-	u2 				attributeNameIndex;
-	u4 				attributeLength;
-	u2 				tag;
-	u2 				lineNumberTableLength;
-	lineNumberTableType 	* lineNumberTable;
-} LineNumberTable_attribute;
-
-typedef struct {
-	u2 startPc;
-	u2 length;
-	u2 nameIndex;
-	u2 descriptorIndex;
-	u2 index;
-} localVariableTableType;
-
-typedef struct LocalVariableTable_attribute {
-	u2 					attributeNameIndex;
-	u4 					attributeLength;
-	u2 					tag;
-	u2 					localVariableTableLength;
-	localVariableTableType 	* localVariableTable;
-} LocalVariableTable_attribute;
-
-typedef struct SourceFile_attribute {
-	u2 attributeNameIndex;
-	u4 attributeLength;
-	u2 tag;
-	u2 sourceFileIndex;
-} SourceFile_attribute;
-
-typedef struct Synthetic_attribute {
-	u2 attributeNameIndex;
-	u4 attributeLength;
-} Synthetic_attribute;
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*************************
  * FUNCTIONS
