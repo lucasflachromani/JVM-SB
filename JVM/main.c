@@ -4,10 +4,9 @@
 #include <stdlib.h>
 
 #include "classloader.h"
-
 #include "carregador.h"
-#include "methods.h"
 #include "instructions.h"
+#include "methods.h"
 #include "mnemonics.h"
 
 // vetor com o tamanho dos arrays

@@ -14,8 +14,6 @@ classStructure **classArray = NULL;
 staticStruct *classStaticArray = NULL;
 int32_t numClasses = 0;
 
-void replace(char * o_string, char * s_string, char * r_string);
-
 /*!
  * Carrega uma classe pelo seu nome \a className.
  * Será carregada para o vetor classArray no novo índice (numClasses -1).
@@ -74,7 +72,7 @@ int32_t carregarClass(char *className) {
 
 	char * parent = getParentName(classArray[classIndex-1]);
 	if(parent != NULL) {
-		replace(parent, "/", "\\");
+		trocaCaracter(parent, "/", "\\");
 	}
 
 	/* carrega a superclasse da classe carregada */
@@ -211,17 +209,17 @@ void setStaticFieldValue(int32_t classIndex, int32_t field_index, u8 value) {
 }
 
 /**
- * The replace function
+ * The trocaCaracter function
  *
  * Searches all of the occurrences using recursion
- * and replaces with the given string
+ * and trocaCaracters with the given string
  * @param char * o_string The original string
  * @param char * s_string The string to search for
- * @param char * r_string The replace string
+ * @param char * r_string The trocaCaracter string
  * @return void The o_string passed is modified
  */
-void replace(char * o_string, char * s_string, char * r_string) {
-	//a buffer variable to do all replace things
+void trocaCaracter(char * o_string, char * s_string, char * r_string) {
+	//a buffer variable to do all trocaCaracter things
 	char buffer[4096];
 	//to store the pointer returned from strstr
 	char * ch;
@@ -242,6 +240,6 @@ void replace(char * o_string, char * s_string, char * r_string) {
 	//empty o_string for copying
 	o_string[0] = 0;
 	strcpy(o_string, buffer);
-	//pass recursively to replace other occurrences
-	return replace(o_string, s_string, r_string);
+	//pass recursively to trocaCaracter other occurrences
+	return trocaCaracter(o_string, s_string, r_string);
 }
