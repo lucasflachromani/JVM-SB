@@ -445,7 +445,7 @@ int read_methods() {
 		class->methods[i].descriptorIndex = u2Read();
 		class->methods[i].attributeCount = u2Read();
 
-		if ((class->methods[i].attributes = calloc(sizeof (void *), class->methods[i].attributeCount)) == NULL) {
+		if ((class->methods[i].attributes = calloc(sizeof (attributeInfo), class->methods[i].attributeCount)) == NULL) {
 			perror("Methods");
 			return -1;
 		}
@@ -467,7 +467,7 @@ int read_methods() {
 int read_attributes() {
 	int i;
 
-	if ((class->attributes = calloc(sizeof (void *), class->attributeCount)) == NULL) {
+	if ((class->attributes = calloc(sizeof (attributeInfo), class->attributeCount)) == NULL) {
 		perror("Attributes");
 		return -1;
 	}

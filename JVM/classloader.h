@@ -16,7 +16,7 @@ char * getName(classStructure *class_file, u2 nameIndex);
 int read_s();
 int read_interfaces();
 int read_fields();
-void *read_attribute_info();
+attributeInfo * read_attribute_info();
 int read_methods();
 int read_attributes();
 classStructure * read_class_file(char *nome_arq);
