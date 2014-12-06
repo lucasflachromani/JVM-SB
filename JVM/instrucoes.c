@@ -20,7 +20,7 @@ extern u4 numArrays;
 extern u1 returnType;
 extern u8 returnValue;
 
-int next_is_wide = 0;
+int nextIsWide = 0;
 
 //extern opcode_informacao *op_info;
 
@@ -423,11 +423,11 @@ void i_iload() {
 	frameAtual->pc++;
 	index = frameAtual->code[frameAtual->pc];
 
-	if(next_is_wide == 1){
+	if(nextIsWide == 1){
 		index = index << 8;
 		frameAtual->pc++;
 		index = index | frameAtual->code[frameAtual->pc];
-		next_is_wide = 0;
+		nextIsWide = 0;
 	}
 	push(frameAtual->fields[index]);
 	frameAtual->pc++;
@@ -438,11 +438,11 @@ void i_lload() {
 	frameAtual->pc++;
 	index = frameAtual->code[frameAtual->pc];
 
-	if(next_is_wide == 1){
+	if(nextIsWide == 1){
 		index = index << 8;
 		frameAtual->pc++;
 		index = index | frameAtual->code[frameAtual->pc];
-		next_is_wide = 0;
+		nextIsWide = 0;
 	}
 	push(frameAtual->fields[index]);
 	push(frameAtual->fields[index+1]);
@@ -454,11 +454,11 @@ void i_fload() {
 	frameAtual->pc++;
 	index = frameAtual->code[frameAtual->pc];
 
-	if(next_is_wide == 1){
+	if(nextIsWide == 1){
 		index = index << 8;
 		frameAtual->pc++;
 		index = index | frameAtual->code[frameAtual->pc];
-		next_is_wide = 0;
+		nextIsWide = 0;
 	}
 	push(frameAtual->fields[index]);
 	frameAtual->pc++;
@@ -469,11 +469,11 @@ void i_dload() {
 	frameAtual->pc++;
 	index = frameAtual->code[frameAtual->pc];
 
-	if(next_is_wide == 1){
+	if(nextIsWide == 1){
 		index = index << 8;
 		frameAtual->pc++;
 		index = index | frameAtual->code[frameAtual->pc];
-		next_is_wide = 0;
+		nextIsWide = 0;
 	}
 	push(frameAtual->fields[index]);
 	push(frameAtual->fields[index+1]);
@@ -485,11 +485,11 @@ void i_aload() {
 	frameAtual->pc++;
 	index = frameAtual->code[frameAtual->pc];
 
-	if(next_is_wide == 1){
+	if(nextIsWide == 1){
 		index = index << 8;
 		frameAtual->pc++;
 		index = index | frameAtual->code[frameAtual->pc];
-		next_is_wide = 0;
+		nextIsWide = 0;
 	}
 	push(frameAtual->fields[index]);
 	frameAtual->pc++;
@@ -2059,11 +2059,11 @@ void i_ret() {
 	u2 index;
 	frameAtual->pc++;
 	index = frameAtual->code[frameAtual->pc];
-	if(next_is_wide == 1){
+	if(nextIsWide == 1){
 		index = index << 8;
 		frameAtual->pc++;
 		index = index | frameAtual->code[frameAtual->pc];
-		next_is_wide = 0;
+		nextIsWide = 0;
 	}
 	frameAtual->pc = frameAtual->fields[index];
 }
@@ -2411,125 +2411,100 @@ void i_putfield() {
 	frameAtual->pc++;
 }
 
-void i_invokevirtual()
-{
-	u4 index, valor_high, valor_low, vU4, array_ref;
+void i_invokevirtual() {
+	u4 index, valorHigh, valorLow, vU4, array_ref;
 	u8 valor;
 	u1 low, high;
 	int32_t numParams, i, j;
 	int32_t classIndex, classIndexTemp;
-	u2 nameTypeIndex, method_name_index, method_desc_index;
-	char *className, *method_name, *method_desc;
-	u4 *fields_tmp;
+	u2 nameTypeIndex, methodNameIndex, methodDescriptorIndex;
+	char *className, *methodName, *methodDesc;
+	u4 *fieldsTemp;
 	float vfloat;
-
 	u1 *bytes;
 	u2 length;
-
 	classStructure *class;
 	methodInfo *method;
 
-
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
-
 	index = convert_2x8_to_32_bits(low, high);
-
-
 	classIndexTemp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
-
 	className = getName(frameAtual->class, frameAtual->constantPool[classIndexTemp-1].type.Class.nameIndex);
-
 	nameTypeIndex = frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex;
+	methodNameIndex = frameAtual->constantPool[nameTypeIndex-1].type.NameType.nameIndex;
+	methodDescriptorIndex = frameAtual->constantPool[nameTypeIndex-1].type.NameType.descriptorIndex;
+	methodDesc = getName(frameAtual->class, methodDescriptorIndex);
+	methodName = getName(frameAtual->class, methodNameIndex);
 
-	method_name_index = frameAtual->constantPool[nameTypeIndex-1].type.NameType.nameIndex;
-	method_desc_index = frameAtual->constantPool[nameTypeIndex-1].type.NameType.descriptorIndex;
+	if((strcmp(className, "java/io/PrintStream") == 0) &&((strcmp(methodName,"print") == 0) ||(strcmp(methodName,"println") == 0))){
 
-	method_desc = getName(frameAtual->class, method_desc_index);
-	method_name = getName(frameAtual->class, method_name_index);
-
-	/* se for print ou println */
-	if((strcmp(className, "java/io/PrintStream") == 0)
-			&&((strcmp(method_name,"print") == 0) ||(strcmp(method_name,"println") == 0))
-	){
-
-		/* LONG */
-		if(strstr(method_desc, "J") != NULL){
-			valor_low = pop();
-			valor_high = pop();
-			valor = convert_2x32_to_64_bits(valor_low, valor_high);
+		//LONG
+		if(strstr(methodDesc, "J") != NULL){
+			valorLow = pop();
+			valorHigh = pop();
+			valor = convert_2x32_to_64_bits(valorLow, valorHigh);
 			printf("%"PRIi64,(int64_t)valor);
 
-			/* DOUBLE */
-		} else if(strstr(method_desc, "D") != NULL) {
-			valor_low = pop();
-			valor_high = pop();
-			valor = convert_2x32_to_64_bits(valor_low, valor_high);
+		//DOUBLE
+		} else if(strstr(methodDesc, "D") != NULL) {
+			valorLow = pop();
+			valorHigh = pop();
+			valor = convert_2x32_to_64_bits(valorLow, valorHigh);
 			printf("%.15f", valor);
 
-			/* BOOLEAN */
-		} else if(strstr(method_desc, "Z") != NULL) {
-
-			if(pop())
+		//BOOLEAN
+		} else if(strstr(methodDesc, "Z") != NULL) {
+			if(pop()) {
 				printf("true");
-			else
+			} else {
 				printf("false");
+			}
 
-			/* CHAR */
-		} else if(strstr(method_desc, "C") != NULL) {
-
-			/* ARRAY */
-			if(strstr(method_desc, "[C") != NULL){
-
+		//CHAR
+		} else if(strstr(methodDesc, "C") != NULL) {
+			//ARRAY
+			if(strstr(methodDesc, "[C") != NULL){
 				array_ref = pop();
-
 				for(i = 0; i < numArrays; i++){
 					if(arrayLength[i].ref == array_ref)
 						break;
 				}
-
 				for(j = 0; j < arrayLength[i].size; j++){
 					printf("%c",(int16_t)array_ref +i);
 				}
-
-				/* CHAR */
+				//CHAR
 			} else {
 				printf("%c",(int16_t)pop());
 			}
 
-			/* INTEIRO */
-		}else if(strstr(method_desc, "I") != NULL) {
+		//INTEIRO
+		}else if(strstr(methodDesc, "I") != NULL) {
 			printf("%"PRIi32,(int32_t)pop());
-
-			/* FLOAT */
-		}else if(strstr(method_desc, "F") != NULL) {
+		//FLOAT
+		}else if(strstr(methodDesc, "F") != NULL) {
 			vU4 = pop();
 			memcpy(&vfloat, &vU4, sizeof(u4));
 			printf("%f", vfloat);
-
-			/* STRING */
-		}else if(strstr(method_desc, "Ljava/lang/String") != NULL) {
+		//STRING
+		}else if(strstr(methodDesc, "Ljava/lang/String") != NULL) {
 			vU4 = pop();
 			printf("%s",(char *)vU4);
 
-			/* OBJECT */
-		}else if(strstr(method_desc, "Ljava/lang/Object") != NULL) {
+		//OBJECT
+		}else if(strstr(methodDesc, "Ljava/lang/Object") != NULL) {
 			printf("%p",(void *)pop());
-			/* chamar m�todo toString do object e depois toCharArray()*/
 		}
 
-		if(strcmp(method_name,"println") == 0)
+		if(strcmp(methodName,"println") == 0) {
 			printf("\n");
-
+		}
 	} else {
-
 		classIndex = carregarClass(className);
 		class = getClassByIndex(classIndex);
 
-
 		while(class != NULL &&(method = getMethodByNameAndDescIndex(class, frameAtual->class, nameTypeIndex)) == NULL) {
 			className = getParentName(class);
-
 			classIndex = carregarClass(className);
 			class = getClassByIndex(classIndex);
 		}
@@ -2540,71 +2515,55 @@ void i_invokevirtual()
 		}
 
 		numParams = getNumParameters(class , method);
-
-		fields_tmp = calloc(sizeof(u4),numParams+1);
+		fieldsTemp = calloc(sizeof(u4),numParams+1);
 		for(i = numParams; i >= 0; i--) {
-			fields_tmp[i] = pop();
+			fieldsTemp[i] = pop();
 		}
 
 		if(((method->accessFlags) & AFNative) || strcmp("println", getName(class, method->nameIndex)) == 0) {
 			bytes = class->constantPool[(method->descriptorIndex-1)].type.Utf8.bytes;
 			length = class->constantPool[(method->descriptorIndex-1)].type.Utf8.length;
-
 			if(bytes[length-1] == 'D' || bytes[length-1] == 'J') {
 				pushU8(0);
 			} else if(bytes[length-1] != 'V') {
 				push(0);
 			}
-
 		} else {
 			prepararMetodo(class, method);
-
 			for(i = numParams; i >= 0; i--) {
-				frameAtual->fields[i] = fields_tmp[i];
+				frameAtual->fields[i] = fieldsTemp[i];
 			}
-
 			runMethod();
 		}
-
 	}
 
 	frameAtual->pc++;
 }
 
-void i_invokespecial()
-{
+void i_invokespecial() {
 	u4 index;
 	u1 low, high;
 	int32_t numParams, i;
 	int32_t classIndex, classIndexTemp;
 	u2 nameTypeIndex;
 	char *className;
-	u4 *fields_tmp;
-
+	u4 *fieldsTemp;
 	u1 *bytes;
 	u2 length;
-
 	classStructure *class;
 	methodInfo *method;
 
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
-
 	index = convert_2x8_to_32_bits(low, high);
-
-
 	classIndexTemp = (frameAtual->constantPool[index-1]).type.MethodRef.classIndex;
-
 	className = getName(frameAtual->class,(frameAtual->constantPool[classIndexTemp-1]).type.Class.nameIndex);
-
 	classIndex = carregarClass(className);
 	class = getClassByIndex(classIndex);
-
 	nameTypeIndex = ((frameAtual->constantPool[index-1])).type.MethodRef.nameTypeIndex;
 
 	while(class != NULL &&(method = getMethodByNameAndDescIndex(class, frameAtual->class, nameTypeIndex)) == NULL) {
 		className = getParentName(class);
-
 		classIndex = carregarClass(className);
 		class = getClassByIndex(classIndex);
 	}
@@ -2614,138 +2573,103 @@ void i_invokespecial()
 	}
 
 	numParams = getNumParameters(class , method);
-
-	fields_tmp = calloc(sizeof(u4),numParams+1);
+	fieldsTemp = calloc(sizeof(u4),numParams+1);
 	for(i = numParams; i >= 0; i--) {
-		fields_tmp[i] = pop();
+		fieldsTemp[i] = pop();
 	}
 
 	if(method->accessFlags & AFNative) {
-
 		bytes = class->constantPool[(method->descriptorIndex-1)].type.Utf8.bytes;
 		length = class->constantPool[(method->descriptorIndex-1)].type.Utf8.length;
-
 		if(bytes[length-1] == 'D' || bytes[length-1] == 'J') {
 			pushU8(0);
 		} else if(bytes[length-1] != 'V') {
 			push(0);
 		}
-
 	} else {
 		prepararMetodo(class, method);
-
 		for(i = numParams; i >= 0; i--) {
-			frameAtual->fields[i] = fields_tmp[i];
+			frameAtual->fields[i] = fieldsTemp[i];
 		}
-
 		runMethod();
 	}
-
 	frameAtual->pc++;
 }
 
-void i_invokestatic(){
-
+void i_invokestatic() {
 	u4 index;
 	u1 low, high;
 	int32_t numParams, i;
 	int32_t classIndex, classIndexTemp;
 	u2 nameTypeIndex;
 	char *className;
-	u4 *fields_tmp;
-
+	u4 *fieldsTemp;
 	u1 *bytes;
 	u2 length;
-
 	classStructure *class;
-	methodInfo *method;
+	methodInfo *metodo;
 
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
-
 	index = convert_2x8_to_32_bits(low, high);
-
-
 	classIndexTemp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
-
 	className = getName(frameAtual->class, frameAtual->constantPool[classIndexTemp-1].type.Class.nameIndex);
-
 	nameTypeIndex = frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex;
-
 	classIndex = carregarClass(className);
 	class = getClassByIndex(classIndex);
-
-	method = getMethodByNameAndDescIndex(class, frameAtual->class, nameTypeIndex);
-
-	numParams = getNumParameters(class , method);
-
-	fields_tmp = calloc(sizeof(u4),numParams+1);
+	metodo = getMethodByNameAndDescIndex(class, frameAtual->class, nameTypeIndex);
+	numParams = getNumParameters(class , metodo);
+	fieldsTemp = calloc(sizeof(u4),numParams+1);
 	for(i = numParams-1; i >= 0; i--) { /* �nica diferen�a pra invokespecial */
 		index = pop();
-		fields_tmp[i] = index;
+		fieldsTemp[i] = index;
 	}
 
-	if(method->accessFlags & AFNative) {
-
-		bytes = class->constantPool[(method->descriptorIndex-1)].type.Utf8.bytes;
-		length = class->constantPool[(method->descriptorIndex-1)].type.Utf8.length;
-
+	if(metodo->accessFlags & AFNative) {
+		bytes = class->constantPool[(metodo->descriptorIndex-1)].type.Utf8.bytes;
+		length = class->constantPool[(metodo->descriptorIndex-1)].type.Utf8.length;
 		if(bytes[length-1] == 'D' || bytes[length-1] == 'J') {
 			pushU8(0);
 		} else if(bytes[length-1] != 'V') {
 			push(0);
 		}
-
 	} else {
-		prepararMetodo(class, method);
-
+		prepararMetodo(class, metodo);
 		for(i = numParams-1; i >= 0; i--) {
-			frameAtual->fields[i] = fields_tmp[i];
+			frameAtual->fields[i] = fieldsTemp[i];
 		}
-
 		runMethod();
 	}
-
 	frameAtual->pc++;
 }
 
-void i_invokeinterface()
-{
+void i_invokeinterface() {
 	u4 index;
 	u1 low, high, args_count, zero;
 	int32_t classIndex, classIndexTemp, i;
 	u2 nameTypeIndex;
 	char *className;
-	u4 *fields_tmp;
-
+	u4 *fieldsTemp;
 	classStructure *class;
 	methodInfo *method;
 
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
 	index = convert_2x8_to_32_bits(low, high);
-
 	args_count = frameAtual->code[++(frameAtual->pc)];
 	zero = frameAtual->code[++(frameAtual->pc)];
-
-	/* pega da pilha os argumentos e o objectref */
-	fields_tmp = calloc(sizeof(u4),args_count+1);
+	fieldsTemp = calloc(sizeof(u4),args_count+1);
 	for(i = args_count; i >= 0; i--) {
-		fields_tmp[i] = pop();
+		fieldsTemp[i] = pop();
 	}
 
 	classIndexTemp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
-
 	className = getName(frameAtual->class, frameAtual->constantPool[classIndexTemp-1].type.Class.nameIndex);
-
 	classIndex = carregarClass(className);
 	class = getClassByIndex(classIndex);
-
 	nameTypeIndex = (frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex);
-
 	while(class != NULL &&(method = getMethodByNameAndDescIndex(class, frameAtual->class, nameTypeIndex)) == NULL) {
 		className = getParentName(class);
-
 		classIndex = carregarClass(className);
 		class = getClassByIndex(classIndex);
 	}
@@ -2753,21 +2677,15 @@ void i_invokeinterface()
 	if(class == NULL) {
 		printf("Metodo nao encontrando.\n");
 	}
-
-	/* Prepara e executa o metodo */
 	prepararMetodo(class, method);
-
 	for(i = args_count; i >= 0; i--) {
-		frameAtual->fields[i] = fields_tmp[i];
+		frameAtual->fields[i] = fieldsTemp[i];
 	}
-
 	runMethod();
-
 	frameAtual->pc++;
 }
 
-void i_new()
-{
+void i_new() {
 	u1 low, high;
 	u4 index;
 	char *className;
@@ -2779,94 +2697,60 @@ void i_new()
 	low = frameAtual->code[++(frameAtual->pc)];
 
 	index = convert_2x8_to_32_bits(low, high);
-
 	className = getName(frameAtual->class, frameAtual->constantPool[index-1].type.Class.nameIndex);
-
 	classIndex = carregarClass(className);
 	class = getClassByIndex(classIndex);
-
 	objeto = newObject(class);
-
 	push((u4)objeto);
-
 	frameAtual->pc++;
 }
 
-void i_newarray(){
-
+void i_newarray() {
 	u4 count;
 	u1 type;
-
 	count = pop();
 	frameAtual->pc++;
 	type = frameAtual->code[frameAtual->pc];
-
 	if(count < 0) {
 		printf("Erro: Tamanho invalido do array\n");
 	}
-
 	push((u4)newArray(count, type));
-
 	frameAtual->pc++;
 }
 
-void i_anewarray(){
-
-	/* algumas coisas est�o comentadas pq provavelmente
-	 * n�o s�o necess�rias  */
-
+void i_anewarray() {
 	u4 count;
-	/*u2 index;
-	u1 type;*/
-
 	count = pop();
-
 	frameAtual->pc++;
-	/*index = current_frame->code[current_frame->pc];
-	index = index << 8;*/
-
 	frameAtual->pc++;
-	/*index = index | current_frame->code[current_frame->pc];*/
-
 	if(count < 0) {
 		printf("Erro: Tamanho invalido do array\n");
 	}
-
 	push((u4)newArray(count, 0));
-
 	frameAtual->pc++;
-
 }
 
-void i_arraylength()
-{
+void i_arraylength() {
 	int i;
-
 	u4 aref;
-
 	aref = pop();
-
-	for(i = 0; i < numArrays; i++)
-	{
-		if(arrayLength[i].ref == aref)
-		{
+	for(i = 0; i < numArrays; i++) {
+		if(arrayLength[i].ref == aref) {
 			push(arrayLength[i].ref);
 			frameAtual->pc++;
 			return;
 		}
-
 		frameAtual->pc++;
 	}
-
 	push(0);
-
 	frameAtual->pc++;
 }
 
-void i_athrow(){ frameAtual->pc++;  } /* N�o precisa fazer nada al�m disso */
+void i_athrow() {
+	frameAtual->pc++;
+}
 
-void i_checkcast()
-{
+void i_checkcast() {
 	struct Object *ref;
 	u2 index;
 
@@ -2875,25 +2759,18 @@ void i_checkcast()
 	index = index << 8;
 	frameAtual->pc++;
 	index = index | frameAtual->code[frameAtual->pc];
-
 	ref = (struct Object *)pop();
-
 	if(ref == NULL) {
 		printf("Erro: Referencia nula\n");
 	}
-
-
-	if(strcmp(getName(frameAtual->class, index), getClassName(ref->this)) == 0)
-	{
+	if(strcmp(getName(frameAtual->class, index), getClassName(ref->this)) == 0) {
 		printf(" Erro: Objeto do tipo errado\n");
 	}
-
-
 	push((u4)ref);
 	frameAtual->pc++;
 }
 
-void i_instanceof(){
+void i_instanceof() {
 	struct Object *ref;
 	u2 index;
 
@@ -2902,37 +2779,35 @@ void i_instanceof(){
 	index = index << 8;
 	frameAtual->pc++;
 	index = index | frameAtual->code[frameAtual->pc];
-
 	ref = (struct Object *)pop();
-
 	if(ref == NULL) {
 		printf("Erro: Referencia nula\n");
 	}
-
-	if(strcmp(getName(frameAtual->class, index), getClassName(ref->this)) == 0)
-	{
+	if(strcmp(getName(frameAtual->class, index), getClassName(ref->this)) == 0) {
 		push(1);
 		frameAtual->pc++;
 		return;
 	}
-
 	push(0);
 	frameAtual->pc++;
 }
 
-void i_monitorenter(){ pop(); frameAtual->pc++;  } /* s� precisa disso */
-
-void i_monitorexit(){ pop(); frameAtual->pc++;  } /* s� precisa disso */
-
-void i_wide(){
-
-	next_is_wide = 1;
-
+void i_monitorenter() {
+	pop();
 	frameAtual->pc++;
 }
 
-void i_multianewarray()
-{
+void i_monitorexit() {
+	pop();
+	frameAtual->pc++;
+}
+
+void i_wide() {
+	nextIsWide = 1;
+	frameAtual->pc++;
+}
+
+void i_multianewarray() {
 	u2 indexbyte1, indexbyte2, index, type, atype;
 	u1 dimensions;
 	u4 i, dimension, size;
@@ -2947,161 +2822,124 @@ void i_multianewarray()
 	indexbyte1 = frameAtual->code[frameAtual->pc];
 	frameAtual->pc++;
 	dimensions = frameAtual->code[frameAtual->pc];
-
 	index = ((indexbyte1 & 0xFF) << 8) |(indexbyte2 & 0xFF);
-
-
-
 	dimension = pop();
 	arrayref = newArray(dimension, TYPE_reference);
 	array_type = getName(frameAtual->class, frameAtual->constantPool[index -1].type.Class.nameIndex);
-
 	i = 0;
-	while(array_type[i] == '[')
+	while(array_type[i] == '[') {
 		i++;
-	switch(array_type[i])
-	{
-	case 'L':
-		type = TYPE_reference;
-		atype = TYPE_reference;
-		break;
-	case 'Z':
-		type = TYPE_boolean;
-		atype = TYPE_boolean_size;
-		break;
-	case 'C':
-		type = TYPE_char;
-		atype = TYPE_char_size;
-		break;
-	case 'F':
-		type = TYPE_float;
-		atype = TYPE_float_size;
-		break;
-	case 'D':
-		type = TYPE_double;
-		atype = TYPE_double_size;
-		break;
-	case 'B':
-		type = TYPE_byte;
-		atype = TYPE_byte_size;
-		break;
-	case 'S':
-		type = TYPE_short;
-		atype = TYPE_short_size;
-		break;
-	case 'I':
-		type = TYPE_int;
-		atype = TYPE_int_size;
-		break;
-	case 'J':
-		type = TYPE_long;
-		atype = TYPE_long_size;
-		break;
-	default:
-		type = TYPE_reference;
-		atype = TYPE_reference_size;
 	}
-	for(i = 0; i < dimensions; i++)
-	{
-		size = pop();
-		if(size == 0)
+	switch(array_type[i]) {
+		case 'L':
+			type = TYPE_reference;
+			atype = TYPE_reference;
 			break;
-
-		if(atype == 1)
-			((u1**)arrayref)[i] = (u1*)newArray(type, size);
-		else if(atype == 2)
-			((u2**)arrayref)[i] = (u2*)newArray(type, size);
-		else if(atype == 4)
-			((u4**)arrayref)[i] = (u4*)newArray(type, size);
-		else
-			((u8**)arrayref)[i] = (u8*)newArray(type, size);
-
+		case 'Z':
+			type = TYPE_boolean;
+			atype = TYPE_boolean_size;
+			break;
+		case 'C':
+			type = TYPE_char;
+			atype = TYPE_char_size;
+			break;
+		case 'F':
+			type = TYPE_float;
+			atype = TYPE_float_size;
+			break;
+		case 'D':
+			type = TYPE_double;
+			atype = TYPE_double_size;
+			break;
+		case 'B':
+			type = TYPE_byte;
+			atype = TYPE_byte_size;
+			break;
+		case 'S':
+			type = TYPE_short;
+			atype = TYPE_short_size;
+			break;
+		case 'I':
+			type = TYPE_int;
+			atype = TYPE_int_size;
+			break;
+		case 'J':
+			type = TYPE_long;
+			atype = TYPE_long_size;
+			break;
+		default:
+			type = TYPE_reference;
+			atype = TYPE_reference_size;
 	}
-
+	for(i = 0; i < dimensions; i++)	{
+		size = pop();
+		if(size == 0) {
+			break;
+		}
+		if(atype == 1) {
+			((u1**)arrayref)[i] = (u1*)newArray(type, size);
+		} else if(atype == 2) {
+			((u2**)arrayref)[i] = (u2*)newArray(type, size);
+		} else if(atype == 4) {
+			((u4**)arrayref)[i] = (u4*)newArray(type, size);
+		} else {
+			((u8**)arrayref)[i] = (u8*)newArray(type, size);
+		}
+	}
 	push((u4)arrayref);
-
 	frameAtual->pc++;
 }
 
-void i_ifnull()
-{
+void i_ifnull() {
+	u1 branchbyte1, branchbyte2;
 	int32_t auxiliar;
 	u4 offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar = (signed) pop();
-
-	if(auxiliar == CONSTANT_Null)
-	{
+	if(auxiliar == CONSTANT_Null) {
 		offset = convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_ifnonnull()
-{
+void i_ifnonnull() {
+	u1 branchbyte1, branchbyte2;
 	int32_t auxiliar;
 	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar = (signed) pop();
-
-	if(auxiliar != CONSTANT_Null)
-	{
+	if(auxiliar != CONSTANT_Null) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_goto_w()
-{
-	int32_t offset;
+void i_goto_w() {
 	u4 branchbyte1, branchbyte2, branchbyte3, branchbyte4;
-
+	int32_t offset;
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
 	branchbyte3 = frameAtual->code[(frameAtual->pc)+3];
 	branchbyte4 = frameAtual->code[(frameAtual->pc)+4];
-
 	offset = (int32_t)(((branchbyte1 & 0xFF)<<24) |((branchbyte2 & 0xFF)<<16) |((branchbyte3 & 0xFF)<<8) |(branchbyte1 & 0xFF));
-
 	frameAtual->pc += offset;
-
 }
 
-void i_jsr_w()
-{
-	int32_t offset;
+void i_jsr_w() {
 	u4 branchbyte1, branchbyte2, branchbyte3, branchbyte4;
-
+	int32_t offset;
 	push((frameAtual->pc) + 5);
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
 	branchbyte3 = frameAtual->code[(frameAtual->pc)+3];
 	branchbyte4 = frameAtual->code[(frameAtual->pc)+4];
-
 	offset = (int32_t)(((branchbyte1 & 0xFF)<<24) |((branchbyte2 & 0xFF)<<16) |((branchbyte3 & 0xFF)<<8) |(branchbyte1 & 0xFF));
-
 	frameAtual->pc += offset;
-
 }
 
