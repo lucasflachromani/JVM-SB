@@ -3,7 +3,7 @@
 
 #include "tipos.h"
 
-#define HEAP_INIT 32
+#define INI_HEAP 32
 
 struct Object {
 	classStructure *this;

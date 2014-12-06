@@ -3,13 +3,13 @@
 
 #include "tipos.h"
 
-#define MAX_STACK 100
+#define MAX 100
 
-void newStack();
+void newPilha();
 void push(u4 value);
 void pushU8(u8 value);
 u4 pop();
-void newStackFrame();
-void freeStackFrame();
+void newFramePilha();
+void freeFramePilha();
 
 #endif

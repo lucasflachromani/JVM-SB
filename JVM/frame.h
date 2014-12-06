@@ -26,7 +26,7 @@ struct frame_stack {
 
 struct frame *frameAtual;
 
-void newFrame(classStructure *class, cpInfo *constantPool, attributeInfo *code_attribute);
+void newFrame(classStructure *class, cpInfo *constantPool, Code_attribute *code_attribute);
 void freeFrame();
 
 #endif
