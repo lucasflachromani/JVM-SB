@@ -1375,1475 +1375,1039 @@ void i_ishl() {
 	frameAtual->pc++;
 }
 
-void i_lshl()
-{
+void i_lshl() {
 	int64_t auxiliar1;
 	u4 mask = 0x3f;  /*... 00011 1111*/
 	u4 low, high, auxiliar2;
-
 	auxiliar2 = pop();
 	auxiliar2 &= mask;
-
 	low = pop();
 	high = pop();
 	auxiliar1 = (signed) convert_2x32_to_64_bits(low , high);
-
 	auxiliar1 <<= auxiliar2;
-
 	push((u8)auxiliar1);
-
 	frameAtual->pc++;
 }
 
-void i_ishr()
-{
-	u4 mask = 0x1f;  /* ... 0001 1111 */
+void i_ishr() {
+	u4 mask = 0x1f;
 	u4 auxiliar1, i;
 	int32_t auxiliar2;
-
 	auxiliar1 = pop();
 	auxiliar1 &= mask;
-
 	auxiliar2 = (int32_t)pop();
-
 	for(i = 0; i < auxiliar1; i++) {
 		auxiliar2 /= 2;
 	}
-
 	push((u4)auxiliar2);
-
 	frameAtual->pc++;
 }
 
-void i_lshr()
-{
-	u4 mask = 0x3f;  /*... 00011 1111*/
-	u8 auxiliar1 = 0xffffffffffffffff;  /* 1111 1111 ... */
-	u8 auxiliar4 = 0x8000000000000000;  /* 1000 0000 ... */
-
+void i_lshr() {
+	u4 mask = 0x3f;
+	u8 auxiliar1 = 0xffffffffffffffff;
+	u8 auxiliar4 = 0x8000000000000000;
 	u4 low, high;
 	int64_t auxiliar3;
 	u4 auxiliar2;
-
 	auxiliar2 = pop();
 	auxiliar2 &= mask;
 
-	/* Deixa os(64-auxiliar2) bits iniciais com 1 */
+	// Seta os bits (64-auxiliar2) mais significativos com 1
 	auxiliar1 <<= (64-auxiliar2);
-
 	low = pop();
 	high = pop();
 	auxiliar3 = (signed) convert_2x32_to_64_bits(low , high);
 
-	/* Verifica qual � o primeiro bit */
+	//Verificar qual e o primeiro bit
 	auxiliar4 = auxiliar3 & auxiliar4;
-
 	auxiliar3 >>= auxiliar2;
-
 	if(auxiliar4) {
 		auxiliar3 |= auxiliar1;
 	}
-
 	push((u8)auxiliar3);
-
 	frameAtual->pc++;
 }
 
-void i_iushr()
-{
+void i_iushr() {
 	u4 mask = 0x1f;  /* ... 0001 1111 */
 	u4 auxiliar1, auxiliar2;
-
 	auxiliar2 = pop();
 	auxiliar2 &= mask;
-
 	auxiliar1 = pop();
 	auxiliar1 >>= auxiliar2;
-
 	push(auxiliar1);
-
 	frameAtual->pc++;
 }
 
-void i_lushr()
-{
+void i_lushr() {
 	int64_t auxiliar1;
 	u4 mask = 0x3f;  /*... 00011 1111*/
 	u4 auxiliar2;
 	u4 low, high;
-
 	auxiliar2 = pop();
 	auxiliar2 &= mask;
-
 	low = pop();
 	high = pop();
 	auxiliar1 = (signed) convert_2x32_to_64_bits(low , high);
-
 	auxiliar1 >>= auxiliar2;
-
 	pushU8((u8)auxiliar1);
-
 	frameAtual->pc++;
 }
 
-void i_iand()
-{
+void i_iand() {
 	u4 auxiliar1, auxiliar2;
-
 	auxiliar1 = pop();
 	auxiliar2 = pop();
-
 	auxiliar1 &= auxiliar2;
-
 	push(auxiliar1);
-
 	frameAtual->pc++;
 }
 
-void i_land()
-{
+void i_land() {
 	u8 auxiliar1, auxiliar2;
 	u4 low, high;
-
 	low = pop();
 	high = pop();
 	auxiliar1 = convert_2x32_to_64_bits(low , high);
-
 	low = pop();
 	high = pop();
 	auxiliar2 = convert_2x32_to_64_bits(low , high);
-
 	auxiliar1 &= auxiliar2;
-
 	pushU8(auxiliar1);
-
 	frameAtual->pc++;
 }
 
-void i_ior()
-{
+void i_ior() {
 	u4 auxiliar1, auxiliar2;
-
 	auxiliar1 = pop();
 	auxiliar2 = pop();
-
 	auxiliar1 |= auxiliar2;
-
 	push(auxiliar1);
-
 	frameAtual->pc++;
 }
 
-void i_lor()
-{
+void i_lor() {
 	u8 auxiliar1, auxiliar2;
 	u4 low, high;
-
 	low = pop();
 	high = pop();
 	auxiliar1 = convert_2x32_to_64_bits(low , high);
-
 	low = pop();
 	high = pop();
 	auxiliar2 = convert_2x32_to_64_bits(low , high);
-
 	auxiliar1 |= auxiliar2;
-
 	pushU8(auxiliar1);
-
 	frameAtual->pc++;
 }
 
-void i_ixor()
-{
+void i_ixor() {
 	u4 auxiliar1, auxiliar2;
-
 	auxiliar1 = pop();
 	auxiliar2 = pop();
-
 	auxiliar1 ^= auxiliar2;
-
 	push(auxiliar1);
-
 	frameAtual->pc++;
 }
 
-void i_lxor()
-{
+void i_lxor() {
 	u8 auxiliar1, auxiliar2;
 	u4 low, high;
-
 	low = pop();
 	high = pop();
 	auxiliar1 = convert_2x32_to_64_bits(low , high);
-
 	low = pop();
 	high = pop();
 	auxiliar2 = convert_2x32_to_64_bits(low , high);
-
 	auxiliar1 ^= auxiliar2;
-
 	pushU8(auxiliar1);
-
 	frameAtual->pc++;
 }
 
-void i_iinc()
-{
+void i_iinc() {
 	u1 field_index = frameAtual->code[++(frameAtual->pc)];
-
 	u4 auxiliar = frameAtual->fields[field_index];
 	u1 auxiliar2 = frameAtual->code[++(frameAtual->pc)];
-
 	int8_t index = (int8_t) auxiliar;
 	int8_t constant = (int8_t) auxiliar2;
-
 	index += constant;
-
 	frameAtual->fields[field_index] = (u4) index;
-
 	frameAtual->pc++;
 }
 
-void i_i2l()
-{
-	u4 mask = 0x80000000;  /* 1000 0000 ... */
+void i_i2l() {
+	u4 mask = 0x80000000;
 	u8 extend = 0xffffffff00000000;
-
 	u4 auxiliar1, auxiliar3;
 	int64_t auxiliar2;
-
 	auxiliar1 = pop();
-
-	/* Verifica qual � o primeiro bit */
 	auxiliar3 = auxiliar1 & mask;
-
 	auxiliar2 = (int64_t) auxiliar1;
-
-	/* Extende o 1 do sinal caso seja */
 	if(auxiliar3) {
 		auxiliar2 |= extend;
 	}
-
 	pushU8(auxiliar2);
-
 	frameAtual->pc++;
 }
 
-void i_i2f()
-{
+void i_i2f() {
 	u4 auxiliar2;
 	int32_t auxiliar;
 	float f;
-
 	auxiliar = (int32_t)pop();
 	f = (float)auxiliar;
-
 	memcpy(&auxiliar2, &f, sizeof(u4));
-
 	push(auxiliar2);
-
 	frameAtual->pc++;
-
 }
 
-void i_i2d()
-{
-	double d;
+void i_i2d() {
+	double doubleNum;
 	int32_t auxiliar1;
 	u8 auxiliar2;
-
 	auxiliar1 = (int32_t)pop();
-
-	d = (double)auxiliar1;
-
-	memcpy(&auxiliar2, &d, sizeof(u8));
-
+	doubleNum = (double)auxiliar1;
+	memcpy(&auxiliar2, &doubleNum, sizeof(u8));
 	pushU8(auxiliar2);
-
 	frameAtual->pc++;
-
 }
 
-void i_l2i()
-{
+void i_l2i() {
 	u4 low, high;
-
 	low = pop();
 	high = pop();
-
 	push(low);
-
 	frameAtual->pc++;
-
 }
 
-void i_l2f()
-{
+void i_l2f() {
 	u4 low, high, *auxiliar;
-	float f;
-
+	float floatNUm;
 	low = pop();
 	high = pop();
-
-	f = (float) convert_cast_2x32_bits_to_double(low, high);
-
+	floatNUm = (float) convert_cast_2x32_bits_to_double(low, high);
 	auxiliar = (u4*) malloc(sizeof(u4));
-	memcpy(auxiliar, &f, sizeof(u4));
-
+	memcpy(auxiliar, &floatNUm, sizeof(u4));
 	push(*auxiliar); /* Para recuperar o valor, deve-se fazer outro memcpy para um float */
-
 	frameAtual->pc++;
-
 }
 
-void i_l2d()
-{
+void i_l2d() {
 	u4 low, high, auxiliar4;
 	u8 *auxiliar8;
-	double d;
-
+	double doubleNum;
 	low = pop();
 	high = pop();
-
-	d =  convert_cast_2x32_bits_to_double(low, high);
-
+	doubleNum =  convert_cast_2x32_bits_to_double(low, high);
 	auxiliar8 = (u8*) malloc(sizeof(u8));
-	memcpy(auxiliar8, &d, 2*sizeof(u4));
+	memcpy(auxiliar8, &doubleNum, 2*sizeof(u4));
 	auxiliar4 = *auxiliar8 >> 32;
 	push(auxiliar4);
-
 	auxiliar4 = *auxiliar8;
 	push(auxiliar4);
-
 	frameAtual->pc++;
-
 }
 
-void i_f2i()
-{
+void i_f2i() {
 	u4 auxiliar;
 	float f;
-
 	auxiliar = pop();
 	memcpy(&f, &auxiliar, sizeof(u4));
-
 	auxiliar = (u4) f;
 	push(auxiliar);
-
 	frameAtual->pc++;
-
 }
 
-void i_f2l()
-{
+void i_f2l() {
 	u4 auxiliar4;
 	u8 auxiliar8;
 	float f;
-
 	auxiliar4 = pop();
 	memcpy(&f, &auxiliar4, sizeof(u4));
-
 	auxiliar8 = (u8) f;
 	pushU8(auxiliar8);
-
 	frameAtual->pc++;
-
 }
 
-void i_f2d()
-{
+void i_f2d() {
 	u4 auxiliar4;
 	u8 auxiliar8;
-	float f;
-	double d;
-
+	float floatNum;
+	double doubleNum;
 	auxiliar4 = pop();
-	memcpy(&f, &auxiliar4, sizeof(u4));
-
-	d = (double) f;
-	memcpy(&auxiliar8, &d, 2*sizeof(u4));
+	memcpy(&floatNum, &auxiliar4, sizeof(u4));
+	doubleNum = (double) floatNum;
+	memcpy(&auxiliar8, &doubleNum, 2*sizeof(u4));
 	pushU8(auxiliar8);
-
 	frameAtual->pc++;
-
 }
 
-void i_d2i()
-{
+void i_d2i() {
 	u4 low, high;
 	int32_t resp;
 	u8 auxiliar;
-	double d;
-
+	double doubleNum;
 	low = pop();
 	high = pop();
 	auxiliar = convert_2x32_to_64_bits(low, high);
-	memcpy(&d, &auxiliar, 2*sizeof(u4));
-
-	resp = (int32_t) d;
+	memcpy(&doubleNum, &auxiliar, 2*sizeof(u4));
+	resp = (int32_t) doubleNum;
 	push((u4)resp);
-
 	frameAtual->pc++;
-
 }
 
-void i_d2l()
-{
+void i_d2l() {
 	u4 low, high;
 	u8 auxiliar;
-	double d;
-
+	double doubleNum;
 	low = pop();
 	high = pop();
 	auxiliar = convert_2x32_to_64_bits(low, high);
-
-	memcpy(&d, &auxiliar, 2*sizeof(u4));
-	auxiliar = (u8) d;
+	memcpy(&doubleNum, &auxiliar, 2*sizeof(u4));
+	auxiliar = (u8) doubleNum;
 	push(auxiliar);
-
 	frameAtual->pc++;
-
 }
 
-void i_d2f()
-{
+void i_d2f() {
 	u4 low, high, resp;
 	u8 auxiliar;
 	double d;
 	float f;
-
 	low = pop();
 	high = pop();
 	auxiliar = convert_2x32_to_64_bits(low, high);
-
 	memcpy(&d, &auxiliar, 2*sizeof(u4));
 	f = (float) d;
-
 	memcpy(&resp, &f, sizeof(u4));
 	push(resp);
-
 	frameAtual->pc++;
-
 }
 
-void i_i2b()
-{
+void i_i2b() {
 	int8_t auxiliar;
 	int32_t auxiliar2;
-
 	auxiliar = (int8_t) pop();
 	auxiliar2 = (int32_t)auxiliar;
-
 	push((u4)auxiliar2);
-
 	frameAtual->pc++;
-
 }
 
-void i_i2c()
-{
+void i_i2c() {
 	int16_t auxiliar;
 	int32_t auxiliar2;
-
 	auxiliar = (int16_t) pop();
 	auxiliar2 = (int32_t)auxiliar;
-
 	push((u4)auxiliar2);
-
 	frameAtual->pc++;
-
 }
 
-void i_i2s()
-{
+void i_i2s() {
 	int16_t auxiliar;
 	int32_t auxiliar2;
-
 	auxiliar = (int16_t) pop();
 	auxiliar2 = (int32_t)auxiliar;
-
 	push((u4)auxiliar2);
-
 	frameAtual->pc++;
-
 }
 
-void i_lcmp()
-{
+void i_lcmp() {
 	int32_t resp;
 	u4 low, high;
 	u8 auxiliar1, auxiliar2;
-
 	low = pop();
 	high = pop();
 	auxiliar2 = convert_2x32_to_64_bits(low, high);
-
 	low = pop();
 	high = pop();
 	auxiliar1 = convert_2x32_to_64_bits(low, high);
-
-	if(auxiliar1 == auxiliar2)
+	if(auxiliar1 == auxiliar2) {
 		resp = 0;
-	else if(auxiliar1 > auxiliar2)
+	} else if(auxiliar1 > auxiliar2) {
 		resp = 1;
-	else
+	} else {
 		resp = -1;
-
+	}
 	push((u4) resp);
-
 	frameAtual->pc++;
-
 }
 
-void i_fcmpl()
-{
-	int32_t resp;
+void i_fcmpl() {
+	int32_t resultado;
 	u4 auxiliar;
-	float f1, f2;
-
+	float floatNum1, floatNum2;
 	auxiliar = pop();
-	memcpy(&f2, &auxiliar, sizeof(u4));
-
+	memcpy(&floatNum2, &auxiliar, sizeof(u4));
 	auxiliar = pop();
-	memcpy(&f1, &auxiliar, sizeof(u4));
-
-	if(f1 == f2)
-		resp = 0;
-	else if(f1 > f2)
-		resp = 1;
-	else
-		resp = -1;
-
-	push((u4) resp);
-
+	memcpy(&floatNum1, &auxiliar, sizeof(u4));
+	if(floatNum1 == floatNum2) {
+		resultado = 0;
+	} else if(floatNum1 > floatNum2) {
+		resultado = 1;
+	} else {
+		resultado = -1;
+	}
+	push((u4) resultado);
 	frameAtual->pc++;
-
 }
 
-void i_fcmpg()
-{
-	int32_t resp;
+void i_fcmpg() {
+	float floatNum1, floatNum2;
 	u4 auxiliar;
-	float f1, f2;
-
+	int32_t resultado;
 	auxiliar = pop();
-	memcpy(&f2, &auxiliar, sizeof(u4));
-
+	memcpy(&floatNum2, &auxiliar, sizeof(u4));
 	auxiliar = pop();
-	memcpy(&f1, &auxiliar, sizeof(u4));
-
-	if(f1 == f2)
-		resp = 0;
-	else if(f1 > f2)
-		resp = 1;
-	else
-		resp = -1;
-
-	push((u4) resp);
-
+	memcpy(&floatNum1, &auxiliar, sizeof(u4));
+	if(floatNum1 == floatNum2) {
+		resultado = 0;
+	} else if(floatNum1 > floatNum2) {
+		resultado = 1;
+	} else {
+		resultado = -1;
+	}
+	push((u4) resultado);
 	frameAtual->pc++;
-
 }
 
-void i_dcmpl()
-{
-	int32_t resp;
+void i_dcmpl() {
+	double doubleNum1, doubleNum2;
 	u4 low, high;
 	u8 auxiliar;
-	double d1, d2;
-
+	int32_t resultado;
 	low = pop();
 	high = pop();
 	auxiliar = convert_2x32_to_64_bits(low, high);
-	memcpy(&d2, &auxiliar, 2*sizeof(u4));
-
+	memcpy(&doubleNum2, &auxiliar, 2*sizeof(u4));
 	low = pop();
 	high = pop();
 	auxiliar = convert_2x32_to_64_bits(low, high);
-	memcpy(&d1, &auxiliar, 2*sizeof(u4));
-
-	if(d1 == d2)
-		resp = 0;
-	else if(d1 > d2)
-		resp = 1;
-	else
-		resp = -1;
-
-	push((u4) resp);
-
+	memcpy(&doubleNum1, &auxiliar, 2*sizeof(u4));
+	if(doubleNum1 == doubleNum2) {
+		resultado = 0;
+	} else if(doubleNum1 > doubleNum2) {
+		resultado = 1;
+	} else {
+		resultado = -1;
+	}
+	push((u4) resultado);
 	frameAtual->pc++;
-
 }
 
-void i_dcmpg()
-{
-	int32_t resp;
+void i_dcmpg() {
+	double doubleNum1, doubleNum2;
 	u4 low, high;
 	u8 auxiliar;
-	double d1, d2;
-
+	int32_t resultado;
 	low = pop();
 	high = pop();
 	auxiliar = convert_2x32_to_64_bits(low, high);
-	memcpy(&d2, &auxiliar, 2*sizeof(u4));
-
+	memcpy(&doubleNum2, &auxiliar, 2*sizeof(u4));
 	low = pop();
 	high = pop();
 	auxiliar = convert_2x32_to_64_bits(low, high);
-	memcpy(&d1, &auxiliar, 2*sizeof(u4));
-
-	if(d1 == d2)
-		resp = 0;
-	else if(d1 > d2)
-		resp = 1;
-	else
-		resp = -1;
-
-	push((u4) resp);
-
+	memcpy(&doubleNum1, &auxiliar, 2*sizeof(u4));
+	if(doubleNum1 == doubleNum2) {
+		resultado = 0;
+	} else if(doubleNum1 > doubleNum2) {
+		resultado = 1;
+	} else {
+		resultado = -1;
+	}
+	push((u4) resultado);
 	frameAtual->pc++;
-
 }
 
-void i_ifeq()
-{
+void i_ifeq() {
+	u1 branchbyte1, branchbyte2;
+	int16_t offset;
+	int32_t auxiliar;
+	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
+	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+	auxiliar = (signed) pop();
+	if(auxiliar == 0) {
+		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		frameAtual->pc += offset;
+	} else {
+		frameAtual->pc += 3;
+	}
+}
+
+void i_ifne() {
+	u1 branchbyte1, branchbyte2;
+	int16_t offset;
+	int32_t auxiliar;
+	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
+	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
+	auxiliar = (signed) pop();
+	if(auxiliar != 0) {
+		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
+		frameAtual->pc += offset;
+	} else {
+		frameAtual->pc += 3;
+	}
+}
+
+void i_iflt() {
+	u1 branchbyte1, branchbyte2;
 	int32_t auxiliar;
 	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar = (signed) pop();
-
-	if(auxiliar == 0)
-	{
+	if(auxiliar < 0) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_ifne()
-{
+void i_ifge() {
+	u1 branchbyte1, branchbyte2;
 	int32_t auxiliar;
 	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar = (signed) pop();
-
-	if(auxiliar != 0)
-	{
+ 	if(auxiliar >= 0) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_iflt()
-{
+void i_ifgt() {
+	u1 branchbyte1, branchbyte2;
 	int32_t auxiliar;
 	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar = (signed) pop();
-
-	if(auxiliar < 0)
-	{
+	if(auxiliar > 0) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_ifge()
-{
+void i_ifle() {
+	u1 branchbyte1, branchbyte2;
 	int32_t auxiliar;
 	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar = (signed) pop();
-
-	if(auxiliar >= 0)
-	{
+	if(auxiliar <= 0) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_ifgt()
-{
-	int32_t auxiliar;
-	int16_t offset;
+void i_if_icmpeq() {
 	u1 branchbyte1, branchbyte2;
-
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
-	auxiliar = (signed) pop();
-
-	if(auxiliar > 0)
-	{
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-
-	}
-	else
-	{
-		frameAtual->pc += 3;
-
-	}
-}
-
-void i_ifle()
-{
-	int32_t auxiliar;
-	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
-	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
-	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
-	auxiliar = (signed) pop();
-
-	if(auxiliar <= 0)
-	{
-		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
-		frameAtual->pc += offset;
-
-	}
-	else
-	{
-		frameAtual->pc += 3;
-
-	}
-}
-
-void i_if_icmpeq()
-{
 	int32_t auxiliar1, auxiliar2;
 	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar1 = (signed) pop();
 	auxiliar2 = (signed) pop();
-
-	if(auxiliar1 == auxiliar2)
-	{
+	if(auxiliar1 == auxiliar2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_if_icmpne()
-{
+void i_if_icmpne() {
+	u1 branchbyte1, branchbyte2;
 	int32_t auxiliar1, auxiliar2;
 	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar1 = (signed) pop();
 	auxiliar2 = (signed) pop();
-
-	if(auxiliar1 != auxiliar2)
-	{
+	if(auxiliar1 != auxiliar2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_if_icmplt()
-{
+void i_if_icmplt() {
+	u1 branchbyte1, branchbyte2;
 	int32_t auxiliar1, auxiliar2;
 	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar2 = (signed) pop();
 	auxiliar1 = (signed) pop();
-
-	if(auxiliar1 < auxiliar2)
-	{
+ 	if(auxiliar1 < auxiliar2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_if_icmpge()
-{
+void i_if_icmpge() {
+	u1 branchbyte1, branchbyte2;
 	int32_t auxiliar1, auxiliar2;
 	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar2 = (signed) pop();
 	auxiliar1 = (signed) pop();
-
-	if(auxiliar1 >= auxiliar2)
-	{
+	if(auxiliar1 >= auxiliar2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_if_icmpgt()
-{
+void i_if_icmpgt() {
+	u1 branchbyte1, branchbyte2;
 	int32_t auxiliar1, auxiliar2;
 	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar2 = (signed) pop();
 	auxiliar1 = (signed) pop();
-
-	if(auxiliar1 > auxiliar2)
-	{
+	if(auxiliar1 > auxiliar2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_if_icmple()
-{
+void i_if_icmple() {
+	u1 branchbyte1, branchbyte2;
 	int32_t auxiliar1, auxiliar2;
 	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar2 = (signed) pop();
 	auxiliar1 = (signed) pop();
-
-	if(auxiliar1 <= auxiliar2)
-	{
+	if(auxiliar1 <= auxiliar2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_if_acmpeq()
-{
+void i_if_acmpeq() {
+	u1 branchbyte1, branchbyte2;
 	int32_t auxiliar1, auxiliar2;
 	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar2 = (signed) pop();
 	auxiliar1 = (signed) pop();
-
-	if(auxiliar1 == auxiliar2)
-	{
+	if(auxiliar1 == auxiliar2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_if_acmpne()
-{
+void i_if_acmpne() {
+	u1 branchbyte1, branchbyte2;
 	int32_t auxiliar1, auxiliar2;
 	int16_t offset;
-	u1 branchbyte1, branchbyte2;
-
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	auxiliar2 = (signed) pop();
 	auxiliar1 = (signed) pop();
-
-	if(auxiliar1 != auxiliar2)
-	{
+	if(auxiliar1 != auxiliar2) {
 		offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 		frameAtual->pc += offset;
-
-	}
-	else
-	{
+	} else {
 		frameAtual->pc += 3;
-
 	}
 }
 
-void i_goto()
-{
-	int16_t offset;
+void i_goto() {
 	u1 branchbyte1, branchbyte2;
-
+	int16_t offset;
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 	frameAtual->pc += offset;
-
 }
 
-void i_jsr()
-{
-	int16_t offset;
+void i_jsr() {
 	u1 branchbyte1, branchbyte2;
-
-	push((frameAtual->pc) + 3); /* pc da proxima instrucao */
-
+	int16_t offset;
+	push((frameAtual->pc) + 3);
 	branchbyte1 = frameAtual->code[(frameAtual->pc)+1];
 	branchbyte2 = frameAtual->code[(frameAtual->pc)+2];
-
 	offset = (int16_t)convert_2x8_to_32_bits(branchbyte2, branchbyte1);
 	frameAtual->pc += offset;
-
 }
 
-void i_ret()
-{
+void i_ret() {
 	u2 index;
-
 	frameAtual->pc++;
 	index = frameAtual->code[frameAtual->pc];
-
 	if(next_is_wide == 1){
 		index = index << 8;
 		frameAtual->pc++;
 		index = index | frameAtual->code[frameAtual->pc];
 		next_is_wide = 0;
 	}
-
 	frameAtual->pc = frameAtual->fields[index];
-
 }
 
-void i_tableswitch()
-{
-	int32_t default_, high, low, index;
+void i_tableswitch() {
+	int32_t defaulT, high, low, index;
 	int32_t *tableswitch;
-	u4 byte1, byte2, byte3, byte4, tableswitch_address, target, table_size, i, offset;
+	u4 byte1, byte2, byte3, byte4;
+	u4 tableswitch_address;
+	u4 target, tableSize;
+	u4 i, offset;
 
 	index = (int32_t)pop();
 	tableswitch_address = frameAtual->pc;
 
-	/* pula os padding bytes */
-	while((frameAtual->pc + 1) % 4 != 0)
+	while((frameAtual->pc + 1) % 4 != 0) {
 		frameAtual->pc++;
+	}
 	frameAtual->pc++;
 
 	byte1 = frameAtual->code[frameAtual->pc++];
 	byte2 = frameAtual->code[frameAtual->pc++];
 	byte3 = frameAtual->code[frameAtual->pc++];
 	byte4 = frameAtual->code[frameAtual->pc++];
-
-	default_ = ((byte1 & 0xFF) << 24) |((byte2 & 0xFF) << 16) |((byte3 & 0xFF) << 8) |(byte4 & 0xFF);
+	defaulT = ((byte1 & 0xFF) << 24) |((byte2 & 0xFF) << 16) |((byte3 & 0xFF) << 8) |(byte4 & 0xFF);
 
 	byte1 = frameAtual->code[frameAtual->pc++];
 	byte2 = frameAtual->code[frameAtual->pc++];
 	byte3 = frameAtual->code[frameAtual->pc++];
 	byte4 = frameAtual->code[frameAtual->pc++];
-
 	low = ((byte1 & 0xFF) << 24) |((byte2 & 0xFF) << 16) |((byte3 & 0xFF) << 8) |(byte4 & 0xFF);
 
 	byte1 = frameAtual->code[frameAtual->pc++];
 	byte2 = frameAtual->code[frameAtual->pc++];
 	byte3 = frameAtual->code[frameAtual->pc++];
 	byte4 = frameAtual->code[frameAtual->pc++];
-
 	high = ((byte1 & 0xFF) << 24) |((byte2 & 0xFF) << 16) |((byte3 & 0xFF) << 8) |(byte4 & 0xFF);
 
-	table_size = high - low + 1;
-	tableswitch = calloc(sizeof(u4), table_size);
+	tableSize = high - low + 1;
+	tableswitch = calloc(sizeof(u4), tableSize);
 
-	for(i = 0; i < table_size; i++)
-	{
+	for(i = 0; i < tableSize; i++) 	{
 		byte1 = frameAtual->code[frameAtual->pc++];
 		byte2 = frameAtual->code[frameAtual->pc++];
 		byte3 = frameAtual->code[frameAtual->pc++];
 		byte4 = frameAtual->code[frameAtual->pc++];
-
 		tableswitch[i] = ((byte1 & 0xFF) << 24) |((byte2 & 0xFF) << 16) |((byte3 & 0xFF) << 8) |(byte4 & 0xFF);
 	}
 
-	if(index < low || index > high)
-		target = tableswitch_address + default_;
-	else
-	{
+	if(index < low || index > high) {
+		target = tableswitch_address + defaulT;
+	} else {
 		offset = tableswitch[index - low];
 		target = tableswitch_address + offset;
 	}
-
 	frameAtual->pc = target;
 }
 
-void i_lookupswitch()
-{
-	int32_t default_, npairs, key;
+void i_lookupswitch() {
+	int32_t defaulT, npairs, key;
 	int32_t *match, *offset;
-	u4 byte1, byte2, byte3, byte4, target, lookupswitch_address, i;
-	u1 found;
+	u4 byte1, byte2, byte3, byte4;
+	u4 target, lookupswitch_address;
+	u4 i;
+	u1 encontrado;
 
 	key = (int32_t)pop();
 	lookupswitch_address = frameAtual->pc;
 
-	/* pula os padding bytes */
-	while((frameAtual->pc + 1) % 4 != 0)
+	while((frameAtual->pc + 1) % 4 != 0) {
 		frameAtual->pc++;
+	}
 	frameAtual->pc++;
 
 	byte1 = frameAtual->code[frameAtual->pc++];
 	byte2 = frameAtual->code[frameAtual->pc++];
 	byte3 = frameAtual->code[frameAtual->pc++];
 	byte4 = frameAtual->code[frameAtual->pc++];
-
-	default_ = ((byte1 & 0xFF) << 24) |((byte2 & 0xFF) << 16) |((byte3 & 0xFF) << 8) |(byte4 & 0xFF);
+	defaulT = ((byte1 & 0xFF) << 24) |((byte2 & 0xFF) << 16) |((byte3 & 0xFF) << 8) |(byte4 & 0xFF);
 
 	byte1 = frameAtual->code[frameAtual->pc++];
 	byte2 = frameAtual->code[frameAtual->pc++];
 	byte3 = frameAtual->code[frameAtual->pc++];
 	byte4 = frameAtual->code[frameAtual->pc++];
-
 	npairs = ((byte1 & 0xFF) << 24) |((byte2 & 0xFF) << 16) |((byte3 & 0xFF) << 8) |(byte4 & 0xFF);
 
 	match = calloc(sizeof(int32_t), npairs);
 	offset = calloc(sizeof(int32_t), npairs);
-	for(i = 0; i < npairs; i++)
-	{
+	for(i = 0; i < npairs; i++) {
 		byte1 = frameAtual->code[frameAtual->pc++];
 		byte2 = frameAtual->code[frameAtual->pc++];
 		byte3 = frameAtual->code[frameAtual->pc++];
 		byte4 = frameAtual->code[frameAtual->pc++];
-
 		match[i] = ((byte1 & 0xFF) << 24) |((byte2 & 0xFF) << 16) |((byte3 & 0xFF) << 8) |(byte4 & 0xFF);
-
 		byte1 = frameAtual->code[frameAtual->pc++];
 		byte2 = frameAtual->code[frameAtual->pc++];
 		byte3 = frameAtual->code[frameAtual->pc++];
 		byte4 = frameAtual->code[frameAtual->pc++];
-
 		offset[i] = ((byte1 & 0xFF) << 24) |((byte2 & 0xFF) << 16) |((byte3 & 0xFF) << 8) |(byte4 & 0xFF);
 	}
 
 	i = 0;
-	found = 0;
-	while((i < npairs) &&(!found))
-	{
+	encontrado = 0;
+	while((i < npairs) &&(!encontrado)) {
 		if(match[i] == key)
-			found = 1;
+			encontrado = 1;
 		i++;
 	}
 	i--;
 
-	if(found)
+	if(encontrado) {
 		target = offset[i] + lookupswitch_address;
-	else
-		target = default_ + lookupswitch_address;
-
+	} else {
+		target = defaulT + lookupswitch_address;
+	}
 	frameAtual->pc = target;
 }
 
-void i_ireturn()
-{
+void i_ireturn() {
 	u4 valor;
-
 	valor = pop();
-
 	returnType = RETURN_32bits;
 	returnValue = (u8)valor;
-
 	frameAtual->pc++;
 }
 
-void i_lreturn()
-{
+void i_lreturn() {
 	u4 low, high;
-
 	low = pop();
 	high = pop();
-
 	returnType = RETURN_64bits;
 	returnValue = convert_2x32_to_64_bits(low, high);
-
 	frameAtual->pc++;
 }
 
-void i_freturn()
-{
+void i_freturn() {
 	u4 valor;
-
 	valor = pop();
-
 	returnType = RETURN_32bits;
 	returnValue = (u8)valor;
-
 	frameAtual->pc++;
 }
 
-void i_dreturn()
-{
+void i_dreturn() {
 	u4 low, high;
-
 	low = pop();
 	high = pop();
-
 	returnType = RETURN_64bits;
 	returnValue = convert_2x32_to_64_bits(low, high);
-
 	frameAtual->pc++;
 }
 
-void i_areturn()
-{
+void i_areturn() {
 	u4 valor;
-
 	valor = pop();
-
 	returnType = RETURN_32bits;
 	returnValue = (u8)valor;
-
 	frameAtual->pc++;
 }
 
-void i_return()
-{
+void i_return() {
 	returnType = RETURN_none;
 	returnValue = 0;
-
 	frameAtual->pc++;
 }
 
-void i_getstatic()
-{
+void i_getstatic() {
 	u1 index1, index2;
-	u2 index, name_type_index;
-	u4 class_index_tmp;
+	u2 index, nameTypeIndex;
+	u4 classIndexTemp;
 	int32_t classIndex, field_index;
 	u8 valor;
 	char *className, *name, *type;
 
-
 	index1 = (u1) frameAtual->code[++(frameAtual->pc)];
 	index2 = (u1) frameAtual->code[++(frameAtual->pc)];
-
 	index = ((u2)index1 << 8) |(u2)index2;
+	classIndexTemp = frameAtual->constantPool[index-1].type.FieldRef.classIndex;
+	className = getName(frameAtual->class, frameAtual->constantPool[classIndexTemp-1].type.Class.nameIndex);
+	nameTypeIndex = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
+	name = getName(frameAtual->class, frameAtual->constantPool[nameTypeIndex-1].type.NameType.nameIndex);
+	type = getName(frameAtual->class, frameAtual->constantPool[nameTypeIndex-1].type.NameType.descriptorIndex);
 
-	class_index_tmp = frameAtual->constantPool[index-1].type.FieldRef.classIndex;
-
-	className = getName(frameAtual->class, frameAtual->constantPool[class_index_tmp-1].type.Class.nameIndex);
-
-	name_type_index = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
-
-	name = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.nameIndex);
-	type = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.descriptorIndex);
-
-	/* -1 informa que nao encontrou o field na casse corrente */
 	while((field_index = getFieldIndexByNameAndDesc(className, name, strlen(name), type, strlen(type))) == -1) {
 		className = getParentName(getClassByName(className));
 	}
 
-	/* Verifica se deu algum erro(ou classe nao aceita) ao buscar o field(-2) */
 	if(field_index == -2) {
-
 		if(type[0] == 'J' || type[0] == 'D') {
 			pushU8(0);
 		} else {
 			push(0);
 		}
-
 		frameAtual->pc++;
 		return;
 	}
 
-
 	classIndex = carregarClass(className);
-
 	valor = getStaticFieldValue(classIndex , field_index);
-
-	/* Verifica se eh Double ou Long para saber quantos bits colocar na pilha */
 	if(type[0] == 'J' || type[0] == 'D') {
 		pushU8(valor);
 	} else {
 		push((u4)valor);
 	}
-
 	frameAtual->pc++;
 }
 
-void i_putstatic()
-{
+void i_putstatic() {
 	u1 index1, index2;
-	u2 index, name_type_index;
-	u4 class_index_tmp;
+	u2 index, nameTypeIndex;
+	u4 classIndexTemp;
 	int32_t classIndex, field_index;
 	u4 valor1, valor2;
 	u8 valor;
 	char *className, *name, *type;
 
-
 	index1 = (u1) frameAtual->code[++(frameAtual->pc)];
 	index2 = (u1) frameAtual->code[++(frameAtual->pc)];
-
 	index = ((u2)index1 << 8) |(u2)index2;
-
-	class_index_tmp = frameAtual->constantPool[index-1].type.FieldRef.classIndex;
-
-	className = getName(frameAtual->class, frameAtual->constantPool[class_index_tmp-1].type.Class.nameIndex);
-
-	name_type_index = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
-
-	name = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.nameIndex);
-	type = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.descriptorIndex);
-
-	/* -1 informa que nao encontrou o field na casse corrente */
+	classIndexTemp = frameAtual->constantPool[index-1].type.FieldRef.classIndex;
+	className = getName(frameAtual->class, frameAtual->constantPool[classIndexTemp-1].type.Class.nameIndex);
+	nameTypeIndex = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
+	name = getName(frameAtual->class, frameAtual->constantPool[nameTypeIndex-1].type.NameType.nameIndex);
+	type = getName(frameAtual->class, frameAtual->constantPool[nameTypeIndex-1].type.NameType.descriptorIndex);
 	while((field_index = getFieldIndexByNameAndDesc(className, name, strlen(name), type, strlen(type))) == -1) {
 		className = getParentName(getClassByName(className));
 	}
 
-
-	/* Verifica se deu algum erro(ou classe nao aceita) ao buscar o field(-2) */
 	if(field_index == -2) {
-
 		if(type[0] == 'J' || type[0] == 'D') {
 			pop();
 			pop();
 		} else {
 			pop();
 		}
-
 		frameAtual->pc++;
 		return;
 	}
 
-
-	/* Pega o valor a ser inserido no field static */
 	if(type[0] == 'J' || type[0] == 'D') {
 		valor1 = pop();
 		valor2 = pop();
-
 		valor = convert_2x32_to_64_bits(valor1 , valor2);
 	} else {
 		valor = (u8) pop();
 	}
-
 	classIndex = carregarClass(className);
-
 	setStaticFieldValue(classIndex , field_index , valor);
-
 	frameAtual->pc++;
 }
 
-void i_getfield()
-{
+void i_getfield() {
 	u1 low, high;
 	u4 index;
 	int32_t classIndex, field_index, nameIndex;
-	u2 name_type_index;
+	u2 nameTypeIndex;
 	char *className, *name, *type;
-
 	struct Object *objeto;
 	u4 valor_auxiliar;
 	u8 valor;
 
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
-
 	index = convert_2x8_to_32_bits(low, high);
-
-
 	classIndex = frameAtual->constantPool[index-1].type.FieldRef.classIndex;
-
 	className = getName(frameAtual->class, frameAtual->constantPool[classIndex-1].type.Class.nameIndex);
-
-	name_type_index = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
-
-	name = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.nameIndex);
-	type = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.descriptorIndex);
-
-	/* Pega a referencia do objeto que tera o field alterado de valor */
+	nameTypeIndex = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
+	name = getName(frameAtual->class, frameAtual->constantPool[nameTypeIndex-1].type.NameType.nameIndex);
+	type = getName(frameAtual->class, frameAtual->constantPool[nameTypeIndex-1].type.NameType.descriptorIndex);
 	objeto = (struct Object *) pop();
 
-	/* -1 informa que nao encontrou o field na casse corrente */
 	while((field_index = getFieldIndexByNameAndDesc(className, name, strlen(name), type, strlen(type))) == -1) {
 		className = getParentName(getClassByName(className));
 	}
 
-	/* Verifica se deu algum erro(ou classe nao aceita) ao buscar o field(-2) */
 	if(field_index == -2) {
-
 		if(type[0] == 'J' || type[0] == 'D') {
 			pushU8(0);
 		} else {
 			push(0);
 		}
-
 		frameAtual->pc++;
 		return;
 	}
 
 	nameIndex = frameAtual->class->fields[field_index].nameIndex;
-
-	/* Pega o valor do field */
 	if(type[0] == 'J' || type[0] == 'D') {
 		valor = getObjectFieldWide(objeto, nameIndex);
 		pushU8(valor);
-
 	} else {
 		valor_auxiliar = getObjectField(objeto, nameIndex);
 		push(valor_auxiliar);
 	}
-
 	frameAtual->pc++;
 }
 
-void i_putfield()
-{
+void i_putfield() {
 	u1 low, high;
 	u4 index;
 	int32_t classIndex, field_index, nameIndex;
-	u2 name_type_index;
+	u2 nameTypeIndex;
 	char *className, *name, *type;
 
 	struct Object *objeto;
 	u4 valor1, valor2;
 	u8 valor;
 
-
 	high = frameAtual->code[++(frameAtual->pc)];
 	low = frameAtual->code[++(frameAtual->pc)];
-
 	index = convert_2x8_to_32_bits(low, high);
-
-
 	classIndex = frameAtual->constantPool[index-1].type.FieldRef.classIndex;
-
 	className = getName(frameAtual->class, frameAtual->constantPool[classIndex-1].type.Class.nameIndex);
+	nameTypeIndex = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
+	name = getName(frameAtual->class, frameAtual->constantPool[nameTypeIndex-1].type.NameType.nameIndex);
+	type = getName(frameAtual->class, frameAtual->constantPool[nameTypeIndex-1].type.NameType.descriptorIndex);
 
-	name_type_index = frameAtual->constantPool[index-1].type.FieldRef.nameTypeIndex;
-
-	name = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.nameIndex);
-	type = getName(frameAtual->class, frameAtual->constantPool[name_type_index-1].type.NameType.descriptorIndex);
-
-	/* -1 informa que nao encontrou o field na casse corrente */
 	while((field_index = getFieldIndexByNameAndDesc(className, name, strlen(name), type, strlen(type))) == -1) {
 		className = getParentName(getClassByName(className));
 	}
 
-	/* Verifica se deu algum erro(ou classe nao aceita) ao buscar o field(-2) */
 	if(field_index == -2) {
-
 		if(type[0] == 'J' || type[0] == 'D') {
 			pop();
 			pop();
 		} else {
 			pop();
 		}
-
 		frameAtual->pc++;
 		return;
 	}
 
-
 	nameIndex = frameAtual->class->fields[field_index].nameIndex;
-
-	/* Pega o valor a ser colocado no field */
 	if(type[0] == 'J' || type[0] == 'D') {
 		valor1 = pop();
 		valor2 = pop();
-
-		/* Pega a referencia do objeto que tera o field alterado de valor */
 		objeto = (struct Object *) pop();
-
 		valor = convert_2x32_to_64_bits(valor1, valor2);
 		setObjectFieldWide(objeto, nameIndex, valor);
 
 	} else {
 		valor1 = pop();
-
-		/* Pega a referencia do objeto que tera o field alterado de valor */
 		objeto = (struct Object *) pop();
-
 		setObjectField(objeto, nameIndex, valor1);
 	}
-
 	frameAtual->pc++;
 }
 
@@ -2853,8 +2417,8 @@ void i_invokevirtual()
 	u8 valor;
 	u1 low, high;
 	int32_t numParams, i, j;
-	int32_t classIndex, class_index_tmp;
-	u2 name_type_index, method_name_index, method_desc_index;
+	int32_t classIndex, classIndexTemp;
+	u2 nameTypeIndex, method_name_index, method_desc_index;
 	char *className, *method_name, *method_desc;
 	u4 *fields_tmp;
 	float vfloat;
@@ -2872,14 +2436,14 @@ void i_invokevirtual()
 	index = convert_2x8_to_32_bits(low, high);
 
 
-	class_index_tmp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
+	classIndexTemp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
 
-	className = getName(frameAtual->class, frameAtual->constantPool[class_index_tmp-1].type.Class.nameIndex);
+	className = getName(frameAtual->class, frameAtual->constantPool[classIndexTemp-1].type.Class.nameIndex);
 
-	name_type_index = frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex;
+	nameTypeIndex = frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex;
 
-	method_name_index = frameAtual->constantPool[name_type_index-1].type.NameType.nameIndex;
-	method_desc_index = frameAtual->constantPool[name_type_index-1].type.NameType.descriptorIndex;
+	method_name_index = frameAtual->constantPool[nameTypeIndex-1].type.NameType.nameIndex;
+	method_desc_index = frameAtual->constantPool[nameTypeIndex-1].type.NameType.descriptorIndex;
 
 	method_desc = getName(frameAtual->class, method_desc_index);
 	method_name = getName(frameAtual->class, method_name_index);
@@ -2963,7 +2527,7 @@ void i_invokevirtual()
 		class = getClassByIndex(classIndex);
 
 
-		while(class != NULL &&(method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index)) == NULL) {
+		while(class != NULL &&(method = getMethodByNameAndDescIndex(class, frameAtual->class, nameTypeIndex)) == NULL) {
 			className = getParentName(class);
 
 			classIndex = carregarClass(className);
@@ -3012,8 +2576,8 @@ void i_invokespecial()
 	u4 index;
 	u1 low, high;
 	int32_t numParams, i;
-	int32_t classIndex, class_index_tmp;
-	u2 name_type_index;
+	int32_t classIndex, classIndexTemp;
+	u2 nameTypeIndex;
 	char *className;
 	u4 *fields_tmp;
 
@@ -3029,16 +2593,16 @@ void i_invokespecial()
 	index = convert_2x8_to_32_bits(low, high);
 
 
-	class_index_tmp = (frameAtual->constantPool[index-1]).type.MethodRef.classIndex;
+	classIndexTemp = (frameAtual->constantPool[index-1]).type.MethodRef.classIndex;
 
-	className = getName(frameAtual->class,(frameAtual->constantPool[class_index_tmp-1]).type.Class.nameIndex);
+	className = getName(frameAtual->class,(frameAtual->constantPool[classIndexTemp-1]).type.Class.nameIndex);
 
 	classIndex = carregarClass(className);
 	class = getClassByIndex(classIndex);
 
-	name_type_index = ((frameAtual->constantPool[index-1])).type.MethodRef.nameTypeIndex;
+	nameTypeIndex = ((frameAtual->constantPool[index-1])).type.MethodRef.nameTypeIndex;
 
-	while(class != NULL &&(method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index)) == NULL) {
+	while(class != NULL &&(method = getMethodByNameAndDescIndex(class, frameAtual->class, nameTypeIndex)) == NULL) {
 		className = getParentName(class);
 
 		classIndex = carregarClass(className);
@@ -3085,8 +2649,8 @@ void i_invokestatic(){
 	u4 index;
 	u1 low, high;
 	int32_t numParams, i;
-	int32_t classIndex, class_index_tmp;
-	u2 name_type_index;
+	int32_t classIndex, classIndexTemp;
+	u2 nameTypeIndex;
 	char *className;
 	u4 *fields_tmp;
 
@@ -3102,16 +2666,16 @@ void i_invokestatic(){
 	index = convert_2x8_to_32_bits(low, high);
 
 
-	class_index_tmp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
+	classIndexTemp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
 
-	className = getName(frameAtual->class, frameAtual->constantPool[class_index_tmp-1].type.Class.nameIndex);
+	className = getName(frameAtual->class, frameAtual->constantPool[classIndexTemp-1].type.Class.nameIndex);
 
-	name_type_index = frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex;
+	nameTypeIndex = frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex;
 
 	classIndex = carregarClass(className);
 	class = getClassByIndex(classIndex);
 
-	method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index);
+	method = getMethodByNameAndDescIndex(class, frameAtual->class, nameTypeIndex);
 
 	numParams = getNumParameters(class , method);
 
@@ -3149,8 +2713,8 @@ void i_invokeinterface()
 {
 	u4 index;
 	u1 low, high, args_count, zero;
-	int32_t classIndex, class_index_tmp, i;
-	u2 name_type_index;
+	int32_t classIndex, classIndexTemp, i;
+	u2 nameTypeIndex;
 	char *className;
 	u4 *fields_tmp;
 
@@ -3170,16 +2734,16 @@ void i_invokeinterface()
 		fields_tmp[i] = pop();
 	}
 
-	class_index_tmp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
+	classIndexTemp = frameAtual->constantPool[index-1].type.MethodRef.classIndex;
 
-	className = getName(frameAtual->class, frameAtual->constantPool[class_index_tmp-1].type.Class.nameIndex);
+	className = getName(frameAtual->class, frameAtual->constantPool[classIndexTemp-1].type.Class.nameIndex);
 
 	classIndex = carregarClass(className);
 	class = getClassByIndex(classIndex);
 
-	name_type_index = (frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex);
+	nameTypeIndex = (frameAtual->constantPool[index-1].type.MethodRef.nameTypeIndex);
 
-	while(class != NULL &&(method = getMethodByNameAndDescIndex(class, frameAtual->class, name_type_index)) == NULL) {
+	while(class != NULL &&(method = getMethodByNameAndDescIndex(class, frameAtual->class, nameTypeIndex)) == NULL) {
 		className = getParentName(class);
 
 		classIndex = carregarClass(className);
