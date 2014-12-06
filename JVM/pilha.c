@@ -1,53 +1,53 @@
-
 #include "pilha.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-static u4 topoPilha;
-static u4 baseFrame;
-static u4 pilha[MAX];
+static u4 stack[MAX_STACK];
+static u4 stack_top;
+static u4 frame_base;
 
-void newPilha() {
-	topoPilha = -1;
-	baseFrame = 0;
+void newStack() {
+	stack_top = -1;
+	frame_base = 0;
 }
 
-void push(u4 valor) {
-	if (topoPilha == MAX) {
+void push(u4 value) {
+	if (stack_top == MAX_STACK) {
 		printf(" Erro: Pilha sem memoria.\n");
 		exit(1);
 	}
-	pilha[++topoPilha] = valor;
+	stack[++stack_top] = value;
 }
 
-void pushU8(u8 valor) {
+void pushU8(u8 value) {
 	u4 low, high;
-	convert_64_bits_to_2x32(valor , &low , &high);
-	push(high);
-	push(low);
+	convert_64_bits_to_2x32( value , &low , &high );
+	push( high );
+	push( low );
 }
 
 u4 pop() {
-	if (topoPilha < baseFrame) {
+	if (stack_top < frame_base) {
 		printf(" Erro: Acesso a posicao invalida da Stack.\n\n");
 		return 0;
 	}
-	return pilha[topoPilha--];
+	return stack[stack_top--];
 }
 
-void newFramePilha() {
-	push(baseFrame);
-	baseFrame = topoPilha;
+void newStackFrame() {
+	push(frame_base);
+	frame_base = stack_top;
 }
 
-void freeFramePilha() {
-	u4 frameAnterior;
-	topoPilha = baseFrame;
-	frameAnterior = pop();
-	if (frameAnterior > baseFrame) {
+void freeStackFrame() {
+	u4 previous_frame;
+
+	stack_top = frame_base;
+	previous_frame = pop();
+	if (previous_frame > frame_base) {
 		printf(" Erro: Frame nao existente\n");
 		return;
 	}
-	baseFrame = frameAnterior;
+	frame_base = previous_frame;
 }

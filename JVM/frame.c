@@ -20,7 +20,7 @@ void newFrame(classStructure *class, cpInfo *constantPool, attributeInfo *code_a
 	stack->value->fields = calloc(sizeof(u4), stack->value->maxLocals);
 	stack->value->pc = 0;
 	frameAtual = stack->value;
-	newFramePilha();
+	newStackFrame();
 }
 
 void freeFrame() {
@@ -37,5 +37,5 @@ void freeFrame() {
 	free(stack->value);
 	free(stack);
 	stack = next;
-	freeFramePilha();
+	freeStackFrame();
 }
