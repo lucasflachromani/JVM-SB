@@ -7,8 +7,6 @@
 #include "instrucoes.h"
 #include "metodos.h"
 
-char *caminho = ".\\";
-
 classStructure **classArray = NULL;
 staticStruct *classStaticArray = NULL;
 int32_t numClasses = 0;
@@ -32,12 +30,12 @@ int32_t carregarClass(char *className) {
 	classIndex = numClasses;
 	classArray = realloc(classArray, (classIndex*sizeof(classStructure *)));
 	classStaticArray = realloc(classStaticArray, (classIndex*sizeof(staticStruct)));
-	path = malloc(strlen(caminho) + strlen(className) + 7);
+	path = malloc(strlen(className) + 7);
 
 	if (strstr(className,".class") != NULL) {
-		sprintf(path, "%s%s", caminho, className);
+		sprintf(path, "%s", className);
 	} else {
-		sprintf(path, "%s%s.class", caminho, className);
+		sprintf(path, "%s.class",className);
 	}
 
 	if ((classArray[classIndex-1] = leArquivoClasse(path)) == NULL) {
