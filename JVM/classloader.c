@@ -35,13 +35,19 @@ classStructure * leArquivoClasse (char *fileSrc) {
 
 	if (verifyMagic()) {
         storeVersions();               //armazena todos os dados em memoria
-        storeConstantPool();
-        storeAccessFlags();
-        storeClasses();
-        storeInterfaces();
-        storeFields();
-        storeMethods();
-        storeAttributes();
+        if(verifyVersion()) {
+            storeConstantPool();
+            storeAccessFlags();
+            storeClasses();
+            storeInterfaces();
+            storeFields();
+            storeMethods();
+            storeAttributes();
+        } else {
+            printf("\nERRO: O arquivo .class nao e compativel com java 1.2");
+    		fclose (classfile);
+    		exit(1);
+        }
     } else {
         printf("\nERRO: O arquivo nao e do tipo .class");
 		fclose (classfile);
@@ -130,6 +136,15 @@ u4 u4Read () {
 int verifyMagic () {
     cs->magicNumber = u4Read();
     if (cs->magicNumber == 0xCAFEBABE) return 1;
+    return 0;
+}
+
+/* @ brief Funcao que verifica a versao do java do arquivo
+ * @ param file : arquivo de entrada
+ * @ param cs : estrutura de dados da classe java
+ */
+int verifyVersion () {
+    if (cs->majorVersion <= 0x2E) return 1;
     return 0;
 }
 

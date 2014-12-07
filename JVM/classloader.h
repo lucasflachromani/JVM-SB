@@ -18,6 +18,7 @@ u1 u1Read ();
 u2 u2Read ();
 u4 u4Read ();
 int verifyMagic ();
+int verifyVersion ();
 void storeVersions ();
 void storeConstantPool ();
 void storeAccessFlags ();
