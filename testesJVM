@@ -1,0 +1,36 @@
+Obs: os que foram marcados como funcionando, apenas não apresentaram nenhuma mensagem de erro, pois não sei qual seria a saida ideal.
+
+-Testes
+
+ClienteNaoExistente : não foi possivel encontrar o método main
+DataStructure : Trava
+ExemploDivisao : não encontrou o arquivo
+FooCorporation : Trava
+Hello : Funcionando
+HelloComVar : Funcionando
+Testar : Trava, após imprimir "Chamando Funcao..."
+
+-Testes/TestesLadeira
+
+testeChaMetObj : Trava, após imprimir  5 vezes "10\n"
+testeChaObj : não encontrou o arquivo
+testeHer : não encontrou o arquivo
+testeHerFilho : não encontrou o arquivo
+testeHerPai : não foi possivel encontrar o método main
+testeLogArit : Funcionando
+testeMultArray : acesso indevido a pilha
+testeStatic : Funcionando
+
+-Testes/TurmasAnteriores
+
+agencia_automoveis : não encontrou o arquivo
+Animal : não foi possivel encontrar o método main
+BubbleSort : Trava
+CountWheat : Funcionando
+Fibonacci : Funcionando
+float_cast : Funcionando
+long_road : Trava
+lookupswitch_basic1 : Funcionando
+soma_certo : não foi possivel encontrar o método main
+switch_basic3 : Funcionando
+testeMulArray_ : Trava
